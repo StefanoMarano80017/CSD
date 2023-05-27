@@ -1,0 +1,119 @@
+**********AREA    DATI ***************
+			ORG		$8000
+MSG			DS.B		6
+CONT			DC.B		0
+DIM			DC.B		6
+
+**********AREA MAIN ****************
+		
+			ORG		$8200
+PIAAD			EQU		$2004			;registro dato PIA-A
+PIAAC			EQU		$2005			;registro stato\controllo PIA-A
+
+PIAAD1			EQU		$2008			;registro dato PIA-A1
+PIAAC1			EQU		$2009			;registro stato\controllo PIA-A1
+
+MAIN			JSR		PIA_A_INIT
+			
+			MOVE.W	SR,D0			;legge il registro di stato
+			ANDI.W	#$D8FF,D0 		;maschera per reg stato (stato utente, int abilitati)
+			MOVE.W	D0,SR			;pone liv int a 000
+WAITISR1		CMP.B		#3,CONT
+			BNE		WAITISR1
+			JSR		PIA1_A_INIT
+			
+			*inizializzo i registri 
+		
+			MOVEA.L	#PIAAC1,A1
+			MOVEA.L	#PIAAD1,A2
+			MOVEA.L	#MSG,A0
+	
+			
+			
+
+			MOVE.B	(A2),D1 	;lettura fittizia, in maniera tale da partire da uno stato noto
+
+WAITISR2		CMP.B		#6,CONT
+			BNE		WAITISR2
+
+
+			
+LOOP			BRA		LOOP
+
+
+********SUBROUTINE INIT PIA*******
+PIA_A_INIT		MOVE.B	#0,PIAAC		;inizializzo a zero il registro stato\controllo
+			MOVE.B	#0,PIAAD		;inizializzo a zero il registro dato
+			MOVE.B	#%00000000,PIAAC1	;definisco il modo di funzionamento
+			MOVE.B	#%00100101,PIAAC	;definisco il modo di funzionamento
+			RTS
+
+PIA1_A_INIT		MOVE.B	#0,PIAAC1		;inizializzo a zero il registro stato\controllo
+			MOVE.B	#$00,PIAAD1		;inizializzo a zero il registro dato
+			MOVE.B	#%00000000,PIAAC	;definisco il modo di funzionamento
+			MOVE.B	#%00100101,PIAAC1	;definisco il modo di funzionamento
+			RTS
+			
+***ISR, ricezione messaggio MSG
+ISR1			ORG		$8700
+			
+			MOVEM.L	D0/A0-A1,-(SP)		;salvo il contesto
+			
+			*inizializzo i registri che mi servono	
+			MOVEA.L	#PIAAD,A1
+			MOVEA.L	#MSG,A0			;indirizzo area di salvataggio
+			MOVE.B	CONT,D0			;contatore corrente degli elementi ricevuti
+
+		
+
+		
+RICEZIONE		MOVE.B	(A1),(A0,D0)			;carattere corrente da trasferire in D2;
+			ADD.B		#1,D0				;aggiorno il contatore degli elementi trasmessi
+			MOVE.B	D0,CONT
+
+			MOVEM.L	(SP)+,A0-A1/D0		;ripristino il contesto
+			RTE
+
+***ISR, trasmissione messaggio MSG
+ISR2			ORG		$8800
+			
+			MOVEM.L	D0/A0-A1,-(SP)			;salvo il contesto
+			
+			*inizializzo i registri che mi servono	
+			MOVEA.L	#PIAAD1,A1
+			MOVEA.L	#MSG,A0			;indirizzo area di salvataggio
+			MOVE.B	CONT,D0			;contatore corrente degli elementi ricevuti
+
+		
+
+		
+			MOVE.B	(A1),(A0,D0)			;carattere corrente da trasferire in D2;
+			ADD.B		#1,D0				;aggiorno il contatore degli elementi trasmessi
+			MOVE.B	D0,CONT
+
+			MOVEM.L	(SP)+,A0-A1/D0		;ripristino il contesto
+			RTE
+
+
+			END		MAIN
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

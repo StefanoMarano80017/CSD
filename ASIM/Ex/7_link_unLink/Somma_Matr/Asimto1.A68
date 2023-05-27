@@ -1,0 +1,52 @@
+***********************SOTTO_PROGRAMMA_SOMMA_MATRICE*********************************
+		ORG		$8600
+SOMMA_MTR	LINK		A6,#-4
+		MOVEA.L	OffIndRtn(A6),A2
+		MOVEA.L	OffMatr(A6),A1
+		MOVE.W	OffRg(A6),D7
+		MOVE.W	OffCl(A6),D6
+		MOVE		0,OffVarTmp(A6)
+LOOP		CLR		D1
+LOOP2		ADD.B		(A1,D1),D2
+		MOVE.B	D2,OffVarTmp(A6)
+		ADD		#1,D1
+		CMP		D6,D1
+		BNE		LOOP2
+		ADD		D6,A1
+		ADD		#1,D0
+		CMP		D7,D0
+		BNE		LOOP
+		MOVE.L		OffVarTmp(A6),OffRes(A6)
+		UNLK		A6
+		ADDA.L		#OffRes-4,SP
+		JMP		(A2)
+***********************MAIN*********************************
+		ORG		$8500
+INIZIO		ADDA.L		#-4,SP
+		MOVE.W	RG,-(SP)
+		MOVE.W	CL,-(SP)
+		MOVE.L		#MATR,-(SP)
+		JSR		SOMMA_MTR
+		MOVE.L		(SP)+,RES
+FINE		JMP		FINE
+***********************AREA_DATI*********************************
+
+		ORG		$8000
+MATR		DC.B		22,10,2
+		DC.B		1,12,4
+		DC.B		4,5,2
+N		EQU		3
+N1		EQU		3
+RG		DC.W		N
+CL		DC.W		N1
+RES		DS.L		1
+
+********************offset*********
+OffVarTmp	EQU		-4
+OffIndRtn	EQU		4
+OffMatr		EQU		8
+OffCl		EQU		12
+OffRg		EQU		14
+OffRes		EQU		16
+
+		END 		INIZIO

@@ -1,0 +1,252 @@
+00000000                                     1  **********************AREA    DATI ***************
+00008000                                     2  			ORG		$8000
+00008000  00                                 3  N			DC.B		0		;dim caratteri
+00008001  =00000006                          4  T			EQU		6		;dim  msg
+00008001  =00000006                          5  T1			EQU		6		;dim  msg
+00008001  01                                 6  FASE			DC.B		1
+0000803A                                     7  			ORG		$803A		
+0000803A  00                                 8  C_Cb			DC.B		0		;contatore caratteri da C
+0000803B  00                                 9  MSGb			DC.B		0		;messaggi
+0000804A                                    10  			ORG		$804A	
+0000804A  00                                11  C_Cc			DC.B		0		;contatore caratteri  da B
+0000804B  00                                12  MSGc			DC.B		0		;messaggi
+0000804C                                    13  
+0000804C                                    14  ******VAR GESTIONE ISR IN MUTUA ESCLUSIONE
+00008300                                    15  			ORG		$8300
+00008300  00                                16  SEM			DC.B		0
+00008301  00                                17  SOSP_A		DC.B		0
+00008302  00                                18  SOSP_B		DC.B		0
+00008303  00                                19  FINE_A			DC.B		0
+00008304  00                                20  FINE_B		DC.B		0
+00008305                                    21  
+00008305  00                                22  POSS			DC.B		0
+00008306                                    23  **IDENTIFICATIVO ISR
+00008306  =00000001                         24  ALFHA			EQU		1
+00008306  =00000002                         25  BETA			EQU		2
+00008306                                    26  
+00008306                                    27  **********AREA MAIN ****************
+00008500                                    28  			ORG		$8500
+00008500  =00002004                         29  PIAAD			EQU		$2004			;registro dato PIA-A
+00008500  =00002005                         30  PIAAC			EQU		$2005			;registro stato\controllo PIA-A
+00008500  =00002008                         31  PIAAD1			EQU		$2008			;registro dato PIA-A1
+00008500  =00002009                         32  PIAAC1			EQU		$2009			;registro stato\controllo PIA-A1
+00008500  4EB9 00008510                     33  MAIN			JSR		PIA_A_INIT
+00008506                                    34  			
+00008506  40C0                              35  			MOVE.W	SR,D0			;legge il registro di stato
+00008508  0240 D8FF                         36  			ANDI.W	#$D8FF,D0 		;maschera per reg stato (stato utente, int abilitati)
+0000850C  46C0                              37  			MOVE.W	D0,SR			;pone liv int a 000			
+0000850E  60FE                              38  LOOP			BRA		LOOP
+00008510                                    39  
+00008510                                    40  ********SUBROUTINE INIT PIA*******
+00008510  11FC 0000 2005                    41  PIA_A_INIT		MOVE.B	#0,PIAAC		;inizializzo a zero il registro stato\controllo
+00008516  11FC 0000 2004                    42  			MOVE.B	#0,PIAAD		;inizializzo a zero il registro dato
+0000851C  11FC 0025 2005                    43  			MOVE.B	#%00100101,PIAAC	;definisco il modo di funzionamento
+00008522                                    44  
+00008522  11FC 0000 2009                    45  			MOVE.B	#0,PIAAC1		;inizializzo a zero il registro stato\controllo
+00008528  11FC 0000 2008                    46  			MOVE.B	#$00,PIAAD1		;inizializzo a zero il registro dato
+0000852E  11FC 0025 2009                    47  			MOVE.B	#%00100101,PIAAC1	;definisco il modo di funzionamento
+00008534                                    48  
+00008534  4E75                              49  			RTS
+00008536                                    50  
+00008536                                    51  
+00008536                                    52  
+00008536                                    53  
+00008536                                    54  ***************************************************************************************
+00008536                                    55  ***********SUBROUTINE ISR ALFHA
+00008536  207C 0000803B                     56  A_INIT_REGISTRI	MOVEA.L	#MSGb,A0			;indirizzo area di salvataggio
+0000853C  227C 0000804B                     57  			MOVEA.L	#MSGc,A1			;indirizzo area di salvataggio
+00008542  247C 00002004                     58  			MOVEA.L	#PIAAD,A2			;indirizzo area di salvataggio
+00008548  267C 00002008                     59  			MOVEA.L	#PIAAD1,A3			;indirizzo area di salvataggio
+0000854E  1039 0000803A                     60  			MOVE.B	C_Cb,D0			;contatore corrente dei caratteri ricevuti da B
+00008554  1239 0000804A                     61  			MOVE.B	C_Cc,D1			;contatore corrente dei caratteri ricevuti da C
+0000855A  4E75                              62  			RTS
+0000855C                                    63  a_READ_B		*OPERAZIONI
+0000855C  1192 0000                         64  			MOVE.B	(A2),(A0,D0)			;leggo carattere
+00008560  5239 0000803A                     65  			ADD.B		#1,C_Cb			;aggiorno il contatore dei caratteri ricevuti in memoria		
+00008566  1039 0000803A                     66  			MOVE.B	C_Cb,D0			;ricarico D0
+0000856C  4E75                              67  			RTS
+0000856E                                    68  
+0000856E                                    69  a_READ_C		*OPERAZIONI
+0000856E  1393 1000                         70  			MOVE.B	(A3),(A1,D1)		;leggo carattere
+00008572  5239 0000804A                     71  			ADD.B		#1,C_Cc			;aggiorno il contatore dei caratteri ricevuti in memoria		
+00008578  1239 0000804A                     72  			MOVE.B	C_Cc,D1			;ricarico D0
+0000857E  4E75                              73  			RTS
+00008580                                    74  
+00008580                                    75  
+00008580                                    76  ***********SUBROUTINE ISR BETA
+00008580  207C 0000804B                     77  B_INIT_REGISTRI	MOVEA.L	#MSGc,A0			;indirizzo area di salvataggio
+00008586  227C 0000803B                     78  			MOVEA.L	#MSGb,A1			;indirizzo area di salvataggio
+0000858C  247C 00002004                     79  			MOVEA.L	#PIAAD,A2			;indirizzo area di salvataggio
+00008592  267C 00002008                     80  			MOVEA.L	#PIAAD1,A3			;indirizzo area di salvataggio
+00008598  1039 0000804A                     81  			MOVE.B	C_Cc,D0			;contatore corrente dei caratteri ricevuti da C
+0000859E  1239 0000803A                     82  			MOVE.B	C_Cb,D1			;contatore corrente dei caratteri ricevuti da b
+000085A4  4E75                              83  			RTS
+000085A6                                    84  
+000085A6                                    85  b_READ_B		*OPERAZIONI
+000085A6  1392 1000                         86  			MOVE.B	(A2),(A1,D1)			;leggo carattere
+000085AA  5239 0000803A                     87  			ADD.B		#1,C_Cb			;aggiorno il contatore dei caratteri ricevuti in memoria		
+000085B0  1239 0000803A                     88  			MOVE.B	C_Cb,D1			;ricarico D1
+000085B6  4E75                              89  			RTS
+000085B8                                    90  
+000085B8                                    91  
+000085B8                                    92  b_READ_C		*OPERAZIONI
+000085B8                                    93  
+000085B8  1193 0000                         94  			MOVE.B	(A3),(A0,D0)			;leggo carattere
+000085BC  5239 0000804A                     95  			ADD.B		#1,C_Cc			;aggiorno il contatore dei caratteri ricevuti in memoria		
+000085C2  1039 0000804A                     96  			MOVE.B	C_Cc,D0			;ricarico D0
+000085C8  4E75                              97  			RTS
+000085CA                                    98  
+000085CA                                    99  
+000085CA                                   100  **************************************************************************************
+000085CA                                   101  ***ISR1, ricezione messaggio MSG
+00008700                                   102  ISR1			ORG		$8700
+00008700  0C39 0001 00008001               103  			CMP.B		#1,(FASE)
+00008708  6600 0054                        104  			BNE		AFASE2
+0000870C                                   105  
+0000870C  48E7 C0C0                        106  AFASE1		MOVEM.L	D0-D1/A0-A1,-(SP)		;salvo il contesto
+00008710                                   107  			*inizializzo i registri che mi servono	
+00008710  207C 00002004                    108  			MOVEA.L	#PIAAD,A0
+00008716  227C 0000803B                    109  			MOVEA.L	#MSGb,A1			;indirizzo area di salvataggio
+0000871C  1039 0000803A                    110  			MOVE.B	C_Cb,D0			;contatore corrente dei caratteri ricevuti da B
+00008722  1239 00008000                    111  			MOVE.B	N,D1				;dim corrente dei caratteri ricevuti da B
+00008728                                   112  
+00008728                                   113  			*OPERAZIONI
+00008728  B23C 0000                        114  			CMP.B		#0,D1				;N è vuoto
+0000872C  6600 000E                        115  			BNE		SAVE_C			;se N ! da 0, vuol dire che è un carattere del msg ricevuto
+00008730  1210                             116  			MOVE.B	(A0),D1				;salvo la dimensione in D1
+00008732  13C1 00008000                    117  			MOVE.B	D1,N				;aggiorno tutto in memoria
+00008738  6000 0012                        118  			BRA		CHECK
+0000873C  1390 0000                        119  SAVE_C		MOVE.B	(A0),(A1,D0)			;leggo carattere
+00008740  5239 0000803A                    120  			ADD.B		#1,C_Cb			;aggiorno tutto in memoria		
+00008746  1039 0000803A                    121  			MOVE.B	C_Cb,D0			;aggiorno registro contatore	
+0000874C  B200                             122  CHECK			CMP.B		D0,D1				;verifico se contatore_caratt=N
+0000874E  6600 0008                        123  			BNE		EXIT				;se non è verificata esco
+00008752  5239 00008001                    124  COND_VERA		ADD.B		#1,FASE					
+00008758  4CDF 0303                        125  EXIT			MOVEM.L	(SP)+,A0-A1/D0-D1		;ripristino il contesto	
+0000875C  4E73                             126  			RTE					
+0000875E                                   127  			
+0000875E                                   128  
+0000875E  4AF9 00008300                    129  AFASE2		TAS		SEM
+00008764  6600 00A8                        130  			BNE		A_SOSPENDI
+00008768  0C39 0002 00008305               131  			CMP.B		#BETA,POSS
+00008770  6700 00A6                        132  			BEQ		POSS_B
+00008774  13FC 0001 00008305               133  			MOVE.B	#ALFHA,POSS
+0000877C  13FC 0000 00008300               134  			MOVE.B	#0,SEM
+00008784  48E7 C0F0                        135  			MOVEM.L	D0-D1/A0-A3,-(SP)		;salvo il contesto
+00008788                                   136  				
+00008788  4EB9 00008536                    137  			JSR		A_INIT_REGISTRI		;inizializzo i registri che mi servono
+0000878E  4EB9 0000855C                    138  			JSR		a_READ_B			;lettura PIA
+00008794  B03C 0006                        139  			CMP.B		#T,D0				;n_caratteri==T  caratteri
+00008798  6600 001E                        140  			BNE		B_CHECK
+0000879C  13FC 0001 00008303               141  			MOVE.B	#1,FINE_A			;Alfha finisce di trasmettere
+000087A4                                   142  	
+000087A4  1A39 00008304                    143  			MOVE.B	FINE_B,D5
+000087AA  BA3C 0001                        144  			CMP.B		#1,D5				;verifico se Beta ha finito
+000087AE  6600 0008                        145  			BNE		B_CHECK
+000087B2                                   146  			
+000087B2  4CDF 0F03                        147  FINE			MOVEM.L	(SP)+,A0-A3/D0-D1		;ripristino il contesto
+000087B6  4E73                             148  			RTE
+000087B8                                   149  
+000087B8                                   150  
+000087B8                                   151  
+000087B8                                   152  
+000087B8                                   153  
+000087B8                                   154  
+000087B8  0C39 0001 00008302               155  B_CHECK		CMP.B		#1,SOSP_B
+000087C0  6600 0032                        156  			BNE		B_NON_SOSP
+000087C4                                   157  
+000087C4  13FC 0002 00008305               158  B_SOSP		MOVE.B	#BETA,POSS
+000087CC  13FC 0000 00008302               159  			MOVE.B	#0,SOSP_B
+000087D4  4EB9 0000856E                    160  			JSR		a_READ_C
+000087DA  0C39 0000 00008303               161  			CMP.B		#0,(FINE_A)
+000087E2  6600 000A                        162  			BNE		SALTA
+000087E6  13FC 0001 00008305               163  			MOVE.B	#ALFHA,POSS
+000087EE  4CDF 0F03                        164  SALTA			MOVEM.L	(SP)+,A0-A3/D0-D1		;ripristino il contesto
+000087F2  4E73                             165  			RTE
+000087F4                                   166  
+000087F4                                   167  			
+000087F4  0C39 0000 00008304               168  B_NON_SOSP		CMP.B		#0,(FINE_B)
+000087FC  6600 000A                        169  			BNE		SALTA2
+00008800  13FC 0002 00008305               170  			MOVE.B	#BETA,POSS
+00008808  4CDF 0F03                        171  SALTA2		MOVEM.L	(SP)+,A0-A3/D0-D1		;ripristino il contesto
+0000880C                                   172  			
+0000880C  4E73                             173  			RTE
+0000880E                                   174  			
+0000880E                                   175  			
+0000880E                                   176  
+0000880E                                   177  
+0000880E                                   178  
+0000880E  13FC 0001 00008301               179  A_SOSPENDI		MOVE.B	 #1,SOSP_A
+00008816  4E73                             180  			RTE
+00008818                                   181  
+00008818  13FC 0001 00008301               182  POSS_B		MOVE.B	 #1,SOSP_A
+00008820  13FC 0000 00008300               183  			MOVE.B	#0,SEM
+00008828  4E73                             184  			RTE
+0000882A                                   185  
+0000882A                                   186  
+0000882A                                   187  ***ISR2, ricezione messaggio MSG
+00008800                                   188  ISR2			ORG		$8800
+00008800  0C39 0001 00008001               189  			CMP.B		#1,(FASE)
+00008808  6600 0006                        190  			BNE		BFASE2
+0000880C  6000 00B2                        191  			BRA		B_SOSPENDI
+00008810                                   192  
+00008810  4AF9 00008300                    193  BFASE2		TAS		SEM
+00008816  6600 00A8                        194  			BNE		B_SOSPENDI
+0000881A  0C39 0001 00008305               195  			CMP.B		#ALFHA,POSS
+00008822  6700 00A6                        196  			BEQ		POSS_A
+00008826  13FC 0002 00008305               197  			MOVE.B	#BETA,POSS
+0000882E  13FC 0000 00008300               198  			MOVE.B	#0,SEM
+00008836  48E7 C0F0                        199  			MOVEM.L	D0-D1/A0-A3,-(SP)		;salvo il contesto
+0000883A                                   200  
+0000883A                                   201  
+0000883A  4EB9 00008580                    202  			JSR		B_INIT_REGISTRI		;inizializzo i registri che mi servono
+00008840  4EB9 000085B8                    203  			JSR		b_READ_C			;lettura PIA1
+00008846  B03C 0006                        204  			CMP.B		#T1,D0				;n_caratteri==T  caratteri
+0000884A  6600 001E                        205  			BNE		A_CHECK
+0000884E  13FC 0001 00008304               206  			MOVE.B	#1,FINE_B			;Alfha finisce di trasmettere
+00008856  1A39 00008303                    207  			MOVE.B	FINE_A,D5
+0000885C  BA3C 0001                        208  			CMP.B		#1,D5				;verifico se Beta ha finito
+00008860  6600 0008                        209  			BNE		A_CHECK
+00008864  4CDF 0F03                        210  FINE1			MOVEM.L	(SP)+,A0-A3/D0-D1		;ripristino il contesto
+00008868  4E73                             211  			RTE
+0000886A                                   212  
+0000886A                                   213  
+0000886A                                   214  
+0000886A                                   215  
+0000886A                                   216  
+0000886A                                   217  
+0000886A  0C39 0001 00008301               218  A_CHECK		CMP.B		#1,SOSP_A
+00008872  6600 0032                        219  			BNE		A_NON_SOSP
+00008876                                   220  
+00008876  13FC 0001 00008305               221  A_SOSP		MOVE.B	#ALFHA,POSS
+0000887E  13FC 0000 00008301               222  			MOVE.B	#0,SOSP_A
+00008886  4EB9 000085A6                    223  			JSR		b_READ_B
+0000888C  0C39 0000 00008304               224  			CMP.B		#0,(FINE_B)
+00008894  6600 000A                        225  			BNE		SALTA1
+00008898  13FC 0002 00008305               226  			MOVE.B	#BETA,POSS
+000088A0  4CDF 0F03                        227  SALTA1		MOVEM.L	(SP)+,A0-A3/D0-D1		;ripristino il contesto
+000088A4  4E73                             228  			RTE
+000088A6                                   229  
+000088A6                                   230  			
+000088A6  0C39 0000 00008303               231  A_NON_SOSP		CMP.B		#0,(FINE_A)
+000088AE  6600 000A                        232  			BNE		SALTA3
+000088B2  13FC 0001 00008305               233  			MOVE.B	#ALFHA,POSS
+000088BA  4CDF 0F03                        234  SALTA3		MOVEM.L	(SP)+,A0-A3/D0-D1		;ripristino il contesto
+000088BE                                   235  			
+000088BE  4E73                             236  			RTE
+000088C0                                   237  			
+000088C0                                   238  			
+000088C0                                   239  
+000088C0                                   240  
+000088C0                                   241  
+000088C0  13FC 0001 00008302               242  B_SOSPENDI		MOVE.B	 #1,SOSP_B
+000088C8  4E73                             243  			RTE
+000088CA                                   244  
+000088CA  13FC 0001 00008302               245  POSS_A		MOVE.B	 #1,SOSP_B
+000088D2  13FC 0000 00008300               246  			MOVE.B	#0,SEM
+000088DA  4E73                             247  			RTE
+000088DC                                   248  			
+000088DC                                   249  			END		MAIN
+
+No errors detected
+No warnings generated

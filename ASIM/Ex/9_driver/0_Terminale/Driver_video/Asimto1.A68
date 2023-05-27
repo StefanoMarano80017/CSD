@@ -1,0 +1,28 @@
+*Inizializzo  parametri del mio terminale con i puntatori
+MAIN			ORG			$8400
+			MOVEA.L 		#TERM_DAT,A2	
+			MOVEA.L 		A2,A0
+			ADD.L   		#1,A2
+			MOVE.B 		 #TERM_CFG,(A2)
+			LEA.L   		V,A1
+OUTPUT		MOVE.B  		(A1)+,D0
+			MOVE.B  		D0,(A0)
+			ADD.B			#1,D7
+			CMP			#EOS,D7
+			BNE			OUTPUT
+DONE    		JMP 			DONE
+
+*AREA DATI   TERM
+
+			ORG			$8200
+TERM_DAT		EQU			$2000
+TERM_CFG		EQU			$30   *corrisponde 00110000
+EOS      		EQU 			5
+V   			DC.B    		'Paolo'
+			END			MAIN
+
+
+
+
+
+

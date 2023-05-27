@@ -1,0 +1,135 @@
+
+*****************AREA INSTANZIAMENTO PERIFERICHE  ****************************
+
+BEGIN			ORG			$8000
+
+*PIA_A, definita in trasmissione
+
+PIAD_A			EQU			$2004			; indirizzo dato PIA_A
+PIAC_A			EQU			$2005			; indirizzo stato/controllo PIA_A
+
+*PIA_B, definita in ricezione
+
+PIAD_B		EQU			$2006			; indirizzo dato PIA_B
+PIAC_B		EQU			$2007			; indirizzo stato/controllo PIA_B
+
+*Terminale
+
+TERD			EQU			$2000			; indirizzo dato terminale
+TERC			EQU			$2001			; indirizzo stato/controllo terminale
+					
+************************************* MAIN  ******************************************
+			JSR			PIA_A_INIT	;inizializzo PIA porto A
+			JSR			PIA_B_INIT	;inizializzo PIA porto B
+			JSR			TER_INIT	;inizializzo Terminale
+
+			MOVE.W		SR,D0		;copio STATUS REGISTER nel registro D0
+			ANDI.W		#$D8FF,D0	;faccio una AND TRA (FFFF-2700[RISULTATO IN D0]), e ottengo tutti zero nello SR
+			MOVE.W		D0,SR
+
+LOOP			BRA			LOOP
+
+
+
+***************************AREA INIZIALIZZAZIONE*************************************
+			
+			ORG			$8400
+
+PIA_A_INIT		MOVE.B		#0,PIAC_A			;inizializzo a zero il registro di controllo
+			MOVE.B		#$00,PIAD_A			;azzero il registro dato,definiendo le linee di A come input
+			MOVE.B		#%00100101,PIAC_A		;setto l'interr, con valutazione sul fronte di discesa
+			RTS
+
+PIA_B_INIT		MOVE.B		#0,PIAC_B			;inizializzo a zero il registro di controllo
+			MOVE.B		#$FF,PIAD_B			;pongo FF il registro dato, definiendo le linee di A come output
+			MOVE.B		#%00100100,PIAC_B		;disabilito l'interr, con valutazione sul fronte di discesa
+			RTS
+
+TER_INIT		MOVE.B		#$3F,TERC			;imposto indirizzo stato/controllo
+			RTS
+*****************************JSR SYSTEM**************************************************
+*ISR per la gestione dato proveniente dalla tastiera di TERMINAL e spedito, dalla 
+*PIA porto B, all'altro sistema.
+*ISR associata all'interrupt di liv. 1, #vect 25 mappato a $64 della ROM con ISR a $8500 	
+
+ISR1			ORG			$8500
+
+			*SALVO REGISTRI CHE USERO' NELLO STACK
+			MOVE.L	A0,-(SP)		;push di A0,A1,A2,D0,D1 in stack supervisor SP
+			MOVE.L	A1,-(SP)
+			MOVE.L	A2,-(SP)
+			MOVE.L	D0,-(SP)
+			MOVE.L	D1,-(SP)
+			
+			*Inizializzo i registri
+			MOVEA.L	#TERD,A0
+			MOVEA.L	#PIAD_B,A1
+			MOVEA.L	#PIAC_B,A2
+			
+			*OPERAZIONI, trasferimento dato con handshake
+
+INPUT			MOVE.B	(A0),D0			;acquisisci dato da terminal
+	
+			*trasferisci il carattere letto alla PIA-B con handshaking
+		
+			MOVE.B	(A1),D1		;lettura finizia per resettare la periferica
+			MOVE.B  	D0,(A1)		;Dato su bus di PIA porto B
+polling			MOVE.B	(A2),D1
+			ANDI.B		#$80,D1	;aspetto che CRB7 diventa 1
+			BEQ		polling
+			
+			*fine trasferimento e handshaking
+			
+			CMP.B		#13,D0		;se ho ricevuto Enter
+			BNE		INPUT
+
+			
+			*RIPRISTINO DEI REGISTI
+			MOVE.L 	(SP)+,D1		;ripristino di D0,D1,A2,A1,A0
+			MOVE.L	(SP)+,D0
+			MOVE.L	(SP)+,A2
+			MOVE.L	(SP)+,A1
+			MOVE.L	(SP)+,A0
+			RTE
+
+********************************************************************************************************		
+
+*ISR a $8700 associata all' interrupt di liv. 3  #vect 27  mappato a $6C della ROM
+	
+	
+			ORG 		$8700		
+
+ISR2    			ANDI.B		#%11101001,TERC	;disabilita: tastiera,cancella video,interruzioni su enter		 
+			MOVE.L  	A1,-(A7)		;salvataggio registri
+			MOVE.L  	A0,-(A7)
+			MOVE.L  	D0,-(A7)
+
+			MOVEA.L  	#TERD,A0	;inizializzazione indirizzi device
+			MOVEA.L  	#PIAD_A,A1
+	
+			MOVE.B 	(A1),(A0)	;acquisisce il carattere e lo trasferisce a Terminal
+*							
+	
+			MOVE.L  	(A7)+,D0	;ripristino registri 
+			MOVE.L 	 (A7)+,A0
+			MOVE.L  	(A7)+,A1
+	
+			ORI.B		#$12,TERC	;riabilita tastiera e interruzioni su enter 
+			RTE
+
+
+
+
+
+
+
+
+
+
+			END			BEGIN
+
+			
+	
+
+
+

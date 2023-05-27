@@ -1,0 +1,51 @@
+00008800                                     1  		ORG		$8800
+00008800  246F 0000                          2  CHECK		MOVEA.L	RTNOFF(SP),A2
+00008804  226F 0004                          3  		MOVEA.L	MOFF(SP),A1
+00008808  206F 0008                          4  		MOVEA.L	BOFF(SP),A0	
+0000880C  1011                               5  		MOVE.B	(A1),D0
+0000880E  3210                               6  LOOP		MOVE.W	(A0),D1
+00008810  C240                               7  		AND.W		D0,D1
+00008812  B27C 0000                          8  		CMP		#0,D1
+00008816  6700 0004                          9  		BEQ		SHIFT
+0000881A  5247                              10  		ADD		#1,D7
+0000881C  E308                              11  SHIFT		LSL.B		#1,D0
+0000881E  B03C 0000                         12  		CMP.B		#$00,D0
+00008822  66EA                              13  		BNE		LOOP
+00008824  3F47 000C                         14  		MOVE.W	D7,ROFF(SP)
+00008828  4E75                              15  		RTS
+0000882A                                    16  		
+0000882A                                    17  
+0000882A                                    18  
+0000882A                                    19  
+0000882A                                    20  
+0000882A                                    21  
+0000882A                                    22  
+0000882A                                    23  *MAIN
+00008500                                    24  		ORG		$8500
+00008500  3F39 00008004                     25  INIZIO		MOVE.W	RES,-(SP)
+00008506  2F3C 00008000                     26  		MOVE.L	#BYTE,-(SP)
+0000850C  2F3C 00008002                     27  		MOVE.L	#MASK,-(SP)
+00008512  4EB9 00008800                     28  		JSR		CHECK
+00008518                                    29  		
+00008518  DEFC 000A                         30  		ADDA		#10,SP
+0000851C                                    31  		
+0000851C                                    32  
+0000851C                                    33  
+0000851C                                    34  
+0000851C                                    35  *AREA	DATI
+00008000                                    36  		ORG		$8000
+00008000  0077                              37  BYTE		DC.W		$77
+00008002  01                                38  MASK		DC.B		$01
+00008004                                    39  RES		DS.W		1
+00008006                                    40  
+00008006                                    41  *OFFSET STACK
+00008006                                    42  
+00008006  =00000000                         43  RTNOFF	EQU		0
+00008006  =00000004                         44  MOFF		EQU		4
+00008006  =00000008                         45  BOFF		EQU		8
+00008006  =0000000C                         46  ROFF		EQU		12
+00008006                                    47  
+00008006                                    48  		END		INIZIO
+
+No errors detected
+No warnings generated

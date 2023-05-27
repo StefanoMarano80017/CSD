@@ -1,0 +1,58 @@
+00000000                                     1  *******************************FIND_MAX*******************************
+00008400                                     2  		         ORG			$8400
+00008400  4E56 0000                          3  FIND_MAX	         LINK 			A6,#0
+00008404  226E 000C                          4  		         MOVEA.L			OFFADDR(A6),A1
+00008408  3A2E 000A                          5  	                     MOVE.W			OFFN(A6),D5
+0000840C  3C2E 0008                          6  		         MOVE.W			OFFM(A6),D6
+00008410  1831 1000                          7  CHECK_MAX	         MOVE.B			(A1,D1),D4
+00008414  B803                               8  		         CMP.B			D3,D4		
+00008416  6300 0006                          9  		         BLS			UPD_IND	
+0000841A  1604                              10  UPD_MAX	         MOVE.B			D4,D3	
+0000841C  1400                              11  		         MOVE.B			D0,D2	
+0000841E  5201                              12  UPD_IND	         ADD.B 			#1,D1
+00008420  B206                              13  		         CMP.B		            D6,D1
+00008422  66EC                              14  		         BNE		            CHECK_MAX   
+00008424  D2C6                              15  		         ADD		            D6,A1		
+00008426  4201                              16  		         CLR.B		            D1
+00008428  5200                              17  		         ADD.B		           #1,D0
+0000842A  B005                              18  		         CMP.B		           D5,D0		
+0000842C  66E2                              19  		         BNE		           CHECK_MAX
+0000842E  3D43 0012                         20  SAVE_MAX	         MOVE.W	                       D3,OFFMAX(A6)
+00008432  3D42 0010                         21  		         MOVE.W	                       D2,OFFINDMAX(A6)
+00008436  4E5E                              22  		         UNLK 			A6
+00008438  4E75                              23  		         RTS			
+0000843A                                    24  
+0000843A                                    25  *******************************MAIN*******************************
+00008200                                    26  			ORG			$8200
+00008200                                    27  INIZIO		
+00008200  DFFC FFFFFFFE                     28  MAX_TMP		ADDA.L		#-2,SP
+00008206  DFFC FFFFFFFE                     29  IND_MTMP		ADDA.L		#-2,SP
+0000820C  2F3C 00008000                     30  			MOVE.L		#MATR,-(SP)
+00008212  3F3C 0003                         31  			MOVE.W		#N,-(SP)
+00008216  3F3C 0004                         32  			MOVE.W		#M,-(SP)
+0000821A  4EB9 00008400                     33  			JSR			FIND_MAX
+00008220  DEFC 000C                         34  			ADDA			#12,SP
+00008224                                    35  
+00008224                                    36  
+00008224                                    37  
+00008224                                    38  *AREA	DATI
+00008000                                    39  			ORG		$8000
+00008000                                    40  
+00008000  03 FE 7F 8C                       41  MATR			DC.B		3,254,127,140
+00008004  01 00 02 AA                       42  			DC.B		1,0,2,170
+00008008  FD FE FE FF                       43  			DC.B		253,254,254,255
+0000800C                                    44  
+0000800C                                    45  MAX			DS.W		1
+0000800E                                    46  INDMAX		DS.W		1
+00008010  =00000004                         47  M			EQU		4
+00008010  =00000003                         48  N			EQU		3
+00008010                                    49  *OFFSET
+00008010  =00000008                         50  OFFM			EQU		8
+00008010  =0000000A                         51  OFFN			EQU		10
+00008010  =0000000C                         52  OFFADDR		EQU		12
+00008010  =00000010                         53  OFFINDMAX		EQU		16
+00008010  =00000012                         54  OFFMAX		EQU		18
+00008010                                    55  			END		INIZIO
+
+No errors detected
+No warnings generated

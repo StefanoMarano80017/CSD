@@ -1,0 +1,80 @@
+00000000                                     1  ****AREA  DATI*************************
+00008000                                     2  		ORG		$8000
+00008000  01 02 03 04 05 06                  3  MSG		DC.B		1,2,3,4,5,6
+00008006  00                                 4  CONT		DC.B		0
+00008007  06                                 5  DIM		DC.B		6
+00008008                                     6  
+00008008                                     7  ***AREA USART
+00008030                                     8  		ORG		$8030
+00008030  =00002004                          9  USARTD	EQU		$2004			;registro dato USART
+00008030  =00002005                         10  USARTC	EQU		$2005			;registro di controllo USART
+00008030                                    11  
+00008030                                    12  *******************AREA MAIN**************************************
+00008200                                    13  		ORG		$8200
+00008200  4EB9 00008234                     14  MAIN		JSR		INIT_USART
+00008206                                    15  		
+00008206                                    16  		*inizializzo lo SR, per abilitare l'interruzione
+00008206                                    17  		
+00008206  40C0                              18  		MOVE.W	SR,D0
+00008208  0240 D8FF                         19  		ANDI.W	#$D8FF,D0
+0000820C  46C0                              20  		MOVE.W	D0,SR
+0000820E                                    21  		
+0000820E                                    22  		*inizializzo i registri che andrò ad usare
+0000820E                                    23  		
+0000820E  227C 00002004                     24  		MOVEA.L	#USARTD,A1	;indirizzo registro dato
+00008214  247C 00002005                     25  		MOVEA.L	#USARTC,A2	;indirizzo registro controllo/stato
+0000821A  207C 00008000                     26  		MOVEA.L	#MSG,A0	;indirizzo area messaggio
+00008220                                    27  
+00008220                                    28  		*Controlla se è attivato il segnale DSR della USART ed in caso affermativo trasmette,
+00008220                                    29  		*altrimenti attende. La configurazione prevede che DTR=1 in entrambi
+00008220                                    30  		*i sistemi,  tale segnale è direttamente connesso con DSR dell'altra seriale. 
+00008220                                    31  
+00008220  1012                              32  WAITDSR	MOVE.B	(A2),D0					
+00008222  0200 0080                         33  		ANDI.B		#$80,D0
+00008226  67F8                              34  		BEQ		WAITDSR
+00008228                                    35  		
+00008228                                    36  		*trasmetto il primo carattere ed abilito la isr relativa all'usart dell'altro nodo
+00008228                                    37  		
+00008228  1210                              38  		MOVE.B	(A0),D1
+0000822A  1281                              39  		MOVE.B	D1,(A1)
+0000822C  5239 00008006                     40  		ADD.B		#1,CONT
+00008232                                    41  
+00008232  60FE                              42  LOOP		BRA		LOOP
+00008234                                    43  		
+00008234                                    44  *******************SUBROUTINE INIT_USART**********************
+00008234  11FC 008C 2005                    45  INIT_USART	MOVE.B	#$8C,USARTC		;trasmissione sincrona, 8 bit di informazione  bit di parità dispari e 1 bit di stop e 1 bit di sync	
+0000823A  11FC 00FF 2005                    46  		MOVE.B	#$FF,USARTC		;setta il segnale di sync1 a $FF
+00008240  11FC 00A3 2005                    47  		MOVE.B	#$A3,USARTC		;abilita ricevitore , cancello i flags di errore  e attiva i segnali di handshaking.23
+00008246  4E75                              48  		RTS
+00008248                                    49  
+00008248                                    50  
+00008248                                    51  ***ISR, trasmissione caratteri MSG
+00008800                                    52  		ORG 		$8800		
+00008800                                    53  
+00008800  48E7 C0C0                         54  ISR1    		MOVEM.L	D0-D1/A0-A1,-(SP)		;salvataggio registri
+00008804                                    55  
+00008804                                    56  		*Inizializzo i registri che vado ad usare
+00008804                                    57  
+00008804  227C 00002004                     58  		MOVEA.L	#USARTD,A1
+0000880A  207C 00008000                     59  		MOVEA.L	#MSG,A0			
+00008810  1039 00008006                     60  		MOVE.B	CONT,D0			
+00008816  1239 00008007                     61  		MOVE.B	DIM,D1
+0000881C                                    62  		
+0000881C                                    63  		*Operazione
+0000881C                                    64  		
+0000881C  B200                              65  		CMP.B		D0,D1				
+0000881E  6700 0010                         66  		BEQ		FINE
+00008822  1230 0000                         67  INVIO		MOVE.B	(A0,D0),D1
+00008826  1281                              68  		MOVE.B	D1,(A1)				
+00008828  5200                              69  		ADD.B		#1,D0
+0000882A  13C0 00008006                     70  		MOVE.B	D0,CONT			
+00008830                                    71  
+00008830  4CDF 0303                         72  FINE		MOVEM.L	(SP)+,A0-A1/D0-D1		;ripristino registri 
+00008834                                    73  
+00008834  4E73                              74  		RTE		
+00008836                                    75  
+00008836                                    76  
+00008836                                    77  		END		MAIN
+
+No errors detected
+No warnings generated

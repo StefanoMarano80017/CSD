@@ -1,0 +1,36 @@
+		*Area Istruzioni
+
+		ORG		$9000
+START
+N		EQU	 	4
+B		DS.B 	 	N
+		MOVEA.L 	#A,A0
+		MOVEA.L 	#B,A1
+
+		MOVE.B 	#0,D1
+FOR		CMP.B		#N,D1
+		BGE		FINE
+		MOVE.B	(A0)+,(A1)+
+		ADD.B		#1,D1
+		JMP		FOR
+
+FINE		JMP		FINE
+		
+		
+		*Area Dati
+		ORG		$8000
+
+
+A		DC.B 	 	4,2,7,1
+
+
+
+		END		START
+
+
+
+
+
+
+
+

@@ -1,0 +1,72 @@
+****AREA  DATI*************************
+		ORG		$8000
+MSG		DC.B		1,2,3,4,5,6
+DIM		DC.B		6
+
+***AREA USART
+		ORG		$8030
+USARTD	EQU		$2004			;registro dato USART
+USARTC	EQU		$2005			;registro di controllo USART
+
+*******************AREA MAIN**************************************
+		ORG		$8200
+MAIN		JSR		INIT_USART
+				
+		*inizializzo i registri che andrò ad usare
+		
+		MOVEA.L	#USARTD,A1	;indirizzo registro dato
+		MOVEA.L	#USARTC,A2	;indirizzo registro controllo/stato
+		MOVEA.L	#MSG,A0	;indirizzo area messaggio
+		MOVE.B	DIM,D3
+
+		*Controlla se è attivato il segnale DSR della USART ed in caso affermativo trasmette,
+		*altrimenti attende. La configurazione prevede che DTR=1 in entrambi
+		*i sistemi,  tale segnale è direttamente connesso con DSR dell'altra seriale. 
+
+WAITDSR	MOVE.B	(A2),D0					
+		ANDI.B		#$80,D0
+		BEQ		WAITDSR
+		
+TxRdyON	MOVE.B	(A2),D0			*Controlla se è attivo TxRDY, che indica che la seriale è pronta a trasmettere un nuovo carattere
+		ANDI.B		#$01,D0		
+		BEQ		TxRdyON	
+
+		*Operazione
+		
+INVIO		MOVE.B	(A0)+,D1
+		MOVE.B	D1,(A1)				
+		ADD.B		#1,D2
+		CMP.B		D2,D3				
+		BNE		TxRdyON
+
+
+
+
+
+
+LOOP		BRA		LOOP
+		
+*******************SUBROUTINE INIT_USART**********************
+INIT_USART	MOVE.B	#$5D,USARTC		;trasmissione asincrona, 8 bit di informazione  bit di parità dispari e 2 bit di stop	
+		MOVE.B	#$23,USARTC		;abilita trasmettitore  e attiva i segnali di handshaking.
+		RTS
+
+		END		MAIN
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

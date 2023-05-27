@@ -1,0 +1,78 @@
+00000000                                     1  ***AREA DATI
+00000000                                     2  
+00008000                                     3  			ORG		$8000
+00008000  04 05 06                           4  MSG			DC.B		4,5,6
+00008003  03                                 5  DIM			DC.B		3
+00008004  00                                 6  CONT			DC.B		0
+00008005                                     7  
+00008005                                     8  
+00008005                                     9  **AREA MAIN
+00008200                                    10  			ORG		$8200
+00008200                                    11  
+00008200  =00002006                         12  PIABD			EQU		$2006		;registro dato PIA-B
+00008200  =00002007                         13  PIABC			EQU		$2007		;registro stato/controllo PIA-B
+00008200                                    14  
+00008200  4EB9 00008240                     15  MAIN			JSR		PIA_B_INIT
+00008206                                    16  			
+00008206                                    17  			*inizializzo i registri 
+00008206                                    18  		
+00008206  227C 00002007                     19  			MOVEA.L	#PIABC,A1
+0000820C  247C 00002006                     20  			MOVEA.L	#PIABD,A2
+00008212  207C 00008000                     21  			MOVEA.L	#MSG,A0
+00008218                                    22  		
+00008218                                    23  
+00008218  40C0                              24  			MOVE.W	SR,D0		;legge il registro di stato
+0000821A  0240 D8FF                         25  			ANDI.W	#$D8FF,D0 	;maschera per reg stato (stato utente, int abilitati)
+0000821E  46C0                              26  			MOVE.W	D0,SR		;pone liv int a 000
+00008220                                    27  
+00008220  0C39 0003 00008004                28  Wait			CMP.B		#3,CONT
+00008228  6700 0014                         29  			BEQ		LOOP
+0000822C  1212                              30  			MOVE.B	(A2),D1 	;lettura fittizia, in maniera tale da partire da uno stato noto
+0000822E  0201 0080                         31  			ANDI.B		#$80,D1	;aspetto che CRB7 diventa 1
+00008232  67EC                              32  			BEQ		Wait
+00008234  1490                              33  			MOVE.B	(A0),(A2)	;dato su bus di PIA porto B, quindi CB2 si abbassa di conseguenza si abbassa anche CA1,viene generata l'interr che coincide con il segnale OKData
+00008236  13FC 0001 00008004                34  			MOVE.B	#1,CONT
+0000823E                                    35  			
+0000823E                                    36  
+0000823E  60FE                              37  LOOP			BRA		LOOP
+00008240                                    38  
+00008240                                    39  
+00008240                                    40  
+00008240                                    41  ***SUBROUTINE:INIT_PIA
+00008240                                    42  
+00008240                                    43  
+00008240  11FC 0000 2007                    44  PIA_B_INIT		MOVE.B	#0,PIABC			;azzero il controllo
+00008246  11FC 00FF 2006                    45  			MOVE.B	#$FF,PIABD			;definisco il flusso dati in uscita
+0000824C  11FC 0025 2007                    46  			MOVE.B	#%00100101,PIABC		;definisco il modo di funzionamento
+00008252  4E75                              47  			RTS
+00008254                                    48  
+00008254                                    49  
+00008254                                    50  
+00008254                                    51  ***ISR, trasmissione messaggio MSG
+00008800                                    52  ISR1			ORG		$8800
+00008800  48E7 E0C0                         53  			MOVEM.L	D0-D2/A0-A1,-(SP)		;salvataggio contesto
+00008804                                    54  		
+00008804                                    55  			
+00008804                                    56  			*inizializzo i registri che mi servono	
+00008804  227C 00002006                     57  			MOVEA.L	#PIABD,A1
+0000880A  207C 00008000                     58  			MOVEA.L	#MSG,A0			;indirizzo area di salvataggio
+00008810  1039 00008003                     59  			MOVE.B	DIM,D0			;dim del messaggio
+00008816  1239 00008004                     60  			MOVE.B	CONT,D1			;contatore corrente degli elementi ricevuti
+0000881C                                    61  
+0000881C  B001                              62  			CMP.B		D1,D0				;controllo vincolo numero msg inviati
+0000881E  6700 0010                         63  			BEQ		FINE
+00008822                                    64  
+00008822                                    65  
+00008822  1411                              66  INVIO			MOVE.B	(A1),D2          			 ;lettura fittizia, in maniera tale da partire da uno stato noto
+00008824  12B0 1000                         67  			MOVE.B	(A0,D1),(A1)			;carattere corrente da trasferire in D2;
+00008828  5201                              68  			ADD.B		#1,D1				;aggiorno il contatore degli elementi trasmessi
+0000882A  13C1 00008004                     69  			MOVE.B	D1,CONT
+00008830                                    70  
+00008830  4CDF 0307                         71  FINE			MOVEM.L	(SP)+,A0-A1/D0-D2		;ripristino contesto
+00008834                                    72  
+00008834  4E73                              73  			RTE
+00008836                                    74  
+00008836                                    75  			END		MAIN
+
+No errors detected
+No warnings generated

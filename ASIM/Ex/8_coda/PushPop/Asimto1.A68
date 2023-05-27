@@ -1,0 +1,83 @@
+**********************SUB_SET_OPERATION_CODA************************************************************************************************
+				ORG		$8500
+**0)Inizializzazione:in questa fase, facciamo in modo che ogni puntatore parte dalla stessa locazione di memoria, con spazio occupato=0
+
+INITQ				MOVE.L	qStart(A0),-(SP)	*pongo A0->SP e decremento SP
+				MOVE.L	(SP),qHead(A0)	*SP->qHead
+				MOVE.L	(SP)+,qTail(A0)		*SP->qTail   e incremento SP
+				MOVE.L	#0,qLen(A0)		*setto a zero la dimensione corrente
+				RTS
+**1)Inserimento: Avviene in coda al buffer
+INSQ				MOVEM.L	D1-D2/A1,-(SP)		*faccio il push dei registri che userò nello SP
+				MOVEM.L	qLen(A0),D1-D2	*carico in D1 e D2 la size max e la size actual
+				CMP.L		D1,D2			*verifico lo stato della coda
+				BEQ		INSQ2			*se piena salto in INSQ2
+				MOVEA.L	qTail(A0),A1		*carico l'indirizzo della coda in A1
+				MOVE.W	D0,(A1)+		*inserisco il valore  in coda
+				ADD.L		#1,D1			*aggiorno il registro D1 che indica l'area consumata
+				MOVE.L	D1,qLen(A0)		*aggiorno valore in mem
+				CMPA.L	qEnd(A0),A1		*verifico  se il puntatore aggiornato non sfora il buffer
+				BLE.L		INSQ1   		*se il limite non è stato superato, <=, salto a INSQ1
+				MOVEA.L	qStart(A0),A1		*il limite è stato superato,carico in A1 il primo indirizzo del buffer,puntato da qStart(A0)
+INSQ1				MOVE.L	A1,qTail(A0)		*posso aggiornare l'indirizzo  coda del buffer
+INSQ2				MOVEM.L	(SP)+,A1/D1-D2	*ripristino dei registri
+				RTS
+**1)Rimozione/Estrazione: Avviene in testa al buffer
+RMVQ				MOVEM.L	D1/A1,-(SP)		*faccio il push dei registri che userò nello SP
+				MOVEM.L	qLen(A0),D1		*carico in D1   la size actual
+				CMP.L		#0,D1			*verifico lo stato della coda, se è vuota
+				BEQ		RMVQ2		*se vuota salto in INSQ2
+				MOVEA.L	qHead(A0),A1		*carico l'indirizzo della testa in A1
+				MOVE.W	(A1),D5			*estraggio il valore  dalla testa
+				MOVE.W	#0,(A1)
+				ADD.L		#-1,D1			*aggiorno il registro D1 che indica l'area consumata
+				MOVE.L	D1,qLen(A0)		*aggiorno valore in mem
+				CMPA.L	qEnd(A0),A1		*verifico  se il puntatore aggiornato non sfora il buffer
+				BLE.L		RMVQ1   		*se il limite non è stato superato, <=, salto a RMVQ1
+				MOVEA.L	qStart(A0),A1		*il limite è stato superato,carico in A1 il primo indirizzo del buffer,puntato da qStart(A0)
+RMVQ1			MOVE.L	A1,qHead(A0)		*posso aggiornare l'indirizzo  coda del buffer
+RMVQ2			MOVEM.L	(SP)+,A1/D1		*ripristino dei registri
+				RTS
+
+*******************************MAIN******************************************************************************************************************		
+				ORG		$8200
+MAIN				LEA.L		Q1DT,A0
+				JSR		INITQ
+				LEA.L		VECTOR,A1
+			
+				MOVE.B	(A1)+,D0
+				JSR		INSQ
+				MOVE.B	(A1)+,D0
+				JSR		INSQ
+				MOVE.B	(A1)+,D0
+				JSR		INSQ
+				MOVE.B	(A1)+,D0
+				JSR		INSQ
+				JSR		RMVQ
+				JSR		RMVQ
+
+***********************AREA	DATI*****************************************************************************************************************
+		*definisco i parametri necessari per andare a definire il mio descrittore				
+				ORG		$8000
+Q1SIZE			EQU		5
+Q1START			DS.W		Q1SIZE-1
+Q1END				DS.W		1
+
+		*definisco il descrittore della mia coda Qt
+				ORG		$8010
+Q1DT				DS.L		1			*dim 	corrente
+				DC.L		Q1SIZE		*dim	massima
+				DS.L		2			*definisco 2 longwrd	per gestire gli indirizzi della tail e head
+				DC.L		Q1START,Q1END	*tengo traccia dei due estremi della mia memoria , al di fuori del quale non devo sforare
+VECTOR			DC.B		25,10,15,7,1		*vettore contenente gli elementi da inserire
+
+* Offset degli elementi all'interno della Description Table Qt
+qLen				EQU		0		* lunghezza attuale della coda
+qSize				EQU		4		* dimensione massima della coda
+qTail				EQU		8		* indirizzo elemento ultimo della coda
+qHead				EQU		12		* indirizzo della testa della coda
+qStart				EQU		16		* indirizzo iniziale del memory buffer della coda
+qEnd				EQU		20		* indirizzo finale del memory buffer della coda
+				END		MAIN
+*********************************************************************************************************************************************************			
+

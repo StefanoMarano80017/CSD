@@ -1,0 +1,1 @@
+comunicazione tra due entità, mediante meccanismo ISR+polling, COMUNICS

@@ -1,0 +1,70 @@
+***AREA DATI
+
+			ORG		$8000
+MSG			DC.B		1,2,3,4,5,6
+DIM			DC.B		6
+CONT			DC.B		0
+
+**AREA MAIN
+			ORG		$8200
+PIABD			EQU		$2006		;registro dato PIA-B
+PIABC			EQU		$2007		;registro stato/controllo PIA-B
+
+MAIN			JSR		INIT_PIA_B
+			
+			*inizializzo i registri 
+		
+			MOVEA.L	#PIABC,A1
+			MOVEA.L	#PIABD,A2
+			MOVEA.L	#MSG,A0
+
+			MOVE.W	SR,D0		;legge il registro di stato
+			ANDI.W	#$D8FF,D0 	;maschera per reg stato (stato utente, int abilitati)
+			MOVE.W	D0,SR		;pone liv int a 000
+
+			MOVE.B	(A2),D1 	;lettura fittizia, in maniera tale da partire da uno stato noto
+			MOVE.B	(A0),(A2)	;dato su bus di PIA porto B, quindi CB2 si abbassa di conseguenza si abbassa anche CA1,viene generata l'interr che coincide con il segnale OKData
+			MOVE.B	#1,CONT
+
+
+
+LOOP			BRA		LOOP
+
+
+
+***SUBROUTINE:INIT_PIA
+
+
+INIT_PIA_B		MOVE.B	#0,PIABC			;azzero il controllo
+			MOVE.B	#$FF,PIABD			;definisco il flusso dati in uscita
+			MOVE.B	#%00100101,PIABC		;definisco il modo di funzionamento
+			RTS
+
+***ISR, trasmissione messaggio MSG
+ISR1			ORG		$8800
+			MOVEM.L	D0-D2/A0-A1,-(SP)		;salvataggio contesto
+		
+			
+			*inizializzo i registri che mi servono	
+			MOVEA.L	#PIABD,A1
+			MOVEA.L	#MSG,A0			;indirizzo area di salvataggio
+			MOVE.B	DIM,D0			;dim del messaggio
+			MOVE.B	CONT,D1			;contatore corrente degli elementi ricevuti
+
+			CMP.B		D1,D0				;controllo vincolo numero msg inviati
+			BEQ		FINE
+
+
+INVIO			MOVE.B	(A1),D2          			 ;lettura fittizia, in maniera tale da partire da uno stato noto
+			MOVE.B	(A0,D1),(A1)			;carattere corrente da trasferire in D2;
+			ADD.B		#1,D1				;aggiorno il contatore degli elementi trasmessi
+			MOVE.B	D1,CONT
+
+FINE			MOVEM.L	(SP)+,A0-A1/D0-D2		;ripristino contesto
+
+			RTE
+
+
+			END		MAIN
+
+

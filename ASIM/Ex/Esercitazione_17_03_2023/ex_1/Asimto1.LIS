@@ -1,0 +1,31 @@
+00000000                                     1  *SCRIVERE PROGRAMMA CHE CONTA BIT ALTI IN UNA WORD
+00000000                                     2  
+00000000                                     3  *MAIN 
+00008500                                     4  		ORG		$8500
+00008500  207C 00008002                      5  INIZIO		MOVEA.L	#BYTE,A0
+00008506  227C 00008004                      6  		MOVEA.L	#RIS,A1
+0000850C                                     7  		
+0000850C  1039 00008000                      8  		MOVE.B	MASK,D0
+00008512  3210                               9  LOOP		MOVE.W	(A0),D1
+00008514  C240                              10  		AND.W		D0,D1
+00008516  B27C 0000                         11  		CMP		#0,D1
+0000851A  6700 0004                         12  		BEQ		SHIFT
+0000851E  5247                              13  		ADD		#1,D7
+00008520  E308                              14  SHIFT		LSL.B		#1,D0
+00008522  B03C 0000                         15  		CMP.B		#$00,D0
+00008526  66EA                              16  		BNE		LOOP
+00008528  3287                              17  		MOVE.W	D7,(A1)
+0000852A                                    18  		
+0000852A                                    19  		
+0000852A                                    20  
+0000852A  4EF9 0000852A                     21  FINE1		JMP		FINE1
+00008530                                    22  
+00008530                                    23  *AREA DATI
+00008000                                    24  		ORG		$8000
+00008000  01                                25  MASK		DC.B		$01
+00008002  0077                              26  BYTE		DC.W		$77
+00008004                                    27  RIS		DS.W		1
+00008006                                    28  		END		INIZIO		
+
+No errors detected
+No warnings generated

@@ -1,0 +1,129 @@
+* Esercizio: Gestione Code
+* La gestione della struttura dati coda viene effettuata attraverso tre funzioni: inizializzazione, inserimento in coda, estrazione in testa
+* L'esercizio mostra la gestione di una coda di words (16-bit) che ha capacità massima di QSIZE elementi.
+* 
+*La coda e' definita da: descrittore di coda (Queue Descriptor Table) e da un blocco di memoria (Queue Storage Block) per contenere gli elementi
+*
+*	QUEUE DESCRIPTOR TABLE					QUEUE STORAGE BLOCK
+*
+*	|	QLENG		(long word)	|	    - - - - >          |	(word)		|
+*	|					|	  |		|			|
+*	|	QSIZE		(long word)	|	  |		|			|
+*	|					|	  |		|			|
+*	|	QTAIL		(long word)	|	  |		|	o	o	|
+*	|					|	  |		|			|
+*	|	QHEAD		(long word)	|	  |		|			|
+*	|					|	  |		|			|
+*	|	QSTRT		(long word)	| - - - - - 		|			|
+*	|					|			|			|
+*	|	QEND		(long word)	|        - - - - - - - - >         |	(word)		|
+*
+
+* Offset degli elementi all'interno della Description Table
+QLENG		EQU		0		* lunghezza attuale della coda
+QSIZE		EQU		4		* dimensione massima della coda
+QTAIL		EQU		8		* indirizzo elemento ultimo della coda
+QHEAD		EQU		12		* indirizzo della testa della coda
+QSTRT		EQU		16		* indirizzo iniziale del memory buffer della coda
+QEND		EQU		20		* indirizzo finale del memory buffer della coda
+
+		ORG		$8000
+* instanzia un descrittore di una coda di 5 word
+Q1SIZE	EQU		5
+Q1BLK		DS.W		Q1SIZE-1
+Q1END		DS.W		1
+
+		ORG		$8010
+Q1DT		DS.L		1		*descrittore della coda contenente 1 longword libera per length,
+		DC.L		Q1SIZE		*1 longword per la dimensione massima
+		DS.L		2			*2 longword libera per head e tail
+		DC.L		Q1BLK,Q1END	*e l'indirizzo iniziale e finale della memoria dedicata alla coda
+
+VECTOR1		DC.B		0,0,1,0,1,1,0,0 	*vettore di supporto --> definisce che operazione fare
+VECTOR2		DC.B		25,10,15,7,23,1,2,6	*vettore contenente gli elementi da inserire
+
+		ORG		$8100
+* Routine di inizializzazione della coda: 
+* INPUT: L'indirizzo del descrittore di coda (#Q1DT) passato attraverso A0 
+
+QINIT		MOVE.L	QSTRT(A0),-(A7)		*A0 contiene l'indirizzo del DT. Vengono inizializzate Head e Tail nel DT	
+		MOVE.L	(A7),QHEAD(A0)		*con l'indirizzo iniziale dell'area di memoria dedicata alla coda. Si utilizza lo stack 
+		MOVE.L	(A7)+,QTAIL(A0)		*per passare il parametro (indirizzo). Al termine, i campi Head, Tail e Start conterranno lo stasso valore
+		MOVE.L	#$00,QLENG(A0)		*setto a 0 la lunghezza
+  		RTS
+
+
+* Routine di inserimento in coda:
+* INPUT:  L'indirizzo del descrittore di coda (#Q1DT) passato attraverso A0
+*	    la word da accodare passata attraverso D0
+* OUTPUT: setta Z = 1 (condition code dello SR) se la coda e' piena; altrimenti 0.
+
+QENQ		MOVEM.L	D1-D2/A1,-(A7)		*salva i registri usati dalla subroutine
+		MOVEM.L	QLENG(A0),D1-D2	*carico la lunghezza in D1 e la dimensione massima in D2
+		CMP.L		D2,D1			*verifico se la coda è piena
+		BEQ		QENQ2			*se piena Z viene impostato a 1 in automatico e posso saltare a QENQ2
+		MOVEA.L	QTAIL(A0),A1		*scrive in a1 l'indirizzo della coda
+		MOVE.W	D0,(A1)+		*inserisce il dato in coda
+		ADDI.L		#1,D1			*aggiorno la lunghezza della coda
+		MOVE.L	D1,QLENG(A0)		*memorizzo la lunghezza nel DT
+		CMPA.L	QEND(A0),A1		*controllo se l'incremento di A1 eccede il limite del buffer
+		BLE.S		QENQ1   		*se il limite non è stato superato salto a QENQ1
+		MOVEA.L	QSTRT(A0),A1		*il limite è stato superato--->carico in A1 il primo indirizzo del buffer
+QENQ1		MOVE.L	A1,QTAIL(A0)		*aggiorno l'indirizzo della coda
+		ANDI.B		#$FB,CCR		*imposta Z = 0 in quanto la coda non è piena (ANDI opera sul byte - - - X N Z V C)
+QENQ2		MOVEM.L	(A7)+,A1/D1-D2	*ripristino dei registri
+		RTS
+		
+* Routine per estrarre elementi dalla coda:
+* INPUT:  L'indirizzo del descrittore di coda (#Q1DT) passato attraverso A0
+* OUTPUT:  setta Z = 1 (condition code dello SR) se la coda e' vuota; altrimenti 0.
+*	       la word estratta dalla coda passata in D0.
+
+QDEQ		MOVEM.L	D1/A1,-(A7)		*salva i registri usati dalla subroutine
+		MOVE.L	QLENG(A0),D1		*carico la lunghezza attuale in D1
+		TST.L		D1			*verifico se la coda è vuota
+		BEQ		QDEQ2			*se vuota Z viene impostato a 1 in automatico e posso saltare a QDEQ2
+		MOVEA.L	QHEAD(A0),A1		*copio in a1 l'indirizzo della testa
+		MOVE.W	(A1)+,D0		*estrazione del dato in testa 
+		SUBI.L		#1,D1			*aggiorno la lunghezza della coda
+		MOVE.L	D1,QLENG(A0)		*memorizzo la lunghezza nel DT
+		CMPA.L	QEND(A0),A1		*controllo se l'incremento di A1 eccede il limite del buffer
+		BLE.S		QDEQ1			*se il limite non è stato superato salto a QDEQ1
+		MOVEA.L	QSTRT(A0),A1		*il limite è stato superato-->carico in A1 il primo indirizzo del buffer
+QDEQ1		MOVE.L	A1,QHEAD(A0)		*aggiorno l'indirizzo della testa
+		ANDI.B		#$FB,CCR		*imposta Z = 0 in quanto la coda non è vuota (ANDI opera sul byte - - - X N Z V C)
+QDEQ2		MOVEM.L	(A7)+,D1/A1		*ripristino dei registri
+		RTS
+
+*************************************************************MAIN******************************************************************************
+
+* Inizio del programma
+MAIN		LEA.L		Q1DT,A0		*load effective address del descrittore di coda in A0
+		JSR		QINIT		*inizializza la coda
+		CLR.B		D1		*contatore degli elementi del vettore
+		LEA.L		VECTOR1,A1	*load EA del vettore 1 in A1
+		LEA.L		VECTOR2,A2	*load EA del vettore 2 in A2
+		MOVE.B	(A2)+,D0	
+		JSR		QENQ
+		MOVE.B	(A2)+,D0	
+		JSR		QENQ
+		MOVE.B	(A2)+,D0	
+		JSR		QENQ
+		JSR		QDEQ
+
+FINE		JMP		FINE					
+		
+
+	
+          	
+		END 		MAIN
+
+
+
+
+
+
+
+
+
+

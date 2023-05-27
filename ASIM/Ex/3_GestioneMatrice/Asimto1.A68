@@ -1,0 +1,38 @@
+*Area Istruzioni
+		ORG	$8100
+MAIN
+		MOVEA.L	#MATR,A0
+		MOVEA.L	#MATRF,A1
+		CLR		D2
+		CLR		D0
+LOOP		CLR		D1
+LOOP2		MOVE.B	(A0,D1),D2
+		MOVE.B	D2,(A1,D1)
+		ADD		#1,D1
+		CMP		#CL,D1
+		BNE		LOOP2
+		ADD		#CL,A0
+		ADD		#CL,A1
+		ADD		#1,D0
+		CMP		#RG,D0
+		BNE		LOOP
+FINE		JMP		FINE
+
+		
+
+	
+	
+
+
+
+*Area Dati
+	ORG	$8000
+RG	EQU	3
+CL	EQU	3
+MATR	DC.B	1,2,3,4,5,6,7,8,9
+	ORG	$8300
+MATRF	DS.B	9
+	END	MAIN
+
+
+

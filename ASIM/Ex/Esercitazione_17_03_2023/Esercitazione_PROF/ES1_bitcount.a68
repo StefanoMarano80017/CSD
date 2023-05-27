@@ -1,0 +1,47 @@
+*****************************************************************************
+*Il programma conta il numero di bits '1' in una word facendo
+* uso di una subroutine  di servizio che conta gli '1' in un byte                                                                                                   
+*****************************************************************************	
+
+*Area Programma
+		org		$8200
+
+begin	     	move.b 	word,D0
+        		bsr.s  		n1byte
+		move.w	D1,n1word
+		move.b	word+1,D0
+        		bsr.s  		n1byte
+        		add.w		D1,n1word
+
+loop		jmp		loop
+
+
+*                
+*
+*Conta il numero di '1' bits in un byte . Aspetta
+* il byte in D0, fornisce il numero di  '1' in D1
+*
+*
+
+n1byte		lea 		masks,A0
+       		clr.b		D1
+iciclo   		move.b 	(A0)+,D2
+        		and.b		D0,D2
+        		beq.s 	 	continua
+        		add.b		#1,D1
+continua  	cmp.w 		#maske,A0
+       		bne.s  		iciclo
+       		rts
+
+*Area Dati
+		org		$9000
+word   		dc.w  		$1F64
+n1word		ds.w		1
+masks   	dc.b  		$80,$40,$20,$10,$8,$4,$2,$1
+maske   	equ  		masks+8
+
+		end 		begin
+
+
+
+

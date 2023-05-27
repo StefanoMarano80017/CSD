@@ -1,0 +1,2 @@
+Dati due nodi A e B, A invia a B un msg di n caratteri . B acquisice e ritrasmette.
+Entrambi, sono sotto interruzione.

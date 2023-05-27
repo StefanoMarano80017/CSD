@@ -1,0 +1,195 @@
+00000000                                     1  *SUB_ROUTINE	MIN&MAX
+00000000                                     2  
+00008800                                     3  			ORG		$8800
+00008800  246F 0000                          4  FIND_MAX_MIN	MOVEA.L	RTNOFF(SP),A2
+00008804  226F 0004                          5  			MOVEA.L	MTOFF(SP),A1
+00008808  3E2F 0008                          6  			MOVE.W	RGOFF(SP),D7
+0000880C  3C2F 000A                          7  			MOVE.W	CLOFF(SP),D6
+00008810  143C 0001                          8  			MOVE.B	#1,D2
+00008814                                     9  		
+00008814  4240                              10  			CLR		D0
+00008816  4241                              11  LOOP			CLR		D1
+00008818  B431 1000                         12  LOOP2			CMP.B		(A1,D1),D2
+0000881C  6C00 0006                         13  			BGE		SKIP
+00008820  1431 1000                         14  			MOVE.B	(A1,D1),D2
+00008824  5241                              15  SKIP			ADD		#1,D1		
+00008826  B246                              16  			CMP		D6,D1
+00008828  66EE                              17  			BNE		LOOP2
+0000882A  D2C6                              18  			ADD		D6,A1
+0000882C  5240                              19  			ADD		#1,D0
+0000882E  B047                              20  			CMP		D7,D0
+00008830  66E4                              21  			BNE		LOOP
+00008832                                    22  	
+00008832  226F 0004                         23  			MOVEA.L	MTOFF(SP),A1
+00008836  163C 007F                         24  			MOVE.B	#$7F,D3
+0000883A  4240                              25  			CLR		D0
+0000883C  4241                              26  LOOPm		CLR		D1
+0000883E  B631 1000                         27  LOOP2m		CMP.B		(A1,D1),D3
+00008842  6F00 0006                         28  			BLE		SKIPm
+00008846  1631 1000                         29  			MOVE.B	(A1,D1),D3
+0000884A  5241                              30  SKIPm			ADD		#1,D1		
+0000884C  B246                              31  			CMP		D6,D1
+0000884E  66EE                              32  			BNE		LOOP2m
+00008850  D2C6                              33  			ADD		D6,A1
+00008852  5240                              34  			ADD		#1,D0
+00008854  B047                              35  			CMP		D7,D0
+00008856  66E4                              36  			BNE		LOOPm
+00008858  4E75                              37  FINE			RTS
+0000885A                                    38  
+0000885A                                    39  
+0000885A                                    40  *SUB_ROUTINE	PRENDI_INDIRIZZI
+0000885A                                    41  
+00008900                                    42  			ORG		$8900
+00008900  246F 0000                         43  PRENDI_INDIRIZZI	MOVEA.L	RTNOFF1(SP),A2
+00008904  226F 0008                         44  			MOVEA.L	MTOFF1(SP),A1
+00008908  3E2F 000C                         45  			MOVE.W	RGOFF1(SP),D7
+0000890C  3C2F 000E                         46  			MOVE.W	CLOFF1(SP),D6
+00008910  3A2F 0006                         47  			MOVE.W	MAXOFF(SP),D5
+00008914  382F 0004                         48  			MOVE.W	MINOFF(SP),D4
+00008918                                    49  
+00008918                                    50  			*TROVO IND MAX
+00008918                                    51  
+00008918  4240                              52  			CLR		D0
+0000891A  4241                              53  LOOPind		CLR		D1
+0000891C  BA31 1000                         54  LOOPind1		CMP.B	(A1,D1),D5
+00008920  6700 0010                         55  			BEQ		SKIPind
+00008924  5241                              56  			ADD		#1,D1		
+00008926  B246                              57  			CMP		D6,D1
+00008928  66F2                              58  			BNE		LOOPind1
+0000892A  D2C6                              59  			ADD		D6,A1
+0000892C  5240                              60  			ADD		#1,D0
+0000892E  B047                              61  			CMP		D7,D0
+00008930  66E8                              62  			BNE		LOOPind
+00008932  2449                              63  SKIPind		MOVE.L	A1,A2
+00008934                                    64  
+00008934                                    65  			*TROVO IND MIN
+00008934                                    66  
+00008934  226F 0008                         67  			MOVEA.L	MTOFF1(SP),A1
+00008938  4240                              68  			CLR		D0
+0000893A  4241                              69  LOOPind2		CLR		D1
+0000893C  B831 1000                         70  LOOPind3		CMP.B		(A1,D1),D4
+00008940  6700 0010                         71  			BEQ		SKIPind2
+00008944  5241                              72  			ADD		#1,D1		
+00008946  B246                              73  			CMP		D6,D1
+00008948  66F2                              74  			BNE		LOOPind3
+0000894A  D2C6                              75  			ADD		D6,A1
+0000894C  5240                              76  			ADD		#1,D0
+0000894E  B047                              77  			CMP		D7,D0
+00008950  66E8                              78  			BNE		LOOPind2
+00008952  2249                              79  SKIPind2		MOVE.L	A1,A1
+00008954                                    80  
+00008954  4E75                              81  			RTS
+00008956                                    82  
+00008956                                    83  *SUB_ROUTINE	CHANGE_RIGA
+00008956                                    84  
+00008600                                    85  			ORG		$8600
+00008600  266F 0000                         86  CHANGE_RIGA	MOVEA.L	RTNOFF2(SP),A3
+00008604  382F 0004                         87  			MOVE.W	RGOFF2(SP),D4
+00008608  4240                              88  			CLR		D0
+0000860A  B044                              89  LOOPr			CMP		D4,D0
+0000860C  6700 0012                         90  			BEQ		FINEr	
+00008610  4241                              91  			CLR		D1
+00008612  4242                              92  			CLR		D2
+00008614  1212                              93  			MOVE.B	(A2),D1
+00008616  1411                              94  			MOVE.B	(A1),D2
+00008618  12C1                              95  			MOVE.B	D1,(A1)+
+0000861A  14C2                              96  			MOVE.B	D2,(A2)+
+0000861C  5200                              97  			ADD.B		#1,D0
+0000861E  60EA                              98  			BRA		LOOPr
+00008620  4E75                              99  FINEr			RTS
+00008622                                   100  
+00008622                                   101  
+00008622                                   102  		
+00008622                                   103  *MAIN
+00008622                                   104  		
+00008622                                   105  		
+00008500                                   106  		ORG		$8500
+00008500  3F39 0000800C                    107  INIZIO		MOVE.W	CL,-(SP)
+00008506  3F39 0000800A                    108  		MOVE.W	RG,-(SP)
+0000850C  2F3C 00008000                    109  		MOVE.L	#MT,-(SP)
+00008512                                   110  
+00008512                                   111  		*TROVO	MAX
+00008512                                   112  
+00008512  4EB9 00008800                    113  		JSR		FIND_MAX_MIN
+00008518  DEFC 0008                        114  		ADDA		#8,SP
+0000851C  33C2 0000800E                    115  		MOVE.W	D2,MAX
+00008522  33C3 00008010                    116  		MOVE.W	D3,MIN
+00008528  4240                             117  		CLR		D0
+0000852A  4241                             118  		CLR		D1
+0000852C  4242                             119  		CLR		D2
+0000852E  4243                             120  		CLR		D3
+00008530  4246                             121  		CLR		D6
+00008532  4247                             122  		CLR		D7
+00008534                                   123  		*PRENDI_INDIRIZZI
+00008534                                   124  
+00008534                                   125  	
+00008534  3F39 0000800C                    126  		MOVE.W	CL,-(SP)
+0000853A  3F39 0000800A                    127  		MOVE.W	RG,-(SP)
+00008540  2F3C 00008000                    128  		MOVE.L	#MT,-(SP)
+00008546  3F39 0000800E                    129  		MOVE.W	MAX,-(SP)
+0000854C  3F39 00008010                    130  		MOVE.W	MIN,-(SP)
+00008552                                   131  	
+00008552  4EB9 00008900                    132  		JSR		PRENDI_INDIRIZZI
+00008558  DEFC 000C                        133  		ADDA		#12,SP
+0000855C  4240                             134  		CLR		D0
+0000855E  4241                             135  		CLR		D1
+00008560  4242                             136  		CLR		D2
+00008562  4243                             137  		CLR		D3
+00008564  4244                             138  		CLR		D4
+00008566  4245                             139  		CLR		D5
+00008568  4246                             140  		CLR		D6
+0000856A  4247                             141  		CLR		D7
+0000856C                                   142  
+0000856C                                   143  		*CHANGE_RIGA
+0000856C                                   144  
+0000856C  3F39 0000800A                    145  		MOVE.W	RG,-(SP)
+00008572  4EB9 00008600                    146  		JSR		CHANGE_RIGA
+00008578  4EF9 00008578                    147  STOP		JMP		STOP
+0000857E                                   148  		
+0000857E                                   149  
+0000857E                                   150  				
+0000857E                                   151  
+0000857E                                   152  	
+0000857E                                   153  
+0000857E                                   154  		
+0000857E                                   155  		
+0000857E                                   156  		
+0000857E                                   157  		
+0000857E                                   158  *AREA	DATI
+00008000                                   159  		ORG		$8000
+00008000  21 02 37 0B 0A 04 63 0B 16       160  MT		DC.B		33,2,55,11,10,4,99,11,22
+00008009  =00000003                        161  N		EQU		3
+00008009  =00000003                        162  M		EQU		3
+0000800A  0003                             163  RG		DC.W		N
+0000800C  0003                             164  CL		DC.W		M
+0000800E                                   165  MAX		DS.W		1
+00008010                                   166  MIN		DS.W		1
+00008012                                   167  
+00008012                                   168  *OFFSET STACK_MAX_MIN
+00008012                                   169  
+00008012  =00000000                        170  RTNOFF	EQU		0
+00008012  =00000004                        171  MTOFF		EQU		4
+00008012  =00000008                        172  RGOFF		EQU		8
+00008012  =0000000A                        173  CLOFF		EQU		10
+00008012                                   174  
+00008012                                   175  *OFFSET STACK_FIND_IND
+00008012                                   176  
+00008012  =00000000                        177  RTNOFF1	EQU		0
+00008012  =00000008                        178  MTOFF1	EQU		8
+00008012  =0000000C                        179  RGOFF1	EQU		12
+00008012  =0000000E                        180  CLOFF1	EQU		14
+00008012  =00000006                        181  MAXOFF	EQU		6
+00008012  =00000004                        182  MINOFF	EQU		4
+00008012                                   183  
+00008012                                   184  
+00008012                                   185  *OFFSET STACK_CHANGE
+00008012                                   186  
+00008012  =00000000                        187  RTNOFF2	EQU		0
+00008012  =00000004                        188  RGOFF2	EQU		4
+00008012                                   189  
+00008012                                   190  
+00008012                                   191  
+00008012                                   192  		END		INIZIO
+
+No errors detected
+No warnings generated

@@ -1,0 +1,51 @@
+00000000                                     1  **********AREA    DATI ***************
+00008000                                     2  			ORG		$8000
+00008000                                     3  MSG			DS.B		6
+00008006  00                                 4  CONT			DC.B		0
+00008007                                     5  
+00008007                                     6  **********AREA MAIN ****************
+00008007                                     7  		
+00008200                                     8  			ORG		$8200
+00008200  =00002004                          9  PIAAD			EQU		$2004			;registro dato PIA-A
+00008200  =00002005                         10  PIAAC			EQU		$2005			;registro stato\controllo PIA-A
+00008200                                    11  
+00008200  4EB9 00008210                     12  MAIN			JSR		INIT_PIA_A
+00008206                                    13  			
+00008206  40C0                              14  			MOVE.W	SR,D0			;legge il registro di stato
+00008208  0240 D8FF                         15  			ANDI.W	#$D8FF,D0 		;maschera per reg stato (stato utente, int abilitati)
+0000820C  46C0                              16  			MOVE.W	D0,SR			;pone liv int a 000
+0000820E                                    17  
+0000820E  60FE                              18  LOOP			BRA		LOOP
+00008210                                    19  
+00008210                                    20  
+00008210                                    21  ********SUBROUTINE INIT PIA-A*******
+00008210  11FC 0000 2005                    22  INIT_PIA_A		MOVE.B	#0,PIAAC		;inizializzo a zero il registro stato\controllo
+00008216  11FC 0000 2004                    23  			MOVE.B	#0,PIAAD		;inizializzo a zero il registro dato
+0000821C  11FC 0025 2005                    24  			MOVE.B	#%00100101,PIAAC	;definisco il modo di funzionamento
+00008222  4E75                              25  			RTS
+00008224                                    26  			
+00008224                                    27  ***ISR, ricezione messaggio MSG
+00008700                                    28  ISR1			ORG		$8700
+00008700                                    29  			
+00008700  48E7 80C0                         30  			MOVEM.L	D0/A0-A1,-(SP)		;salvo il contesto
+00008704                                    31  			
+00008704                                    32  			*inizializzo i registri che mi servono	
+00008704  227C 00002004                     33  			MOVEA.L	#PIAAD,A1
+0000870A  207C 00008000                     34  			MOVEA.L	#MSG,A0			;indirizzo area di salvataggio
+00008710  1039 00008006                     35  			MOVE.B	CONT,D0			;contatore corrente degli elementi ricevuti
+00008716                                    36  
+00008716                                    37  		
+00008716                                    38  
+00008716                                    39  		
+00008716  1191 0000                         40  RICEZIONE		MOVE.B	(A1),(A0,D0)			;carattere corrente da trasferire in D2;
+0000871A  5200                              41  			ADD.B		#1,D0				;aggiorno il contatore degli elementi trasmessi
+0000871C  13C0 00008006                     42  			MOVE.B	D0,CONT
+00008722                                    43  
+00008722  4CDF 0301                         44  FINE			MOVEM.L	(SP)+,A0-A1/D0		;ripristino il contesto
+00008726  4E73                              45  			RTE
+00008728                                    46  
+00008728                                    47  
+00008728                                    48  			END		MAIN
+
+No errors detected
+No warnings generated

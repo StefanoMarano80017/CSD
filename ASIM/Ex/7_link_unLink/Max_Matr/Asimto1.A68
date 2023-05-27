@@ -1,0 +1,58 @@
+*******************************FIND_MAX*******************************
+		         ORG			$8400
+FIND_MAX	         LINK 			A6,#0
+		         MOVEA.L			OFFADDR(A6),A1
+	                     MOVE.W			OFFN(A6),D5
+		         MOVE.W			OFFM(A6),D6
+CHECK_MAX	         MOVE.B			(A1,D1),D4
+		         CMP.B			D3,D4		
+		         BLS			UPD_IND	
+UPD_MAX	         MOVE.B			D4,D3	
+		         MOVE.B			D0,D2	
+UPD_IND	         ADD.B 			#1,D1
+		         CMP.B		            D6,D1
+		         BNE		            CHECK_MAX   
+		         ADD		            D6,A1		
+		         CLR.B		            D1
+		         ADD.B		           #1,D0
+		         CMP.B		           D5,D0		
+		         BNE		           CHECK_MAX
+SAVE_MAX	         MOVE.W	                       D3,OFFMAX(A6)
+		         MOVE.W	                       D2,OFFINDMAX(A6)
+		         UNLK 			A6
+		         RTS			
+
+*******************************MAIN*******************************
+			ORG			$8200
+INIZIO		
+MAX_TMP		ADDA.L		#-2,SP
+IND_MTMP		ADDA.L		#-2,SP
+			MOVE.L		#MATR,-(SP)
+			MOVE.W		#N,-(SP)
+			MOVE.W		#M,-(SP)
+			JSR			FIND_MAX
+			ADDA			#12,SP
+
+
+
+*AREA	DATI
+			ORG		$8000
+
+MATR			DC.B		3,254,127,140
+			DC.B		1,0,2,170
+			DC.B		253,254,254,255
+
+MAX			DS.W		1
+INDMAX		DS.W		1
+M			EQU		4
+N			EQU		3
+*OFFSET
+OFFM			EQU		8
+OFFN			EQU		10
+OFFADDR		EQU		12
+OFFINDMAX		EQU		16
+OFFMAX		EQU		18
+			END		INIZIO
+
+
+

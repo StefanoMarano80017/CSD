@@ -1,0 +1,25 @@
+00000000                                     1  *Inizializzo  parametri del mio terminale con i puntatori
+00008400                                     2  MAIN			ORG			$8400
+00008400  247C 00002000                      3  			MOVEA.L 		#TERM_DAT,A2	
+00008406  204A                               4  			MOVEA.L 		A2,A0
+00008408  528A                               5  			ADD.L   		#1,A2
+0000840A  14BC 0030                          6  			MOVE.B 		 #TERM_CFG,(A2)
+0000840E  43F9 00008200                      7  			LEA.L   		V,A1
+00008414  1010                               8  INPUT			MOVE.B  		(A0),D0
+00008416  12C0                               9  			MOVE.B  		D0,(A1)+
+00008418  5207                              10  			ADD.B			#1,D7
+0000841A  BE7C 0005                         11  			CMP			#EOS,D7
+0000841E  66F4                              12  			BNE			INPUT
+00008420  4EF9 00008420                     13  DONE    		JMP 			DONE
+00008426                                    14  
+00008426                                    15  *AREA DATI   TERM
+00008426                                    16  
+00008200                                    17  			ORG			$8200
+00008200  =00002000                         18  TERM_DAT		EQU			$2000
+00008200  =00000030                         19  TERM_CFG		EQU			$30   *corrisponde 00110000
+00008200  =00000005                         20  EOS      		EQU 			5
+00008200                                    21  V   			DS.B    		5
+00008205                                    22  			END			MAIN
+
+No errors detected
+No warnings generated

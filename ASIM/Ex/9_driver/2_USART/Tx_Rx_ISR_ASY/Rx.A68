@@ -1,0 +1,75 @@
+****AREA  DATI*************************
+		ORG		$8000
+MSG		DS.B		6
+CONT		DC.B		0
+DIM		EQU		6
+
+***AREA USART
+		ORG		$8030
+USARTD	EQU		$2004			;registro dato USART
+USARTC	EQU		$2005			;registro di controllo USART
+
+*******************AREA MAIN**************************************
+		ORG		$8200
+MAIN		JSR		INIT_USART
+		
+		*inizializzo lo SR, per abilitare l'interruzione
+		
+		MOVE.W	SR,D0
+		ANDI.W	#$D8FF,D0
+		MOVE.W	D0,SR
+		
+		*inizializzo i registri che andrò ad usare
+		
+		MOVEA.L	#USARTC,A2	;indirizzo registro controllo/stato
+
+		*controllo se il segnale DSR dell'altra seriale alto si abassa , per capire quando inizia la trasmissione 
+
+WAITDSR	MOVE.B	(A2),D0
+		ANDI.B		#$80,D0
+		BEQ		WAITDSR
+
+LOOP		BRA		LOOP
+		
+
+
+
+*******************SUBROUTINE INIT_USART**********************
+INIT_USART	MOVE.B	#$5D,USARTC		;trasmissione asincrona, 8 bit di informazione  bit di parità dispari e 2 bit di stop	
+		MOVE.B	#$36,USARTC		;abilita ricevitore , cancello i flags di errore  e attiva i segnali di handshaking.
+		RTS
+
+
+***ISR, ricezione caratteri MSG
+		ORG 		$8700		
+ISR1    		MOVEM.L	D0/A0-A1,-(SP)			;salvataggio registri
+
+		*Inizializzo i registri che vado ad usare
+
+		MOVEA.L	#USARTD,A1
+		MOVEA.L	#MSG,A0	
+		MOVE.B	CONT,D0		
+		
+		*Operazione di Ricezione
+
+RX		MOVE.B 	(A1),(A0,D0)	
+		ADD.B		#1,D0
+		MOVE.B	D0,CONT
+	
+FINE		MOVEM.L	(SP)+,A0-A1/D0		;ripristino registri 
+	
+		RTE
+
+
+		END		MAIN
+		
+
+
+
+
+
+
+
+
+
+

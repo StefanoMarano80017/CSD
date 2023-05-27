@@ -1,0 +1,1 @@
+Dati tre nodi A,B,C. A e B inviano N caratteri a C, sotto interr

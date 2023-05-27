@@ -1,0 +1,41 @@
+		*Area Istruzioni
+
+		ORG		$9000
+START
+N		EQU	 	4
+K		EQU	 	2
+		MOVEA.L 	#A,A0
+		MOVEA.L 	#(A+K*N),A1
+		CLR		D0
+LOOP		CMP		#(N/2),D0
+		BEQ		FINE	
+		CLR		D1
+		MOVE.W	(A0),D1
+		MOVE.W	-(A1),(A0)+
+		MOVE.W	D1,(A1)
+		ADD.B		#1,D0
+		BRA		LOOP
+		
+		
+FINE		JMP		FINE
+		
+		
+		*Area Dati
+		ORG		$8000
+
+
+A		DC.W 	 	4,2,7,1
+		END		START
+
+
+
+
+
+
+
+
+
+
+
+
+

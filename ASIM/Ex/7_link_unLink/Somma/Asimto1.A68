@@ -1,0 +1,81 @@
+
+**********************MAIN**********************
+		ORG		$8100
+INIZIO		ADDA		#-4,SP
+		MOVE.W	DIM,-(SP)
+		MOVE.L	#V1,-(SP)
+		MOVE.L	#V2,-(SP)
+		JSR		SOMMA
+		MOVE.L	(SP)+,RES
+FINE		JMP		FINE
+
+
+
+*******SUBROUTINE	SOMMA***********
+
+SOMMA	LINK		A6,#-4
+		MOVEA.L	RITOFF(A6),A2
+		MOVEA.L	V2OFF(A6),A1
+		MOVEA.L	V1OFF(A6),A0
+		MOVE.W	DIMOFF(A6),D0
+		MOVE		0,VAROFF(A6)
+		
+ADD		ADD.B		(A0)+,D1
+		ADD.B		(A1)+,D1
+		MOVE.B	D1,VAROFF(A6)
+CTRL		SUB		#1,D0
+		BNE		ADD
+		MOVE.L	VAROFF(A6),RESOFF(A6)
+		UNLK		A6
+		ADDA.L	#RESOFF-4,SP	
+
+		JMP		(A2)
+
+
+
+
+
+
+
+
+****************AREA	DATI*************************
+		ORG		$8000
+V1		DC.B		0,1,3,2
+V2		DC.B		3,2,2,1
+DIM		DC.W		4
+RES		DS.L		1
+*OFFSET
+VAROFF	EQU		-4
+RITOFF	EQU		4
+V2OFF		EQU		8
+V1OFF		EQU		12
+DIMOFF	EQU		16
+RESOFF	EQU		18
+		END		INIZIO	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

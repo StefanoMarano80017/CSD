@@ -1,0 +1,94 @@
+00000000                                     1  **********************SUB_SET_OPERATION_CODA************************************************************************************************
+00008500                                     2  				ORG		$8500
+00008500                                     3  **0)Inizializzazione:in questa fase, facciamo in modo che ogni puntatore parte dalla stessa locazione di memoria, con spazio occupato=0
+00008500                                     4  
+00008500  2F28 0010                          5  INITQ				MOVE.L	qStart(A0),-(SP)	*pongo A0->SP e decremento SP
+00008504  2157 000C                          6  				MOVE.L	(SP),qHead(A0)	*SP->qHead
+00008508  215F 0008                          7  				MOVE.L	(SP)+,qTail(A0)		*SP->qTail
+0000850C  217C 00000000 0000                 8  				MOVE.L	#0,qLen(A0)		*setto a zero la dimensione corrente
+00008514  4E75                               9  				RTS
+00008516                                    10  **1)Inserimento: Avviene in coda al buffer
+00008516  48E7 6040                         11  INSQ				MOVEM.L	D1-D2/A1,-(SP)		*faccio il push dei registri che userò nello SP
+0000851A  4CE8 0006 0000                    12  				MOVEM.L	qLen(A0),D1-D2	*carico in D1 e D2 la size max e la size actual
+00008520  B481                              13  				CMP.L		D1,D2			*verifico lo stato della coda
+00008522  6700 001E                         14  				BEQ		INSQ2			*se piena salto in INSQ2
+00008526  2268 0008                         15  				MOVEA.L	qTail(A0),A1		*carico l'indirizzo della coda in A1
+0000852A  32C0                              16  				MOVE.W	D0,(A1)+		*inserisco il valore  in coda
+0000852C  5281                              17  				ADD.L		#1,D1			*aggiorno il registro D1 che indica l'area consumata
+0000852E  2141 0000                         18  				MOVE.L	D1,qLen(A0)		*aggiorno valore in mem
+00008532  B3E8 0014                         19  				CMPA.L	qEnd(A0),A1		*verifico  se il puntatore aggiornato non sfora il buffer
+00008536  6F00 0006                         20  				BLE.L		INSQ1   		*se il limite non è stato superato, <=, salto a INSQ1
+0000853A  2268 0010                         21  				MOVEA.L	qStart(A0),A1		*il limite è stato superato,carico in A1 il primo indirizzo del buffer,puntato da qStart(A0)
+0000853E  2149 0008                         22  INSQ1				MOVE.L	A1,qTail(A0)		*posso aggiornare l'indirizzo  coda del buffer
+00008542  4CDF 0206                         23  INSQ2				MOVEM.L	(SP)+,A1/D1-D2	*ripristino dei registri
+00008546  4E75                              24  				RTS
+00008548                                    25  **1)Rimozione/Estrazione: Avviene in testa al buffer
+00008548  48E7 4040                         26  RMVQ				MOVEM.L	D1/A1,-(SP)		*faccio il push dei registri che userò nello SP
+0000854C  4CE8 0002 0000                    27  				MOVEM.L	qLen(A0),D1		*carico in D1   la size actual
+00008552  B2BC 00000000                     28  				CMP.L		#0,D1			*verifico lo stato della coda, se è vuota
+00008558  6700 0026                         29  				BEQ		RMVQ2		*se vuota salto in INSQ2
+0000855C  2268 000C                         30  				MOVEA.L	qHead(A0),A1		*carico l'indirizzo della testa in A1
+00008560  3A11                              31  				MOVE.W	(A1),D5			*estraggio il valore  dalla testa
+00008562  32BC 0000                         32  				MOVE.W	#0,(A1)
+00008566  0681 FFFFFFFF                     33  				ADD.L		#-1,D1			*aggiorno il registro D1 che indica l'area consumata
+0000856C  2141 0000                         34  				MOVE.L	D1,qLen(A0)		*aggiorno valore in mem
+00008570  B3E8 0014                         35  				CMPA.L	qEnd(A0),A1		*verifico  se il puntatore aggiornato non sfora il buffer
+00008574  6F00 0006                         36  				BLE.L		RMVQ1   		*se il limite non è stato superato, <=, salto a RMVQ1
+00008578  2268 0010                         37  				MOVEA.L	qStart(A0),A1		*il limite è stato superato,carico in A1 il primo indirizzo del buffer,puntato da qStart(A0)
+0000857C  2149 000C                         38  RMVQ1			MOVE.L	A1,qHead(A0)		*posso aggiornare l'indirizzo  coda del buffer
+00008580  4CDF 0202                         39  RMVQ2			MOVEM.L	(SP)+,A1/D1		*ripristino dei registri
+00008584  4E75                              40  				RTS
+00008586                                    41  
+00008586                                    42  
+00008586                                    43  
+00008586                                    44  
+00008586                                    45  *******************************MAIN******************************************************************************************************************		
+00008200                                    46  				ORG		$8200
+00008200  41F9 00008010                     47  MAIN				LEA.L		Q1DT,A0
+00008206  4EB9 00008500                     48  				JSR		INITQ
+0000820C  43F9 00008028                     49  				LEA.L		VECTOR,A1
+00008212                                    50  			
+00008212  1019                              51  				MOVE.B	(A1)+,D0
+00008214  4EB9 00008516                     52  				JSR		INSQ
+0000821A  1019                              53  				MOVE.B	(A1)+,D0
+0000821C  4EB9 00008516                     54  				JSR		INSQ
+00008222  1019                              55  				MOVE.B	(A1)+,D0
+00008224  4EB9 00008516                     56  				JSR		INSQ
+0000822A  1019                              57  				MOVE.B	(A1)+,D0
+0000822C  4EB9 00008516                     58  				JSR		INSQ
+00008232  4EB9 00008548                     59  				JSR		RMVQ
+00008238  4EB9 00008548                     60  				JSR		RMVQ
+0000823E                                    61  
+0000823E                                    62  
+0000823E                                    63  
+0000823E                                    64  
+0000823E                                    65  
+0000823E                                    66  
+0000823E                                    67  
+0000823E                                    68  
+0000823E                                    69  ***********************AREA	DATI*****************************************************************************************************************
+0000823E                                    70  		
+00008000                                    71  				ORG		$8000
+00008000  =00000005                         72  Q1SIZE			EQU		5
+00008000                                    73  Q1START			DS.W		Q1SIZE-1
+00008008                                    74  Q1END				DS.W		1
+0000800A                                    75  
+0000800A                                    76  		*definisco il descrittore della mia coda Qt
+00008010                                    77  				ORG		$8010
+00008010                                    78  Q1DT				DS.L		1			*dim 	corrente
+00008014  00000005                          79  				DC.L		Q1SIZE		*dim	massima
+00008018                                    80  				DS.L		2			*definisco 2 longwrd	per gestire gli indirizzi della tail e head
+00008020  00008000 00008008                 81  				DC.L		Q1START,Q1END	*tengo traccia dei due estremi della mia memoria , al di fuori del quale non devo sforare
+00008028  19 0A 0F 07 01                    82  VECTOR			DC.B		25,10,15,7,1		*vettore contenente gli elementi da inserire
+0000802D                                    83  
+0000802D                                    84  * Offset degli elementi all'interno della Description Table Qt
+0000802D  =00000000                         85  qLen				EQU		0		* lunghezza attuale della coda
+0000802D  =00000004                         86  qSize				EQU		4		* dimensione massima della coda
+0000802D  =00000008                         87  qTail				EQU		8		* indirizzo elemento ultimo della coda
+0000802D  =0000000C                         88  qHead				EQU		12		* indirizzo della testa della coda
+0000802D  =00000010                         89  qStart				EQU		16		* indirizzo iniziale del memory buffer della coda
+0000802D  =00000014                         90  qEnd				EQU		20		* indirizzo finale del memory buffer della coda
+0000802D                                    91  				END		MAIN
+
+No errors detected
+No warnings generated

@@ -1,0 +1,55 @@
+00000000                                     1  ***********************SOTTO_PROGRAMMA_SOMMA_MATRICE*********************************
+00008600                                     2  		ORG		$8600
+00008600  4E56 FFFC                          3  SOMMA_MTR	LINK		A6,#-4
+00008604  246E 0004                          4  		MOVEA.L	OffIndRtn(A6),A2
+00008608  226E 0008                          5  		MOVEA.L	OffMatr(A6),A1
+0000860C  3E2E 000E                          6  		MOVE.W	OffRg(A6),D7
+00008610  3C2E 000C                          7  		MOVE.W	OffCl(A6),D6
+00008614  3D78 0000 FFFC                     8  		MOVE		0,OffVarTmp(A6)
+0000861A  4241                               9  LOOP		CLR		D1
+0000861C  D431 1000                         10  LOOP2		ADD.B		(A1,D1),D2
+00008620  1D42 FFFC                         11  		MOVE.B	D2,OffVarTmp(A6)
+00008624  5241                              12  		ADD		#1,D1
+00008626  B246                              13  		CMP		D6,D1
+00008628  66F2                              14  		BNE		LOOP2
+0000862A  D2C6                              15  		ADD		D6,A1
+0000862C  5240                              16  		ADD		#1,D0
+0000862E  B047                              17  		CMP		D7,D0
+00008630  66E8                              18  		BNE		LOOP
+00008632  2D6E FFFC 0010                    19  		MOVE.L		OffVarTmp(A6),OffRes(A6)
+00008638  4E5E                              20  		UNLK		A6
+0000863A  DFFC 0000000C                     21  		ADDA.L		#OffRes-4,SP
+00008640  4ED2                              22  		JMP		(A2)
+00008642                                    23  ***********************MAIN*********************************
+00008500                                    24  		ORG		$8500
+00008500  DFFC FFFFFFFC                     25  INIZIO		ADDA.L		#-4,SP
+00008506  3F39 0000800A                     26  		MOVE.W	RG,-(SP)
+0000850C  3F39 0000800C                     27  		MOVE.W	CL,-(SP)
+00008512  2F3C 00008000                     28  		MOVE.L		#MATR,-(SP)
+00008518  4EB9 00008600                     29  		JSR		SOMMA_MTR
+0000851E  23DF 0000800E                     30  		MOVE.L		(SP)+,RES
+00008524  4EF9 00008524                     31  FINE		JMP		FINE
+0000852A                                    32  ***********************AREA_DATI*********************************
+0000852A                                    33  
+00008000                                    34  		ORG		$8000
+00008000  16 0A 02                          35  MATR		DC.B		22,10,2
+00008003  01 0C 04                          36  		DC.B		1,12,4
+00008006  04 05 02                          37  		DC.B		4,5,2
+00008009  =00000003                         38  N		EQU		3
+00008009  =00000003                         39  N1		EQU		3
+0000800A  0003                              40  RG		DC.W		N
+0000800C  0003                              41  CL		DC.W		N1
+0000800E                                    42  RES		DS.L		1
+00008012                                    43  
+00008012                                    44  ********************offset*********
+00008012  =FFFFFFFC                         45  OffVarTmp	EQU		-4
+00008012  =00000004                         46  OffIndRtn	EQU		4
+00008012  =00000008                         47  OffMatr		EQU		8
+00008012  =0000000C                         48  OffCl		EQU		12
+00008012  =0000000E                         49  OffRg		EQU		14
+00008012  =00000010                         50  OffRes		EQU		16
+00008012                                    51  
+00008012                                    52  		END 		INIZIO
+
+No errors detected
+No warnings generated

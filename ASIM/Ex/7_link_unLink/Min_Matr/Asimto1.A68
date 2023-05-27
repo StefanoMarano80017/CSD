@@ -1,0 +1,108 @@
+**************SottroProgramma:RICERCA_MIN***********************************
+			ORG		$8700
+RICERCA_MIN		LINK 		A6,#0
+			MOVEA.L	offRtn(A6),A1
+			MOVEA.L	offMtr(A6),A0
+			MOVE.W	offRg(A6),D6
+			MOVE.W	offCl(A6),D7
+
+***************************LOGICA*********************
+			MOVE.W	#$7F,D3
+			CLR.W		D0
+LOOPm		CLR.W		D1
+LOOP2m		CMP.W	(A0,D1),D3
+			BLE		SKIPm
+			MOVE.W	(A0,D1),D3
+			MOVE.W	A0,D4
+SKIPm			ADD		#2,D1		
+			CMP		D6,D1
+			BNE		LOOP2m
+			ADD		D6,A0
+			ADD		#2,D0
+			CMP		D7,D0
+			BNE		LOOPm
+			
+
+
+
+
+***************************LOGICA*********************
+
+SAVE_MIN		MOVE.L	D3,offMin(A6)
+			MOVE.L	D4,offIndMin(A6)
+			CLR.W		D0
+			CLR.W		D1
+			CLR.W		D2
+			CLR.W		D3
+			CLR.W		D4
+			CLR.W		D5
+			CLR.W		D6
+			CLR.W		D7
+			UNLK		A6
+			RTS
+
+
+
+
+
+
+
+
+
+***************************MAIN********************
+		
+			ORG		$8500
+INIZIO			ADDA.L	#-4,SP
+			ADDA.L	#-4,SP
+			MOVE.L	#MTR,-(SP)
+			MOVE.W	RG,-(SP)
+			MOVE.W	CL,-(SP)
+			JSR		RICERCA_MIN
+			ADDA		#8,SP
+			MOVE.L	(SP)+,MIN
+			MOVE.L	(SP)+,INDMIN
+STOP			JMP		STOP
+			
+			
+
+
+
+
+
+
+
+
+
+
+
+
+***************************AREA   DATI********************
+		
+			ORG		$8000
+
+MTR			DC.W		11,2,55
+			DC.W		4,1,33
+			DC.W		6,5,3
+		
+DIM_S			EQU		2
+M			EQU		DIM_S*3
+M1			EQU		DIM_S*3
+CL			DC.W		M
+RG			DC.W		M1
+
+MIN			DS.L		1
+INDMIN		DS.L		1
+
+***OFFSET
+offRtn			EQU		4
+offCl			EQU		8
+offRg			EQU		10
+offMtr			EQU		12
+offMin			EQU		16
+offIndMin		EQU		20
+		
+			END		INIZIO				
+
+
+
+

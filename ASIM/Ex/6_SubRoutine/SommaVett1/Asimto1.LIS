@@ -1,0 +1,54 @@
+00000000                                     1  *SUBROUTINE
+00000000                                     2  
+00008600                                     3  		ORG		$8600
+00008600                                     4  PRODOTTO	
+00008600  266F 0000                          5  		MOVEA.L	ORTN(SP),A3
+00008604  246F 0004                          6  		MOVEA.L	OV1(SP),A2
+00008608  226F 0008                          7  		MOVEA.L	OV2(SP),A1
+0000860C  302F 000C                          8  		MOVE.W	ODIM(SP),D0
+00008610                                     9  		
+00008610  323C 0000                         10  		MOVE.W 	#0,D1
+00008614  B200                              11  FOR		CMP.B		D0,D1
+00008616  6C00 000E                         12  		BGE		FINE1
+0000861A  D41A                              13  		ADD.B		(A2)+,D2
+0000861C  D419                              14  		ADD.B		(A1)+,D2
+0000861E  5201                              15  		ADD.B		#1,D1
+00008620  4EF9 00008614                     16  		JMP		FOR
+00008626  2F42 000E                         17  FINE1		MOVE.L	D2,ORS(SP)
+0000862A  4ED3                              18  		JMP		(A3)
+0000862C                                    19  
+0000862C                                    20  
+0000862C                                    21  *MAIN
+0000862C                                    22  
+00008400                                    23  		ORG		$8400
+00008400  2F39 0000830A                     24  START		MOVE.L	RES,-(SP)
+00008406  3F39 00008308                     25  		MOVE.W	DIM,-(SP)
+0000840C  2F3C 00008304                     26  		MOVE.L	#VETT2,-(SP)
+00008412  2F3C 00008300                     27  		MOVE.L	#VETT1,-(SP)
+00008418  4EB9 00008600                     28  		JSR		PRODOTTO
+0000841E  DEFC 0012                         29  		ADDA		#18,SP
+00008422  4EF9 00008422                     30  FINE		JMP		FINE
+00008428                                    31  
+00008428                                    32  
+00008428                                    33  
+00008428                                    34  
+00008428                                    35  
+00008428                                    36  
+00008428                                    37  *AREA DATI
+00008300                                    38  		ORG		$8300
+00008300  01 02 03 04                       39  VETT1		DC.B		1,2,3,4
+00008304  06 07 08 09                       40  VETT2		DC.B		6,7,8,9
+00008308  =00000004                         41  N		EQU		4
+00008308  0004                              42  DIM		DC.W		N
+0000830A                                    43  RES		DS.L		1
+0000830E                                    44  
+0000830E                                    45  *OFFSET
+0000830E  =00000000                         46  ORTN		EQU		0
+0000830E  =00000004                         47  OV1		EQU		4
+0000830E  =00000008                         48  OV2		EQU		8
+0000830E  =0000000C                         49  ODIM		EQU		12
+0000830E  =0000000E                         50  ORS		EQU		14
+0000830E                                    51  		END		START		
+
+No errors detected
+No warnings generated

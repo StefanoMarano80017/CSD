@@ -1,0 +1,179 @@
+00000000                                     1  **********AREA    DATI ***************
+00008000                                     2  			ORG		$8000
+00008000                                     3  
+00008000                                     4  
+00008000                                     5  MSG			DS.B		6
+00008006  00                                 6  CONT			DC.B		0
+00008007  00                                 7  CONT1			DC.B		0
+00008008  06                                 8  DIM			DC.B		6
+00008009                                     9  
+00008009                                    10  ******VAR GESTIONE ISR IN MUTUA ESCLUSIONE
+00008050                                    11  			ORG		$8050
+00008050  00                                12  SEM			DC.B		0
+00008051  00                                13  SOSP_A		DC.B		0
+00008052  00                                14  SOSP_B		DC.B		0
+00008100                                    15  			ORG		$8100
+00008100  00                                16  IN_EX			DC.B		0
+00008101                                    17  **IDENTIFICATIVO ISR
+00008101  =00008700                         18  ALFHA			EQU		$8700
+00008101  =00008800                         19  BETA			EQU		$8800
+00008101                                    20  
+00008101                                    21  
+00008101                                    22  
+00008101                                    23  **********AREA MAIN ****************
+00008101                                    24  		
+00008200                                    25  			ORG		$8200
+00008200  =00002004                         26  PIAAD			EQU		$2004			;registro dato PIA-A
+00008200  =00002005                         27  PIAAC			EQU		$2005			;registro stato\controllo PIA-A
+00008200                                    28  
+00008200  =00002008                         29  PIAAD1			EQU		$2008			;registro dato PIA-A1
+00008200  =00002009                         30  PIAAC1			EQU		$2009			;registro stato\controllo PIA-A1
+00008200                                    31  
+00008200  4EB9 0000822E                     32  MAIN			JSR		PIA_A_INIT
+00008206                                    33  			
+00008206  207C 00008000                     34  			MOVEA.L	#MSG,A0
+0000820C                                    35  			*Coppia Indirizzi PIA_A
+0000820C                                    36  
+0000820C  227C 00002005                     37  			MOVEA.L	#PIAAC,A1
+00008212  247C 00002004                     38  			MOVEA.L	#PIAAD,A2
+00008218                                    39  
+00008218                                    40  			*Coppia Indirizzi PIA_A1
+00008218                                    41  
+00008218  267C 00002009                     42  			MOVEA.L	#PIAAC1,A3
+0000821E  287C 00002008                     43  			MOVEA.L	#PIAAD1,A4
+00008224                                    44  			
+00008224  40C0                              45  			MOVE.W	SR,D0			;legge il registro di stato
+00008226  0240 D8FF                         46  			ANDI.W	#$D8FF,D0 		;maschera per reg stato (stato utente, int abilitati)
+0000822A  46C0                              47  			MOVE.W	D0,SR			;pone liv int a 000
+0000822C                                    48  			
+0000822C                                    49  	
+0000822C                                    50  
+0000822C                                    51  			
+0000822C                                    52  			
+0000822C                                    53  			
+0000822C                                    54  
+0000822C                                    55  			
+0000822C                                    56  			
+0000822C  60FE                              57  LOOP			BRA		LOOP
+0000822E                                    58  
+0000822E                                    59  
+0000822E                                    60  ********SUBROUTINE INIT PIA*******
+0000822E  11FC 0000 2005                    61  PIA_A_INIT		MOVE.B	#0,PIAAC		;inizializzo a zero il registro stato\controllo
+00008234  11FC 0000 2004                    62  			MOVE.B	#0,PIAAD		;inizializzo a zero il registro dato
+0000823A  11FC 0025 2005                    63  			MOVE.B	#%00100101,PIAAC	;definisco il modo di funzionamento
+00008240                                    64  
+00008240  11FC 0000 2009                    65  			MOVE.B	#0,PIAAC1		;inizializzo a zero il registro stato\controllo
+00008246  11FC 0000 2008                    66  			MOVE.B	#$00,PIAAD1		;inizializzo a zero il registro dato
+0000824C  11FC 0025 2009                    67  			MOVE.B	#%00100101,PIAAC1	;definisco il modo di funzionamento
+00008252                                    68  
+00008252  4E75                              69  			RTS
+00008254                                    70  			
+00008254                                    71  ***ISR1, ricezione messaggio MSG
+00008700                                    72  ISR1			ORG		ALFHA
+00008700  2C39 00008100                     73  			MOVE.L	(IN_EX),D6
+00008706  BCBC 00008700                     74  			CMP.L		#ALFHA,D6
+0000870C  6700 000C                         75  			BEQ		A_R_CRITICA
+00008710  4AF9 00008050                     76  			TAS		SEM
+00008716  6600 0062                         77  			BNE		A_SOSPENDI
+0000871A  23FC 00008700 00008100            78  A_R_CRITICA		MOVE.L	#ALFHA,IN_EX
+00008724                                    79  			
+00008724  48E7 80F8                         80  			MOVEM.L	D0/A0-A4,-(SP)			;salvo il contesto
+00008728                                    81  			
+00008728                                    82  			*inizializzo i registri che mi servono	
+00008728  227C 00002004                     83  			MOVEA.L	#PIAAD,A1
+0000872E  207C 00008000                     84  			MOVEA.L	#MSG,A0			;indirizzo area di salvataggio
+00008734  1039 00008006                     85  			MOVE.B	CONT,D0			;contatore corrente degli elementi ricevuti
+0000873A                                    86  
+0000873A                                    87  				
+0000873A  1191 0000                         88  A_RICEZIONE		MOVE.B	(A1),(A0,D0)			;carattere corrente da trasferire in D2;
+0000873E  5200                              89  			ADD.B		#1,D0				;aggiorno il contatore degli elementi trasmessi
+00008740  13C0 00008006                     90  			MOVE.B	D0,CONT
+00008746  B03C 0003                         91  			CMP.B		#3,D0
+0000874A  6700 0008                         92  			BEQ		A_LASCIA_RISORSA
+0000874E                                    93  			
+0000874E  4CDF 1F01                         94  			MOVEM.L	(SP)+,A0-A4/D0		;ripristino il contesto
+00008752  4E73                              95  			RTE
+00008754                                    96  
+00008754                                    97  
+00008754  4CDF 1F01                         98  A_LASCIA_RISORSA	MOVEM.L	(SP)+,A0-A4/D0		;ripristino il contesto
+00008758  0C39 0000 00008052                99  			CMP.B		#0,SOSP_B
+00008760  6700 0022                        100  			BEQ		A_RST_SEM
+00008764  13FC 0000 00008052               101  			MOVE.B	#0,SOSP_B
+0000876C  33FC 8800 00008100               102  			MOVE.W	#BETA,(IN_EX)
+00008774  6000 00A4                        103  			BRA		B_R_CRITICA
+00008778  4E73                             104  			RTE
+0000877A                                   105  
+0000877A                                   106  
+0000877A  13FC 0001 00008051               107  A_SOSPENDI		MOVE.B	#1,SOSP_A
+00008782  4E73                             108  			RTE
+00008784                                   109  
+00008784  13FC 0000 00008050               110  A_RST_SEM		MOVE.B	#0,SEM
+0000878C  33FC 0000 00008100               111  			MOVE.W	#$0000,(IN_EX)
+00008794  4E73                             112  			RTE
+00008796                                   113  
+00008796                                   114  
+00008796                                   115  
+00008796                                   116  
+00008796                                   117  
+00008796                                   118  ***ISR2, ricezione messaggio MSG
+00008800                                   119  ISR2			ORG		BETA
+00008800  2C39 00008100                    120  			MOVE.L	(IN_EX),D6
+00008806  BCBC 00008800                    121  			CMP.L		#BETA,D6
+0000880C  6700 000C                        122  			BEQ		B_R_CRITICA
+00008810  4AF9 00008050                    123  			TAS		SEM
+00008816  6600 0068                        124  			BNE		B_SOSPENDI
+0000881A  23FC 00008800 00008100           125  B_R_CRITICA		MOVE.L	#BETA,IN_EX
+00008824                                   126  
+00008824  48E7 80F8                        127  			MOVEM.L	D0/A0-A4,-(SP)			;salvo il contesto
+00008828                                   128  			
+00008828                                   129  			*inizializzo i registri che mi servono	
+00008828  287C 00002008                    130  			MOVEA.L	#PIAAD1,A4
+0000882E  207C 00008000                    131  			MOVEA.L	#MSG,A0			;indirizzo area di salvataggio
+00008834  D1FC 00000003                    132  			ADDA.L	#3,A0
+0000883A  1039 00008007                    133  			MOVE.B	CONT1,D0			;contatore corrente degli elementi ricevuti
+00008840                                   134  
+00008840                                   135  				
+00008840  1194 0000                        136  B_RICEZIONE		MOVE.B	(A4),(A0,D0)			;carattere corrente da trasferire in D2;
+00008844  5200                             137  			ADD.B		#1,D0				;aggiorno il contatore degli elementi trasmessi
+00008846  13C0 00008007                    138  			MOVE.B	D0,CONT1
+0000884C  B03C 0003                        139  			CMP.B		#3,D0
+00008850  6700 0008                        140  			BEQ		B_LASCIA_RISORSA
+00008854                                   141  			
+00008854  4CDF 1F01                        142  			MOVEM.L	(SP)+,A0-A4/D0		;ripristino il contesto
+00008858  4E73                             143  			RTE
+0000885A                                   144  
+0000885A                                   145  
+0000885A  4CDF 1F01                        146  B_LASCIA_RISORSA	MOVEM.L	(SP)+,A0-A4/D0		;ripristino il contesto
+0000885E  0C39 0000 00008051               147  			CMP.B		#0,SOSP_A
+00008866  6700 0022                        148  			BEQ		B_RST_SEM
+0000886A  13FC 0000 00008051               149  			MOVE.B	#0,SOSP_A
+00008872  33FC 8700 00008100               150  			MOVE.W	#ALFHA,(IN_EX)
+0000887A  6000 FE9E                        151  			BRA		A_R_CRITICA
+0000887E  4E73                             152  			RTE
+00008880                                   153  			
+00008880                                   154  			
+00008880                                   155  
+00008880                                   156  
+00008880  13FC 0001 00008052               157  B_SOSPENDI		MOVE.B	#1,SOSP_B
+00008888  4E73                             158  			RTE
+0000888A                                   159  
+0000888A  13FC 0000 00008050               160  B_RST_SEM		MOVE.B	#0,SEM
+00008892  33FC 0000 00008100               161  			MOVE.W	#$0000,(IN_EX)
+0000889A  4E73                             162  			RTE
+0000889C                                   163  
+0000889C                                   164  
+0000889C                                   165  
+0000889C                                   166  
+0000889C                                   167  
+0000889C                                   168  
+0000889C                                   169  
+0000889C                                   170  
+0000889C                                   171  
+0000889C                                   172  
+0000889C                                   173  
+0000889C                                   174  
+0000889C                                   175  
+0000889C                                   176  			END		MAIN
+
+No errors detected
+No warnings generated

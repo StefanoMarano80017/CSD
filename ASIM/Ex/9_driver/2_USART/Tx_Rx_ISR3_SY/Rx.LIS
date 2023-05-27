@@ -1,0 +1,68 @@
+00000000                                     1  ****AREA  DATI*************************
+00008000                                     2  		ORG		$8000
+00008000                                     3  MSG		DS.B		6
+00008006  00                                 4  CONT		DC.B		0
+00008007  =00000006                          5  DIM		EQU		6
+00008007                                     6  
+00008007                                     7  ***AREA USART
+00008030                                     8  		ORG		$8030
+00008030  =00002004                          9  USARTD	EQU		$2004			;registro dato USART
+00008030  =00002005                         10  USARTC	EQU		$2005			;registro di controllo USART
+00008030                                    11  
+00008030                                    12  *******************AREA MAIN**************************************
+00008200                                    13  		ORG		$8200
+00008200  4EB9 0000821E                     14  MAIN		JSR		INIT_USART
+00008206                                    15  		
+00008206                                    16  		*inizializzo lo SR, per abilitare l'interruzione
+00008206                                    17  		
+00008206  40C0                              18  		MOVE.W	SR,D0
+00008208  0240 D8FF                         19  		ANDI.W	#$D8FF,D0
+0000820C  46C0                              20  		MOVE.W	D0,SR
+0000820E                                    21  		
+0000820E                                    22  		*inizializzo i registri che andrò ad usare
+0000820E                                    23  		
+0000820E  247C 00002005                     24  		MOVEA.L	#USARTC,A2	;indirizzo registro controllo/stato
+00008214                                    25  
+00008214                                    26  		*controllo se il segnale DSR dell'altra seriale alto si abassa , per capire quando inizia la trasmissione 
+00008214                                    27  
+00008214  1012                              28  WAITDSR	MOVE.B	(A2),D0
+00008216  0200 0080                         29  		ANDI.B		#$80,D0
+0000821A  67F8                              30  		BEQ		WAITDSR
+0000821C                                    31  
+0000821C  60FE                              32  LOOP		BRA		LOOP
+0000821E                                    33  		
+0000821E                                    34  
+0000821E                                    35  
+0000821E                                    36  
+0000821E                                    37  *******************SUBROUTINE INIT_USART**********************
+0000821E  11FC 008C 2005                    38  INIT_USART	MOVE.B	#$8C,USARTC		;trasmissione sincrona, 8 bit di informazione  bit di parità dispari e 1 bit di stop e 1 bit di sync	
+00008224  11FC 00FF 2005                    39  		MOVE.B	#$FF,USARTC		;setta il segnale di sync1 a $FF
+0000822A  11FC 00A6 2005                    40  		MOVE.B	#$A6,USARTC		;abilita ricevitore , cancello i flags di errore  e attiva i segnali di handshaking.
+00008230  4E75                              41  		RTS
+00008232                                    42  
+00008232                                    43  
+00008232                                    44  ***ISR, ricezione caratteri MSG
+00008700                                    45  		ORG 		$8700		
+00008700  48E7 80C0                         46  ISR1    		MOVEM.L	D0/A0-A1,-(SP)			;salvataggio registri
+00008704                                    47  
+00008704                                    48  		*Inizializzo i registri che vado ad usare
+00008704                                    49  
+00008704  227C 00002004                     50  		MOVEA.L	#USARTD,A1
+0000870A  207C 00008000                     51  		MOVEA.L	#MSG,A0	
+00008710  1039 00008006                     52  		MOVE.B	CONT,D0		
+00008716                                    53  		
+00008716                                    54  		*Operazione di Ricezione
+00008716                                    55  
+00008716  1191 0000                         56  RX		MOVE.B 	(A1),(A0,D0)	
+0000871A  5200                              57  		ADD.B		#1,D0
+0000871C  13C0 00008006                     58  		MOVE.B	D0,CONT
+00008722                                    59  	
+00008722  4CDF 0301                         60  FINE		MOVEM.L	(SP)+,A0-A1/D0		;ripristino registri 
+00008726                                    61  	
+00008726  4E73                              62  		RTE
+00008728                                    63  
+00008728                                    64  
+00008728                                    65  		END		MAIN
+
+No errors detected
+No warnings generated

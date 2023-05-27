@@ -1,0 +1,1 @@
+Dati tre nodi A,B,C. A e B sono in trasminssione e C in ricezione.servire il nodo che trasmette per primo.

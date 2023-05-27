@@ -1,0 +1,221 @@
+**********AREA    DATI ***************
+			ORG		$8000
+
+
+MSG			DS.B		6
+CONT			DC.B		0
+CONT1			DC.B		0
+DIM			DC.B		6
+
+******VAR GESTIONE ISR IN MUTUA ESCLUSIONE
+			ORG		$8050
+SEM			DC.B		0
+SOSP_A		DC.B		0
+SOSP_B		DC.B		0
+			ORG		$8100
+IN_EX			DC.B		0
+**IDENTIFICATIVO ISR
+ALFHA			EQU		$8700
+BETA			EQU		$8800
+
+
+
+**********AREA MAIN ****************
+		
+			ORG		$8200
+PIAAD			EQU		$2004			;registro dato PIA-A
+PIAAC			EQU		$2005			;registro stato\controllo PIA-A
+
+PIAAD1			EQU		$2008			;registro dato PIA-A1
+PIAAC1			EQU		$2009			;registro stato\controllo PIA-A1
+
+MAIN			JSR		PIA_A_INIT
+			
+			MOVEA.L	#MSG,A0
+			*Coppia Indirizzi PIA_A
+
+			MOVEA.L	#PIAAC,A1
+			MOVEA.L	#PIAAD,A2
+
+			*Coppia Indirizzi PIA_A1
+
+			MOVEA.L	#PIAAC1,A3
+			MOVEA.L	#PIAAD1,A4
+			
+			MOVE.W	SR,D0			;legge il registro di stato
+			ANDI.W	#$D8FF,D0 		;maschera per reg stato (stato utente, int abilitati)
+			MOVE.W	D0,SR			;pone liv int a 000
+			
+	
+
+			
+			
+			
+
+			
+			
+LOOP			BRA		LOOP
+
+
+********SUBROUTINE INIT PIA*******
+PIA_A_INIT		MOVE.B	#0,PIAAC		;inizializzo a zero il registro stato\controllo
+			MOVE.B	#0,PIAAD		;inizializzo a zero il registro dato
+			MOVE.B	#%00100101,PIAAC	;definisco il modo di funzionamento
+
+			MOVE.B	#0,PIAAC1		;inizializzo a zero il registro stato\controllo
+			MOVE.B	#$00,PIAAD1		;inizializzo a zero il registro dato
+			MOVE.B	#%00100101,PIAAC1	;definisco il modo di funzionamento
+
+			RTS
+			
+***ISR1, ricezione messaggio MSG
+ISR1			ORG		ALFHA
+			MOVE.L	(IN_EX),D6
+			CMP.L		#ALFHA,D6
+			BEQ		A_R_CRITICA
+			TAS		SEM
+			BNE		A_SOSPENDI
+A_R_CRITICA		MOVE.L	#ALFHA,IN_EX
+			
+			MOVEM.L	D0/A0-A4,-(SP)			;salvo il contesto
+			
+			*inizializzo i registri che mi servono	
+			MOVEA.L	#PIAAD,A1
+			MOVEA.L	#MSG,A0			;indirizzo area di salvataggio
+			MOVE.B	CONT,D0			;contatore corrente degli elementi ricevuti
+
+				
+A_RICEZIONE		MOVE.B	(A1),(A0,D0)			;carattere corrente da trasferire in D2;
+			ADD.B		#1,D0				;aggiorno il contatore degli elementi trasmessi
+			MOVE.B	D0,CONT
+			CMP.B		#3,D0
+			BEQ		A_LASCIA_RISORSA
+			
+			MOVEM.L	(SP)+,A0-A4/D0		;ripristino il contesto
+			RTE
+
+
+A_LASCIA_RISORSA	MOVEM.L	(SP)+,A0-A4/D0		;ripristino il contesto
+			CMP.B		#0,SOSP_B
+			BEQ		A_RST_SEM
+			MOVE.B	#0,SOSP_B
+			MOVE.W	#BETA,(IN_EX)
+			BRA		B_R_CRITICA
+			RTE
+
+
+A_SOSPENDI		MOVE.B	#1,SOSP_A
+			RTE
+
+A_RST_SEM		MOVE.B	#0,SEM
+			MOVE.W	#$0000,(IN_EX)
+			RTE
+
+
+
+
+
+***ISR2, ricezione messaggio MSG
+ISR2			ORG		BETA
+			MOVE.L	(IN_EX),D6
+			CMP.L		#BETA,D6
+			BEQ		B_R_CRITICA
+			TAS		SEM
+			BNE		B_SOSPENDI
+B_R_CRITICA		MOVE.L	#BETA,IN_EX
+
+			MOVEM.L	D0/A0-A4,-(SP)			;salvo il contesto
+			
+			*inizializzo i registri che mi servono	
+			MOVEA.L	#PIAAD1,A4
+			MOVEA.L	#MSG,A0			;indirizzo area di salvataggio
+			ADDA.L	#3,A0
+			MOVE.B	CONT1,D0			;contatore corrente degli elementi ricevuti
+
+				
+B_RICEZIONE		MOVE.B	(A4),(A0,D0)			;carattere corrente da trasferire in D2;
+			ADD.B		#1,D0				;aggiorno il contatore degli elementi trasmessi
+			MOVE.B	D0,CONT1
+			CMP.B		#3,D0
+			BEQ		B_LASCIA_RISORSA
+			
+			MOVEM.L	(SP)+,A0-A4/D0		;ripristino il contesto
+			RTE
+
+
+B_LASCIA_RISORSA	MOVEM.L	(SP)+,A0-A4/D0		;ripristino il contesto
+			CMP.B		#0,SOSP_A
+			BEQ		B_RST_SEM
+			MOVE.B	#0,SOSP_A
+			MOVE.W	#ALFHA,(IN_EX)
+			BRA		A_R_CRITICA
+			RTE
+			
+			
+
+
+B_SOSPENDI		MOVE.B	#1,SOSP_B
+			RTE
+
+B_RST_SEM		MOVE.B	#0,SEM
+			MOVE.W	#$0000,(IN_EX)
+			RTE
+
+
+
+
+
+
+
+
+
+
+
+
+
+			END		MAIN
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

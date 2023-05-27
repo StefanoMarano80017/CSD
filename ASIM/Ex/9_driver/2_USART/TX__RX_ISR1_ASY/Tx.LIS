@@ -1,0 +1,57 @@
+00000000                                     1  ****AREA  DATI*************************
+00008000                                     2  		ORG		$8000
+00008000  01 02 03 04 05 06                  3  MSG		DC.B		1,2,3,4,5,6
+00008006  06                                 4  DIM		DC.B		6
+00008007                                     5  
+00008007                                     6  ***AREA USART
+00008030                                     7  		ORG		$8030
+00008030  =00002004                          8  USARTD	EQU		$2004			;registro dato USART
+00008030  =00002005                          9  USARTC	EQU		$2005			;registro di controllo USART
+00008030                                    10  
+00008030                                    11  *******************AREA MAIN**************************************
+00008200                                    12  		ORG		$8200
+00008200  4EB9 0000823A                     13  MAIN		JSR		INIT_USART
+00008206                                    14  				
+00008206                                    15  		*inizializzo i registri che andrò ad usare
+00008206                                    16  		
+00008206  227C 00002004                     17  		MOVEA.L	#USARTD,A1	;indirizzo registro dato
+0000820C  247C 00002005                     18  		MOVEA.L	#USARTC,A2	;indirizzo registro controllo/stato
+00008212  207C 00008000                     19  		MOVEA.L	#MSG,A0	;indirizzo area messaggio
+00008218  1639 00008006                     20  		MOVE.B	DIM,D3
+0000821E                                    21  
+0000821E                                    22  		*Controlla se è attivato il segnale DSR della USART ed in caso affermativo trasmette,
+0000821E                                    23  		*altrimenti attende. La configurazione prevede che DTR=1 in entrambi
+0000821E                                    24  		*i sistemi,  tale segnale è direttamente connesso con DSR dell'altra seriale. 
+0000821E                                    25  
+0000821E  1012                              26  WAITDSR	MOVE.B	(A2),D0					
+00008220  0200 0080                         27  		ANDI.B		#$80,D0
+00008224  67F8                              28  		BEQ		WAITDSR
+00008226                                    29  		
+00008226  1012                              30  TxRdyON	MOVE.B	(A2),D0			*Controlla se è attivo TxRDY, che indica che la seriale è pronta a trasmettere un nuovo carattere
+00008228  0200 0001                         31  		ANDI.B		#$01,D0		
+0000822C  67F8                              32  		BEQ		TxRdyON	
+0000822E                                    33  
+0000822E                                    34  		*Operazione
+0000822E                                    35  		
+0000822E  1218                              36  INVIO		MOVE.B	(A0)+,D1
+00008230  1281                              37  		MOVE.B	D1,(A1)				
+00008232  5202                              38  		ADD.B		#1,D2
+00008234  B602                              39  		CMP.B		D2,D3				
+00008236  66EE                              40  		BNE		TxRdyON
+00008238                                    41  
+00008238                                    42  
+00008238                                    43  
+00008238                                    44  
+00008238                                    45  
+00008238                                    46  
+00008238  60FE                              47  LOOP		BRA		LOOP
+0000823A                                    48  		
+0000823A                                    49  *******************SUBROUTINE INIT_USART**********************
+0000823A  11FC 005D 2005                    50  INIT_USART	MOVE.B	#$5D,USARTC		;trasmissione asincrona, 8 bit di informazione  bit di parità dispari e 2 bit di stop	
+00008240  11FC 0023 2005                    51  		MOVE.B	#$23,USARTC		;abilita trasmettitore  e attiva i segnali di handshaking.
+00008246  4E75                              52  		RTS
+00008248                                    53  
+00008248                                    54  		END		MAIN
+
+No errors detected
+No warnings generated

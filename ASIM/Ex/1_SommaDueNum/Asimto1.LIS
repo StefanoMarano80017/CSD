@@ -1,0 +1,18 @@
+00000000                                     1  		*Area Istruzioni
+00000000                                     2  
+00008000                                     3  		ORG		$8000
+00008000  4240                               4  START		CLR.W		D0
+00008002  3239 00008202                      5  		MOVE.W	val1,D1
+00008008  D279 00008204                      6  		ADD.W		val2,D1
+0000800E  33C1 00008200                      7  MEM		MOVE.W	D1,res
+00008014                                     8  
+00008014                                     9  		*Area Dati
+00008200                                    10  		ORG		$8200
+00008200  0001                              11  res		DC.W		1
+00008202  000A                              12  val1		DC.W		10
+00008204  000B                              13  val2		DC.W		11
+00008206                                    14  
+00008206                                    15  		END		START
+
+No errors detected
+No warnings generated

@@ -1,0 +1,1 @@
+Dati due sistemi A e B. A trasmette a B n messaggi di m caratteri.Solo Rx sotto interruzione!!

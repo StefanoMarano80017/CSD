@@ -1,0 +1,16 @@
+		*Area Istruzioni
+
+		ORG		$8000
+START		CLR.W		D0
+		MOVE.W	val1,D1
+		ADD.W		val2,D1
+MEM		MOVE.W	D1,res
+
+		*Area Dati
+		ORG		$8200
+res		DC.W		1
+val1		DC.W		10
+val2		DC.W		11
+
+		END		START
+

@@ -1,0 +1,132 @@
+00000000                                     1  
+00000000                                     2  *****************AREA INSTANZIAMENTO PERIFERICHE  ****************************
+00000000                                     3  
+00008000                                     4  BEGIN			ORG			$8000
+00008000                                     5  
+00008000                                     6  *PIA_A, definita in trasmissione
+00008000                                     7  
+00008000  =00002004                          8  PIAD_A			EQU			$2004			; indirizzo dato PIA_A
+00008000  =00002005                          9  PIAC_A			EQU			$2005			; indirizzo stato/controllo PIA_A
+00008000                                    10  
+00008000                                    11  *PIA_B, definita in ricezione
+00008000                                    12  
+00008000  =00002006                         13  PIAD_B		EQU			$2006			; indirizzo dato PIA_B
+00008000  =00002007                         14  PIAC_B		EQU			$2007			; indirizzo stato/controllo PIA_B
+00008000                                    15  
+00008000                                    16  *Terminale
+00008000                                    17  
+00008000  =00002000                         18  TERD			EQU			$2000			; indirizzo dato terminale
+00008000  =00002001                         19  TERC			EQU			$2001			; indirizzo stato/controllo terminale
+00008000                                    20  					
+00008000                                    21  ************************************* MAIN  ******************************************
+00008000  4EB9 00008400                     22  			JSR			PIA_A_INIT	;inizializzo PIA porto A
+00008006  4EB9 00008414                     23  			JSR			PIA_B_INIT	;inizializzo PIA porto B
+0000800C  4EB9 00008428                     24  			JSR			TER_INIT	;inizializzo Terminale
+00008012                                    25  
+00008012  40C0                              26  			MOVE.W		SR,D0		;copio STATUS REGISTER nel registro D0
+00008014  0240 D8FF                         27  			ANDI.W		#$D8FF,D0	;faccio una AND TRA (FFFF-2700[RISULTATO IN D0]), e ottengo tutti zero nello SR
+00008018  46C0                              28  			MOVE.W		D0,SR
+0000801A                                    29  
+0000801A  60FE                              30  LOOP			BRA			LOOP
+0000801C                                    31  
+0000801C                                    32  
+0000801C                                    33  
+0000801C                                    34  ***************************AREA INIZIALIZZAZIONE*************************************
+0000801C                                    35  			
+00008400                                    36  			ORG			$8400
+00008400                                    37  
+00008400  11FC 0000 2005                    38  PIA_A_INIT		MOVE.B		#0,PIAC_A			;inizializzo a zero il registro di controllo
+00008406  11FC 0000 2004                    39  			MOVE.B		#$00,PIAD_A			;azzero il registro dato,definiendo le linee di A come input
+0000840C  11FC 0025 2005                    40  			MOVE.B		#%00100101,PIAC_A		;setto l'interr, con valutazione sul fronte di discesa
+00008412  4E75                              41  			RTS
+00008414                                    42  
+00008414  11FC 0000 2007                    43  PIA_B_INIT		MOVE.B		#0,PIAC_B			;inizializzo a zero il registro di controllo
+0000841A  11FC 00FF 2006                    44  			MOVE.B		#$FF,PIAD_B			;pongo FF il registro dato, definiendo le linee di A come output
+00008420  11FC 0024 2007                    45  			MOVE.B		#%00100100,PIAC_B		;disabilito l'interr, con valutazione sul fronte di discesa
+00008426  4E75                              46  			RTS
+00008428                                    47  
+00008428  11FC 003F 2001                    48  TER_INIT		MOVE.B		#$3F,TERC			;imposto indirizzo stato/controllo
+0000842E  4E75                              49  			RTS
+00008430                                    50  *****************************JSR SYSTEM**************************************************
+00008430                                    51  *ISR per la gestione dato proveniente dalla tastiera di TERMINAL e spedito, dalla 
+00008430                                    52  *PIA porto B, all'altro sistema.
+00008430                                    53  *ISR associata all'interrupt di liv. 1, #vect 25 mappato a $64 della ROM con ISR a $8500 	
+00008430                                    54  
+00008500                                    55  ISR1			ORG			$8500
+00008500                                    56  
+00008500                                    57  			*SALVO REGISTRI CHE USERO' NELLO STACK
+00008500  2F08                              58  			MOVE.L	A0,-(SP)		;push di A0,A1,A2,D0,D1 in stack supervisor SP
+00008502  2F09                              59  			MOVE.L	A1,-(SP)
+00008504  2F0A                              60  			MOVE.L	A2,-(SP)
+00008506  2F00                              61  			MOVE.L	D0,-(SP)
+00008508  2F01                              62  			MOVE.L	D1,-(SP)
+0000850A                                    63  			
+0000850A                                    64  			*Inizializzo i registri
+0000850A  207C 00002000                     65  			MOVEA.L	#TERD,A0
+00008510  227C 00002006                     66  			MOVEA.L	#PIAD_B,A1
+00008516  247C 00002007                     67  			MOVEA.L	#PIAC_B,A2
+0000851C                                    68  			
+0000851C                                    69  			*OPERAZIONI, trasferimento dato con handshake
+0000851C                                    70  
+0000851C  1010                              71  INPUT			MOVE.B	(A0),D0			;acquisisci dato da terminal
+0000851E                                    72  	
+0000851E                                    73  			*trasferisci il carattere letto alla PIA-B con handshaking
+0000851E                                    74  		
+0000851E  1211                              75  			MOVE.B	(A1),D1		;lettura finizia per resettare la periferica
+00008520  1280                              76  			MOVE.B  	D0,(A1)		;Dato su bus di PIA porto B
+00008522  1212                              77  polling			MOVE.B	(A2),D1
+00008524  0201 0080                         78  			ANDI.B		#$80,D1	;aspetto che CRB7 diventa 1
+00008528  67F8                              79  			BEQ		polling
+0000852A                                    80  			
+0000852A                                    81  			*fine trasferimento e handshaking
+0000852A                                    82  			
+0000852A  B03C 000D                         83  			CMP.B		#13,D0		;se ho ricevuto Enter
+0000852E  66EC                              84  			BNE		INPUT
+00008530                                    85  
+00008530                                    86  			
+00008530                                    87  			*RIPRISTINO DEI REGISTI
+00008530  221F                              88  			MOVE.L 	(SP)+,D1		;ripristino di D0,D1,A2,A1,A0
+00008532  201F                              89  			MOVE.L	(SP)+,D0
+00008534  245F                              90  			MOVE.L	(SP)+,A2
+00008536  225F                              91  			MOVE.L	(SP)+,A1
+00008538  205F                              92  			MOVE.L	(SP)+,A0
+0000853A  4E73                              93  			RTE
+0000853C                                    94  
+0000853C                                    95  ********************************************************************************************************		
+0000853C                                    96  
+0000853C                                    97  *ISR a $8700 associata all' interrupt di liv. 3  #vect 27  mappato a $6C della ROM
+0000853C                                    98  	
+0000853C                                    99  	
+00008700                                   100  			ORG 		$8700		
+00008700                                   101  
+00008700  0238 00E9 2001                   102  ISR2    			ANDI.B		#%11101001,TERC	;disabilita: tastiera,cancella video,interruzioni su enter		 
+00008706  2F09                             103  			MOVE.L  	A1,-(A7)		;salvataggio registri
+00008708  2F08                             104  			MOVE.L  	A0,-(A7)
+0000870A  2F00                             105  			MOVE.L  	D0,-(A7)
+0000870C                                   106  
+0000870C  207C 00002000                    107  			MOVEA.L  	#TERD,A0	;inizializzazione indirizzi device
+00008712  227C 00002004                    108  			MOVEA.L  	#PIAD_A,A1
+00008718                                   109  	
+00008718  1091                             110  			MOVE.B 	(A1),(A0)	;acquisisce il carattere e lo trasferisce a Terminal
+0000871A                                   111  *							
+0000871A                                   112  	
+0000871A  201F                             113  			MOVE.L  	(A7)+,D0	;ripristino registri 
+0000871C  205F                             114  			MOVE.L 	 (A7)+,A0
+0000871E  225F                             115  			MOVE.L  	(A7)+,A1
+00008720                                   116  	
+00008720  0038 0012 2001                   117  			ORI.B		#$12,TERC	;riabilita tastiera e interruzioni su enter 
+00008726  4E73                             118  			RTE
+00008728                                   119  
+00008728                                   120  
+00008728                                   121  
+00008728                                   122  
+00008728                                   123  
+00008728                                   124  
+00008728                                   125  
+00008728                                   126  
+00008728                                   127  
+00008728                                   128  
+00008728                                   129  			END			BEGIN
+
+No errors detected
+No warnings generated
