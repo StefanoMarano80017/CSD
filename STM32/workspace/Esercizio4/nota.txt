@@ -1,0 +1,1 @@
+Accensione di tutti i led alla pressione del tasto il quale genera una ISR in maniera alternata.

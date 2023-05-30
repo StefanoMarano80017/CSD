@@ -1,0 +1,1 @@
+trasmissione uart con Tx isr PA0  e Rx in polling

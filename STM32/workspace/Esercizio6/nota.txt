@@ -1,0 +1,1 @@
+trasmissione e ricezione tramite isr.

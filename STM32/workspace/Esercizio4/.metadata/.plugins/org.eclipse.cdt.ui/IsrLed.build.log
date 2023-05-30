@@ -1,0 +1,10 @@
+17:41:10 **** Incremental Build of configuration Debug for project IsrLed ****
+make -j8 all 
+arm-none-eabi-size   IsrLed.elf 
+   text	   data	    bss	    dec	    hex	filename
+   8120	     20	   1572	   9712	   25f0	IsrLed.elf
+Finished building: default.size.stdout
+ 
+
+17:41:10 Build Finished. 0 errors, 0 warnings. (took 406ms)
+

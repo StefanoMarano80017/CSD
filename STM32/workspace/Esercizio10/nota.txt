@@ -1,0 +1,2 @@
+trasmissione/ricezione in polling da e verso device(pc o cellulare).Controllo da remoto per l'accensione e spegnimento di un led.
+Per la gestione della ricezione o trasmissione da pc o cellulare usare un qualsiasi applicativo per comunicazione seriale.

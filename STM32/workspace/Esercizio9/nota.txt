@@ -1,0 +1,1 @@
+esempio di una fotoresistenza che se viene coperta diminusce la tensione sul led e di conseguenza la sua luminosità.

@@ -1,0 +1,1 @@
+uso dell' ADC, se il valore percepito e >= rispetto ad una certa soglia si accende il led.

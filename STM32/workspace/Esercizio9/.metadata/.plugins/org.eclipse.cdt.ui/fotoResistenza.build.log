@@ -1,0 +1,10 @@
+15:37:59 **** Incremental Build of configuration Debug for project fotoResistenza ****
+make -j8 all 
+arm-none-eabi-size   fotoResistenza.elf 
+   text	   data	    bss	    dec	    hex	filename
+  18420	     20	   1732	  20172	   4ecc	fotoResistenza.elf
+Finished building: default.size.stdout
+ 
+
+15:37:59 Build Finished. 0 errors, 0 warnings. (took 479ms)
+
