@@ -1,0 +1,337 @@
+15:06:27 **** Incremental Build of configuration Debug for project hc-05_isr ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_USART_RxCpltCallback':
+../Core/Src/main.c:73:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+   73 |  if (HAL_UART_Receive_IT(&huart1, &data, 1) == HAL_OK) {
+      |                                   ^~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:116:3: warning: implicit declaration of function 'sprintf' [-Wimplicit-function-declaration]
+  116 |   sprintf(buffer, "Ciao Paolo\r\n");
+      |   ^~~~~~~
+../Core/Src/main.c:116:3: warning: incompatible implicit declaration of built-in function 'sprintf'
+../Core/Src/main.c:21:1: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+   20 | #include "main.h"
+  +++ |+#include <stdio.h>
+   21 | #define o  111
+../Core/Src/main.c:117:30: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  117 |   HAL_UART_Transmit(&huart1, &data, 1,HAL_MAX_DELAY);
+      |                              ^~~~~
+      |                              |
+      |                              char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "hc-05_isr.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio11\hc-05_isr\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="hc-05_isr.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: hc-05_isr.elf
+ 
+arm-none-eabi-size   hc-05_isr.elf 
+arm-none-eabi-objdump -h -S  hc-05_isr.elf  > "hc-05_isr.list"
+   text	   data	    bss	    dec	    hex	filename
+  16388	    120	   1784	  18292	   4774	hc-05_isr.elf
+Finished building: default.size.stdout
+ 
+Finished building: hc-05_isr.list
+ 
+15:06:35 **** Incremental Build of configuration Debug for project hc-05_isr ****
+make -j8 all 
+arm-none-eabi-size   hc-05_isr.elf 
+   text	   data	    bss	    dec	    hex	filename
+  16388	    120	   1784	  18292	   4774	hc-05_isr.elf
+Finished building: default.size.stdout
+ 
+15:06:50 **** Incremental Build of configuration Debug for project hc-05_isr ****
+make -j8 all 
+arm-none-eabi-size   hc-05_isr.elf 
+   text	   data	    bss	    dec	    hex	filename
+  16388	    120	   1784	  18292	   4774	hc-05_isr.elf
+Finished building: default.size.stdout
+ 
+15:07:40 **** Incremental Build of configuration Debug for project hc-05_isr ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_USART_RxCpltCallback':
+../Core/Src/main.c:73:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+   73 |  if (HAL_UART_Receive_IT(&huart1, &data, 1) == HAL_OK) {
+      |                                   ^~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:116:3: warning: implicit declaration of function 'sprintf' [-Wimplicit-function-declaration]
+  116 |   sprintf(buffer, "Ciao Paolo\r\n");
+      |   ^~~~~~~
+../Core/Src/main.c:116:3: warning: incompatible implicit declaration of built-in function 'sprintf'
+../Core/Src/main.c:21:1: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+   20 | #include "main.h"
+  +++ |+#include <stdio.h>
+   21 | #define o  111
+../Core/Src/main.c:117:48: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+  117 |   HAL_UART_Transmit(&huart1, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
+      |                                                ^~~~~~
+../Core/Src/main.c:117:48: warning: incompatible implicit declaration of built-in function 'strlen'
+../Core/Src/main.c:21:1: note: include '<string.h>' or provide a declaration of 'strlen'
+   20 | #include "main.h"
+  +++ |+#include <string.h>
+   21 | #define o  111
+arm-none-eabi-gcc -o "hc-05_isr.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio11\hc-05_isr\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="hc-05_isr.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: hc-05_isr.elf
+ 
+arm-none-eabi-size   hc-05_isr.elf 
+arm-none-eabi-objdump -h -S  hc-05_isr.elf  > "hc-05_isr.list"
+   text	   data	    bss	    dec	    hex	filename
+  16408	    120	   1776	  18304	   4780	hc-05_isr.elf
+Finished building: default.size.stdout
+ 
+Finished building: hc-05_isr.list
+ 
+15:18:13 **** Incremental Build of configuration Debug for project hc-05_isr ****
+make -j8 all 
+arm-none-eabi-size   hc-05_isr.elf 
+   text	   data	    bss	    dec	    hex	filename
+  16408	    120	   1776	  18304	   4780	hc-05_isr.elf
+Finished building: default.size.stdout
+ 
+15:19:07 **** Incremental Build of configuration Debug for project hc-05_isr ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:73:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+   73 |  if (HAL_UART_Receive_IT(&huart1, &data, 1) == HAL_OK) {
+      |                                   ^~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:116:3: warning: implicit declaration of function 'sprintf' [-Wimplicit-function-declaration]
+  116 |   sprintf(buffer, "Ciao Paolo\r\n");
+      |   ^~~~~~~
+../Core/Src/main.c:116:3: warning: incompatible implicit declaration of built-in function 'sprintf'
+../Core/Src/main.c:21:1: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+   20 | #include "main.h"
+  +++ |+#include <stdio.h>
+   21 | #define o  111
+../Core/Src/main.c:117:48: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+  117 |   HAL_UART_Transmit(&huart1, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
+      |                                                ^~~~~~
+../Core/Src/main.c:117:48: warning: incompatible implicit declaration of built-in function 'strlen'
+../Core/Src/main.c:21:1: note: include '<string.h>' or provide a declaration of 'strlen'
+   20 | #include "main.h"
+  +++ |+#include <string.h>
+   21 | #define o  111
+arm-none-eabi-gcc -o "hc-05_isr.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio11\hc-05_isr\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="hc-05_isr.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: hc-05_isr.elf
+ 
+arm-none-eabi-size   hc-05_isr.elf 
+arm-none-eabi-objdump -h -S  hc-05_isr.elf  > "hc-05_isr.list"
+   text	   data	    bss	    dec	    hex	filename
+  16408	    120	   1776	  18304	   4780	hc-05_isr.elf
+Finished building: default.size.stdout
+ 
+Finished building: hc-05_isr.list
+ 
+15:21:29 **** Incremental Build of configuration Debug for project hc-05_isr ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:76:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+   76 |  if (HAL_UART_Receive_IT(&huart1, &data, 1) == HAL_OK) {
+      |                                   ^~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c:81:31: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+   81 |  HAL_UART_Receive_IT(&huart1, &data, 1);
+      |                               ^~~~~
+      |                               |
+      |                               char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:117:3: warning: implicit declaration of function 'sprintf' [-Wimplicit-function-declaration]
+  117 |   sprintf(buffer, "Ciao Paolo\r\n");
+      |   ^~~~~~~
+../Core/Src/main.c:117:3: warning: incompatible implicit declaration of built-in function 'sprintf'
+../Core/Src/main.c:21:1: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+   20 | #include "main.h"
+  +++ |+#include <stdio.h>
+   21 | #define o  111
+../Core/Src/main.c:118:48: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+  118 |   HAL_UART_Transmit(&huart1, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
+      |                                                ^~~~~~
+../Core/Src/main.c:118:48: warning: incompatible implicit declaration of built-in function 'strlen'
+../Core/Src/main.c:21:1: note: include '<string.h>' or provide a declaration of 'strlen'
+   20 | #include "main.h"
+  +++ |+#include <string.h>
+   21 | #define o  111
+../Core/Src/main.c:119:32: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+  119 |   HAL_UART_Receive_IT(&huart1, &data, 1);
+      |                                ^~~~~
+      |                                |
+      |                                char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "hc-05_isr.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio11\hc-05_isr\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="hc-05_isr.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: hc-05_isr.elf
+ 
+arm-none-eabi-size   hc-05_isr.elf 
+arm-none-eabi-objdump -h -S  hc-05_isr.elf  > "hc-05_isr.list"
+   text	   data	    bss	    dec	    hex	filename
+  17864	    120	   1784	  19768	   4d38	hc-05_isr.elf
+Finished building: default.size.stdout
+ 
+Finished building: hc-05_isr.list
+ 
+15:24:52 **** Incremental Build of configuration Debug for project hc-05_isr ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:76:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+   76 |  if (HAL_UART_Receive_IT(&huart1, &data, 1) == HAL_OK) {
+      |                                   ^~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:117:3: warning: implicit declaration of function 'sprintf' [-Wimplicit-function-declaration]
+  117 |   sprintf(buffer, "Ciao Paolo\r\n");
+      |   ^~~~~~~
+../Core/Src/main.c:117:3: warning: incompatible implicit declaration of built-in function 'sprintf'
+../Core/Src/main.c:21:1: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+   20 | #include "main.h"
+  +++ |+#include <stdio.h>
+   21 | #define o  111
+../Core/Src/main.c:118:48: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+  118 |   HAL_UART_Transmit(&huart1, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
+      |                                                ^~~~~~
+../Core/Src/main.c:118:48: warning: incompatible implicit declaration of built-in function 'strlen'
+../Core/Src/main.c:21:1: note: include '<string.h>' or provide a declaration of 'strlen'
+   20 | #include "main.h"
+  +++ |+#include <string.h>
+   21 | #define o  111
+../Core/Src/main.c:119:32: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+  119 |   HAL_UART_Receive_IT(&huart1, &data, 1);
+      |                                ^~~~~
+      |                                |
+      |                                char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "hc-05_isr.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio11\hc-05_isr\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="hc-05_isr.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: hc-05_isr.elf
+ 
+arm-none-eabi-size   hc-05_isr.elf 
+arm-none-eabi-objdump -h -S  hc-05_isr.elf  > "hc-05_isr.list"
+   text	   data	    bss	    dec	    hex	filename
+  17852	    120	   1784	  19756	   4d2c	hc-05_isr.elf
+Finished building: default.size.stdout
+ 
+Finished building: hc-05_isr.list
+ 
+15:25:48 **** Incremental Build of configuration Debug for project hc-05_isr ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:76:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+   76 |  if (HAL_UART_Receive_IT(&huart1, &data, 1) == HAL_OK) {
+      |                                   ^~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:115:3: warning: implicit declaration of function 'sprintf' [-Wimplicit-function-declaration]
+  115 |   sprintf(buffer, "Ciao Paolo\r\n");
+      |   ^~~~~~~
+../Core/Src/main.c:115:3: warning: incompatible implicit declaration of built-in function 'sprintf'
+../Core/Src/main.c:21:1: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+   20 | #include "main.h"
+  +++ |+#include <stdio.h>
+   21 | #define o  111
+../Core/Src/main.c:116:48: warning: implicit declaration of function 'strlen' [-Wimplicit-function-declaration]
+  116 |   HAL_UART_Transmit(&huart1, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
+      |                                                ^~~~~~
+../Core/Src/main.c:116:48: warning: incompatible implicit declaration of built-in function 'strlen'
+../Core/Src/main.c:21:1: note: include '<string.h>' or provide a declaration of 'strlen'
+   20 | #include "main.h"
+  +++ |+#include <string.h>
+   21 | #define o  111
+../Core/Src/main.c:117:32: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+  117 |   HAL_UART_Receive_IT(&huart1, &data, 1);
+      |                                ^~~~~
+      |                                |
+      |                                char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "hc-05_isr.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio11\hc-05_isr\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="hc-05_isr.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: hc-05_isr.elf
+ 
+arm-none-eabi-size   hc-05_isr.elf 
+arm-none-eabi-objdump -h -S  hc-05_isr.elf  > "hc-05_isr.list"
+   text	   data	    bss	    dec	    hex	filename
+  17852	    120	   1784	  19756	   4d2c	hc-05_isr.elf
+Finished building: default.size.stdout
+ 
+Finished building: hc-05_isr.list
+ 
