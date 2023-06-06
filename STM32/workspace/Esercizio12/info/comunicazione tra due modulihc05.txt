@@ -1,0 +1,3 @@
+In questo punto utilizzo, una sola scheda stm, e definisco due usart diverse e colleggo i rispettivi moduli hc-05.Dopodichè,configuro mediante 
+l'ausilio di un convertitore usb-ttl, i due moduli seguendo il settaggio in figura, usando un qualsiasi programma di lettura com.
+Infatti, dopo aver ricavato il MAC address, dello slave lo vado ad associare al rispettivo master. 
