@@ -1,0 +1,808 @@
+17:42:51 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:133:37: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  133 |          HAL_UART_Transmit(&huart1, &MsgTx1, sizeof(MsgTx1), HAL_MAX_DELAY);
+      |                                     ^~~~~~~
+      |                                     |
+      |                                     char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:136:38: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  136 |           HAL_UART_Transmit(&huart1, &MsgTx2, sizeof(MsgTx2), HAL_MAX_DELAY);
+      |                                      ^~~~~~~
+      |                                      |
+      |                                      char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:140:35: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  140 |        HAL_UART_Transmit(&huart2, &MsgTx1, sizeof(MsgTx3), HAL_MAX_DELAY);
+      |                                   ^~~~~~~
+      |                                   |
+      |                                   char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:143:39: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  143 |            HAL_UART_Transmit(&huart2, &MsgTx4, sizeof(MsgTx4), HAL_MAX_DELAY);
+      |                                       ^~~~~~~
+      |                                       |
+      |                                       char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15824	     20	   1852	  17696	   4520	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+17:45:57 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-size   Master.elf 
+   text	   data	    bss	    dec	    hex	filename
+  15824	     20	   1852	  17696	   4520	Master.elf
+Finished building: default.size.stdout
+ 
+17:46:36 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:133:37: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  133 |          HAL_UART_Transmit(&huart1, &MsgTx1, sizeof(MsgTx1), HAL_MAX_DELAY);
+      |                                     ^~~~~~~
+      |                                     |
+      |                                     char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:136:38: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  136 |           HAL_UART_Transmit(&huart1, &MsgTx2, sizeof(MsgTx2), HAL_MAX_DELAY);
+      |                                      ^~~~~~~
+      |                                      |
+      |                                      char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:140:35: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  140 |        HAL_UART_Transmit(&huart2, &MsgTx1, sizeof(MsgTx3), HAL_MAX_DELAY);
+      |                                   ^~~~~~~
+      |                                   |
+      |                                   char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:143:39: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  143 |            HAL_UART_Transmit(&huart2, &MsgTx4, sizeof(MsgTx4), HAL_MAX_DELAY);
+      |                                       ^~~~~~~
+      |                                       |
+      |                                       char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15824	     20	   1852	  17696	   4520	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+17:49:42 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:133:37: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  133 |          HAL_UART_Transmit(&huart1, &MsgTx1, sizeof(MsgTx1), 10);
+      |                                     ^~~~~~~
+      |                                     |
+      |                                     char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:136:38: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  136 |           HAL_UART_Transmit(&huart1, &MsgTx2, sizeof(MsgTx2),10);
+      |                                      ^~~~~~~
+      |                                      |
+      |                                      char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:140:35: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  140 |        HAL_UART_Transmit(&huart2, &MsgTx1, sizeof(MsgTx3),10);
+      |                                   ^~~~~~~
+      |                                   |
+      |                                   char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:143:39: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  143 |            HAL_UART_Transmit(&huart2, &MsgTx4, sizeof(MsgTx4),10);
+      |                                       ^~~~~~~
+      |                                       |
+      |                                       char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15816	     20	   1852	  17688	   4518	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+17:50:59 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:133:37: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  133 |          HAL_UART_Transmit(&huart1, &MsgTx1, sizeof(MsgTx1), 15);
+      |                                     ^~~~~~~
+      |                                     |
+      |                                     char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:136:38: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  136 |           HAL_UART_Transmit(&huart1, &MsgTx2, sizeof(MsgTx2),15);
+      |                                      ^~~~~~~
+      |                                      |
+      |                                      char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:140:35: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  140 |        HAL_UART_Transmit(&huart2, &MsgTx1, sizeof(MsgTx3),15);
+      |                                   ^~~~~~~
+      |                                   |
+      |                                   char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:143:39: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  143 |            HAL_UART_Transmit(&huart2, &MsgTx4, sizeof(MsgTx4),15);
+      |                                       ^~~~~~~
+      |                                       |
+      |                                       char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15816	     20	   1852	  17688	   4518	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+10:13:12 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-size   Master.elf 
+   text	   data	    bss	    dec	    hex	filename
+  15816	     20	   1852	  17688	   4518	Master.elf
+Finished building: default.size.stdout
+ 
+13:41:19 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:127:8: warning: unused variable 'MsgTx4' [-Wunused-variable]
+  127 |   char MsgTx4[50]="PIN_14 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:126:8: warning: unused variable 'MsgTx3' [-Wunused-variable]
+  126 |   char MsgTx3[50]="PIN_14 Acceso";
+      |        ^~~~~~
+../Core/Src/main.c:125:8: warning: unused variable 'MsgTx2' [-Wunused-variable]
+  125 |   char MsgTx2[50]="PIN_15 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:124:8: warning: unused variable 'MsgTx1' [-Wunused-variable]
+  124 |   char MsgTx1[50]="PIN_15 Acceso";
+      |        ^~~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15488	     20	   1852	  17360	   43d0	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+13:48:46 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:129:8: warning: unused variable 'MsgTx4' [-Wunused-variable]
+  129 |   char MsgTx4[50]="PIN_14 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:128:8: warning: unused variable 'MsgTx3' [-Wunused-variable]
+  128 |   char MsgTx3[50]="PIN_14 Acceso";
+      |        ^~~~~~
+../Core/Src/main.c:127:8: warning: unused variable 'MsgTx2' [-Wunused-variable]
+  127 |   char MsgTx2[50]="PIN_15 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:126:8: warning: unused variable 'MsgTx1' [-Wunused-variable]
+  126 |   char MsgTx1[50]="PIN_15 Acceso";
+      |        ^~~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15780	     24	   1848	  17652	   44f4	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+13:49:40 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:135:37: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  135 |          HAL_UART_Transmit(&huart1, &MsgTx1, sizeof(MsgTx1), 15);
+      |                                     ^~~~~~~
+      |                                     |
+      |                                     char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:129:8: warning: unused variable 'MsgTx4' [-Wunused-variable]
+  129 |   char MsgTx4[50]="PIN_14 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:128:8: warning: unused variable 'MsgTx3' [-Wunused-variable]
+  128 |   char MsgTx3[50]="PIN_14 Acceso";
+      |        ^~~~~~
+../Core/Src/main.c:127:8: warning: unused variable 'MsgTx2' [-Wunused-variable]
+  127 |   char MsgTx2[50]="PIN_15 Spento";
+      |        ^~~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15776	     20	   1852	  17648	   44f0	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+13:51:01 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:133:37: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  133 |          HAL_UART_Transmit(&huart1, &MsgTx1, sizeof(MsgTx1), 15);
+      |                                     ^~~~~~~
+      |                                     |
+      |                                     char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:136:38: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  136 |           HAL_UART_Transmit(&huart1, &MsgTx2, sizeof(MsgTx2),15);
+      |                                      ^~~~~~~
+      |                                      |
+      |                                      char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:140:35: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  140 |        HAL_UART_Transmit(&huart2, &MsgTx1, sizeof(MsgTx3),15);
+      |                                   ^~~~~~~
+      |                                   |
+      |                                   char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:143:39: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  143 |            HAL_UART_Transmit(&huart2, &MsgTx4, sizeof(MsgTx4),15);
+      |                                       ^~~~~~~
+      |                                       |
+      |                                       char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15816	     20	   1852	  17688	   4518	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+13:52:51 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:134:34: warning: passing argument 2 of 'HAL_UART_Transmit' makes pointer from integer without a cast [-Wint-conversion]
+  134 |        HAL_UART_Transmit(&huart1,1,1, 15);
+      |                                  ^
+      |                                  |
+      |                                  int
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'int'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:137:38: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  137 |           HAL_UART_Transmit(&huart1, &MsgTx2, sizeof(MsgTx2),15);
+      |                                      ^~~~~~~
+      |                                      |
+      |                                      char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:141:35: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  141 |        HAL_UART_Transmit(&huart2, &MsgTx1, sizeof(MsgTx3),15);
+      |                                   ^~~~~~~
+      |                                   |
+      |                                   char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:144:39: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  144 |            HAL_UART_Transmit(&huart2, &MsgTx4, sizeof(MsgTx4),15);
+      |                                       ^~~~~~~
+      |                                       |
+      |                                       char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15816	     20	   1852	  17688	   4518	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+13:53:22 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:134:36: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  134 |          HAL_UART_Transmit(&huart1,"1",1, 15);
+      |                                    ^~~
+      |                                    |
+      |                                    char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:137:38: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  137 |           HAL_UART_Transmit(&huart1, &MsgTx2, sizeof(MsgTx2),15);
+      |                                      ^~~~~~~
+      |                                      |
+      |                                      char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:141:35: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  141 |        HAL_UART_Transmit(&huart2, &MsgTx1, sizeof(MsgTx3),15);
+      |                                   ^~~~~~~
+      |                                   |
+      |                                   char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:144:39: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  144 |            HAL_UART_Transmit(&huart2, &MsgTx4, sizeof(MsgTx4),15);
+      |                                       ^~~~~~~
+      |                                       |
+      |                                       char (*)[50]
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char (*)[50]'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15824	     20	   1852	  17696	   4520	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+13:55:28 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:135:36: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  135 |          HAL_UART_Transmit(&huart1,&TX_BUFFER,1, 15);
+      |                                    ^~~~~~~~~~
+      |                                    |
+      |                                    uint8_t (*)[1] {aka unsigned char (*)[1]}
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'uint8_t (*)[1]' {aka 'unsigned char (*)[1]'}
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:128:8: warning: unused variable 'MsgTx4' [-Wunused-variable]
+  128 |   char MsgTx4[50]="PIN_14 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:127:8: warning: unused variable 'MsgTx3' [-Wunused-variable]
+  127 |   char MsgTx3[50]="PIN_14 Acceso";
+      |        ^~~~~~
+../Core/Src/main.c:126:8: warning: unused variable 'MsgTx2' [-Wunused-variable]
+  126 |   char MsgTx2[50]="PIN_15 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:125:8: warning: unused variable 'MsgTx1' [-Wunused-variable]
+  125 |   char MsgTx1[50]="PIN_15 Acceso";
+      |        ^~~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15780	     24	   1848	  17652	   44f4	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+13:56:06 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:135:36: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  135 |          HAL_UART_Transmit(&huart1,&TX_BUFFER,1, 15);
+      |                                    ^~~~~~~~~~
+      |                                    |
+      |                                    uint8_t (*)[1] {aka unsigned char (*)[1]}
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'uint8_t (*)[1]' {aka 'unsigned char (*)[1]'}
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:128:8: warning: unused variable 'MsgTx4' [-Wunused-variable]
+  128 |   char MsgTx4[50]="PIN_14 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:127:8: warning: unused variable 'MsgTx3' [-Wunused-variable]
+  127 |   char MsgTx3[50]="PIN_14 Acceso";
+      |        ^~~~~~
+../Core/Src/main.c:126:8: warning: unused variable 'MsgTx2' [-Wunused-variable]
+  126 |   char MsgTx2[50]="PIN_15 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:125:8: warning: unused variable 'MsgTx1' [-Wunused-variable]
+  125 |   char MsgTx1[50]="PIN_15 Acceso";
+      |        ^~~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15780	     24	   1848	  17652	   44f4	Master.elf
+Finished building: default.size.stdout
+Finished building: Master.list
+ 
+ 
+16:33:16 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:138:36: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  138 |          HAL_UART_Transmit(&huart1,&TX_BUFFER,1, 15);
+      |                                    ^~~~~~~~~~
+      |                                    |
+      |                                    uint8_t (*)[1] {aka unsigned char (*)[1]}
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'uint8_t (*)[1]' {aka 'unsigned char (*)[1]'}
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:131:8: warning: unused variable 'MsgTx4' [-Wunused-variable]
+  131 |   char MsgTx4[50]="PIN_14 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:130:8: warning: unused variable 'MsgTx3' [-Wunused-variable]
+  130 |   char MsgTx3[50]="PIN_14 Acceso";
+      |        ^~~~~~
+../Core/Src/main.c:129:8: warning: unused variable 'MsgTx2' [-Wunused-variable]
+  129 |   char MsgTx2[50]="PIN_15 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:128:8: warning: unused variable 'MsgTx1' [-Wunused-variable]
+  128 |   char MsgTx1[50]="PIN_15 Acceso";
+      |        ^~~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15780	     24	   1848	  17652	   44f4	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+16:34:13 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-size   Master.elf 
+   text	   data	    bss	    dec	    hex	filename
+  15780	     24	   1848	  17652	   44f4	Master.elf
+Finished building: default.size.stdout
+ 
+17:07:17 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:131:8: warning: unused variable 'MsgTx4' [-Wunused-variable]
+  131 |   char MsgTx4[50]="PIN_14 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:130:8: warning: unused variable 'MsgTx3' [-Wunused-variable]
+  130 |   char MsgTx3[50]="PIN_14 Acceso";
+      |        ^~~~~~
+../Core/Src/main.c:129:8: warning: unused variable 'MsgTx2' [-Wunused-variable]
+  129 |   char MsgTx2[50]="PIN_15 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:128:8: warning: unused variable 'MsgTx1' [-Wunused-variable]
+  128 |   char MsgTx1[50]="PIN_15 Acceso";
+      |        ^~~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15488	     20	   1852	  17360	   43d0	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+17:18:25 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:138:36: warning: passing argument 2 of 'HAL_UART_Transmit' from incompatible pointer type [-Wincompatible-pointer-types]
+  138 |          HAL_UART_Transmit(&huart1,&TX_BUFFER,1, 15);
+      |                                    ^~~~~~~~~~
+      |                                    |
+      |                                    uint8_t (*)[1] {aka unsigned char (*)[1]}
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'uint8_t (*)[1]' {aka 'unsigned char (*)[1]'}
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:131:8: warning: unused variable 'MsgTx4' [-Wunused-variable]
+  131 |   char MsgTx4[50]="PIN_14 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:130:8: warning: unused variable 'MsgTx3' [-Wunused-variable]
+  130 |   char MsgTx3[50]="PIN_14 Acceso";
+      |        ^~~~~~
+../Core/Src/main.c:129:8: warning: unused variable 'MsgTx2' [-Wunused-variable]
+  129 |   char MsgTx2[50]="PIN_15 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:128:8: warning: unused variable 'MsgTx1' [-Wunused-variable]
+  128 |   char MsgTx1[50]="PIN_15 Acceso";
+      |        ^~~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15780	     24	   1848	  17652	   44f4	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 
+18:55:09 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c:62:12: warning: initialization of 'char' from 'char *' makes integer from pointer without a cast [-Wint-conversion]
+   62 | char MsgD= "2";
+      |            ^~~
+../Core/Src/main.c:62:12: error: initializer element is not computable at load time
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:138:36: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  138 |          HAL_UART_Transmit(&huart1,&MsgD,1, 15);
+      |                                    ^~~~~
+      |                                    |
+      |                                    char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:131:8: warning: unused variable 'MsgTx4' [-Wunused-variable]
+  131 |   char MsgTx4[50]="PIN_14 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:130:8: warning: unused variable 'MsgTx3' [-Wunused-variable]
+  130 |   char MsgTx3[50]="PIN_14 Acceso";
+      |        ^~~~~~
+../Core/Src/main.c:129:8: warning: unused variable 'MsgTx2' [-Wunused-variable]
+  129 |   char MsgTx2[50]="PIN_15 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:128:8: warning: unused variable 'MsgTx1' [-Wunused-variable]
+  128 |   char MsgTx1[50]="PIN_15 Acceso";
+      |        ^~~~~~
+make: *** [Core/Src/subdir.mk:34: Core/Src/main.o] Error 1
+"make -j8 all" terminated with exit code 2. Build might be incomplete.
+18:56:22 **** Incremental Build of configuration Debug for project Master ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:138:36: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  138 |          HAL_UART_Transmit(&huart1,&MsgD,1, 15);
+      |                                    ^~~~~
+      |                                    |
+      |                                    char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:131:8: warning: unused variable 'MsgTx4' [-Wunused-variable]
+  131 |   char MsgTx4[50]="PIN_14 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:130:8: warning: unused variable 'MsgTx3' [-Wunused-variable]
+  130 |   char MsgTx3[50]="PIN_14 Acceso";
+      |        ^~~~~~
+../Core/Src/main.c:129:8: warning: unused variable 'MsgTx2' [-Wunused-variable]
+  129 |   char MsgTx2[50]="PIN_15 Spento";
+      |        ^~~~~~
+../Core/Src/main.c:128:8: warning: unused variable 'MsgTx1' [-Wunused-variable]
+  128 |   char MsgTx1[50]="PIN_15 Acceso";
+      |        ^~~~~~
+arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Esercizio13\Master\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Master.elf
+ 
+arm-none-eabi-size   Master.elf 
+arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
+   text	   data	    bss	    dec	    hex	filename
+  15780	     24	   1848	  17652	   44f4	Master.elf
+Finished building: default.size.stdout
+ 
+Finished building: Master.list
+ 

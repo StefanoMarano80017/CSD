@@ -1,0 +1,4 @@
+Comunicazione tra tre nodi. Il master riceve dal nodo1 e nodo2.
+Per quanto riguarda il collegameto, collagare direttamente il modulo hc-05 con i pin settati.
+Il master in funzione da chi slave riceve, accende un led.
+Chiaramente bisonga settare il master il modalità role=1 ed fare il bind con l'indirizzo dello slave.
