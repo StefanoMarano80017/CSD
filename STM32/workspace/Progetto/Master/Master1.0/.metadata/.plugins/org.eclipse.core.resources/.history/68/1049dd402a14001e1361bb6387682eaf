@@ -1,0 +1,33 @@
+ /*
+------------------------------------------------------------------------------
+~ File   : pid.h
+~ Author : Majid Derhambakhsh
+~ Version: V1.0.0
+~ Created: 02/11/2021 03:43:00 AM
+~ Brief  :
+~ Support:
+		   E-Mail : Majid.do16@gmail.com (subject : Embedded Library Support)
+
+		   Github : https://github.com/Majid-Derhambakhsh
+------------------------------------------------------------------------------
+~ Description:
+
+~ Attention  :
+
+~ Changes    :
+------------------------------------------------------------------------------
+*/
+
+#ifndef __PID_H_
+#define __PID_H_
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "stm32f4xx.h"
+
+// Definizione delle costanti
+#define Kp  0.5f   // Costante proporzionale
+#define Ki  0.2f   // Costante integrale
+#define Kd  0.1f   // Costante derivativa
+
+#endif /* __PID_H_ */

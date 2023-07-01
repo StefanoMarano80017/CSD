@@ -1,0 +1,28 @@
+/*
+ * ManageStr.c
+ *
+ *  Created on: Jun 22, 2023
+ *      Author: Utente
+ */
+# include "ManageStr.h"
+Stringa_TypeDef str;
+Stringa_TypeDef CutString(uint8_t* input){
+		// Cerca il carattere '+' nella stringa
+	    char *plus = strchr(input, '+');
+	    if (plus != NULL) {
+	    			// Copia i caratteri prima del '+' in una stringa temporanea e la converte in un numero
+	    	        char temp[100];
+	    	        strncpy(temp, input, plus - input);
+	    	        temp[plus - input] = '\0';
+	    	        str.Val1 = atof(temp);
+
+	    	        // Copia i caratteri dopo il '+' in una stringa temporanea e la converte in un numero
+	    	        strncpy(temp, plus + 1, sizeof(temp));
+	    	        str.Val2 = atof(temp);
+
+
+	    }
+return str;
+
+}
+

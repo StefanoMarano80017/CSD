@@ -1,0 +1,35 @@
+/*
+ * fuzzy.h
+ *
+ *  Created on: Jun 20, 2023
+ *      Author: Utente
+ */
+
+#ifndef FUZZY_FUZZY_H_
+#define FUZZY_FUZZY_H_
+#include <stdio.h>
+#include <math.h>
+
+// Definizione delle funzioni di appartenenza fuzzy
+float temperature_low(float *);
+float temperature_medium(float *);
+float temperature_high(float *);
+float humidity_low(float *);
+float humidity_medium(float *);
+float humidity_high(float *);
+float airflow_low();
+float airflow_medium();
+float airflow_high();
+
+// Definizione delle regole fuzzy
+float rule1(float *, float humidity);
+float rule2(float *, float *);
+float rule3(float *, float *);
+float rule4(float *, float *);
+float rule5(float *, float *);
+float rule6(float *, float *);
+float rule7(float *, float *);
+float rule8(float *, float *);
+
+
+#endif /* FUZZY_FUZZY_H_ */

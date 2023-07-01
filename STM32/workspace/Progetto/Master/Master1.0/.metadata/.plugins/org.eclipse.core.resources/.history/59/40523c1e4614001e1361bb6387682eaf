@@ -1,0 +1,34 @@
+﻿
+#include "pid.h"
+void PidInit(PID_typedef* Pid){
+	Pid->prev_error=0;    //Variabile errore iterazione precedente
+	Pid->integrale=0;     //Variabile azione integrale
+	Pid->error=0;
+	Pid->derivata=0;
+	Pid->output=0;
+	Pid->abserror=0;
+	Pid->input=0;
+}
+
+int PID(int *setpoint, int *input,PID_typedef* Pid){          //Funzione PID
+
+	Pid->error = *setpoint - *input;                              //calcola l'errore tra input e setpoint
+
+  if(abs(Pid->error) > Epsilon){                              //Se l'errore è maggiore di epsilon
+	  Pid->integrale = Pid->integrale + Pid->error*DT;                    //Calcola l'azione integrale
+  }
+  Pid->derivata = (Pid->error - Pid->prev_error)/DT;                   //Calcola l'azione derivativa
+  Pid->output = Kp*Pid->error + Ki*Pid->integrale + Kd*Pid->derivata;       //Calcola output PID
+
+   if(Pid->output > MAXout) {                      //Se l'uscita supera il valore massimo
+	   Pid->output = MAXout;                         //Satura l'uscita
+	   Pid->integrale=0;                             //Azzera l'azione integrale
+   }
+   else if(Pid->output < MINout) {                 //Se l'uscita invece è troppo piccola
+	   Pid->output = MINout;                         //Satura alla minima uscita
+	   Pid->integrale=0;                             //Azzera anche in questo caso l'azione integrale
+   }
+
+   Pid->prev_error = Pid->error;                        //Salva il valore dell'uscita
+   return Pid->output;                             //Restituisci uscita PID
+}

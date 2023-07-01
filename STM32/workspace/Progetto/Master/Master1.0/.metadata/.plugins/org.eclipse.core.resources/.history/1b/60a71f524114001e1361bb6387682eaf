@@ -1,0 +1,25 @@
+
+
+#ifndef __PID_H_
+#define __PID_H_
+
+#define DT 0.1          //Tempo di ripetizione PID
+#define Kp 5            //Costante proporzionale
+#define Ki 1            //Costante integrale
+#define Kd 1            //Costante derivativa
+#define MAXout 255      //Massimo valore uscita
+#define MINout 0        //Minimo valore uscita
+#define Epsilon 1     //Errore massimo tra setpoint e input
+
+
+typedef struct {
+
+	int  prev_error;    //Variabile errore iterazione precedente
+	int  integrale;     //Variabile azione integrale
+	int  error, derivata, output, abserror, input;   //Variabili utili
+} PID_typedef;
+void Pid(PID_typedef*);
+int PID(int *, int *,PID_typedef*);
+
+
+#endif /* __PID_H_ */

@@ -1,0 +1,4 @@
+../Core/LIBR/TruncateAlgo/TruncateMean.c:2:6:TruncatedMean_Init	24	static
+../Core/LIBR/TruncateAlgo/TruncateMean.c:10:6:TruncatedMean_AddSample	24	static
+../Core/LIBR/TruncateAlgo/TruncateMean.c:16:7:TruncatedMean_CalculateTemperature	32	static
+../Core/LIBR/TruncateAlgo/TruncateMean.c:35:7:TruncatedMean_CalculateHumidity	32	static

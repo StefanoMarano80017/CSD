@@ -1,0 +1,136 @@
+/*
+ * fuzzy.c
+ *
+ *  Created on: Jun 20, 2023
+ *      Author: Utente
+ */
+
+#include "fuzzy.h"
+
+// Definizione delle funzioni di appartenenza fuzzy per la temperatura
+float temperature_low(float temperature) {
+    if (temperature <= 18.0) {
+        return 1.0;
+    } else if (temperature > 18.0 && temperature < 25.0) {
+        return (25.0 - temperature) / (25.0 - 18.0);
+    } else {
+        return 0.0;
+    }
+}
+
+float temperature_medium(float temperature) {
+    if (temperature <= 18.0 || temperature >= 32.0) {
+        return 0.0;
+    } else if (temperature > 18.0 && temperature < 25.0) {
+        return (temperature - 18.0) / (25.0 - 18.0);
+    } else if (temperature >= 25.0 && temperature <= 32.0) {
+        return (32.0 - temperature) / (32.0 - 25.0);
+    }
+}
+
+float temperature_high(float temperature) {
+    if (temperature >= 32.0) {
+        return 1.0;
+    } else if (temperature > 25.0 && temperature < 32.0) {
+        return (temperature - 25.0) / (32.0 - 25.0);
+    } else {
+        return 0.0;
+    }
+}
+
+// Definizione delle funzioni di appartenenza fuzzy per l'umidità
+float humidity_low(float humidity) {
+    if (humidity <= 30.0) {
+        return 1.0;
+    } else if (humidity > 30.0 && humidity < 50.0) {
+        return (50.0 - humidity) / (50.0 - 30.0);
+    } else {
+        return 0.0;
+    }
+}
+
+float humidity_medium(float humidity) {
+    if (humidity <= 30.0 || humidity >= 70.0) {
+        return 0.0;
+    } else if (humidity > 30.0 && humidity < 50.0) {
+        return (humidity - 30.0) / (50.0 - 30.0);
+    } else if (humidity >= 50.0 && humidity <= 70.0) {
+        return (70.0 - humidity) / (70.0 - 50.0);
+    }
+}
+
+float humidity_high(float humidity) {
+    if (humidity >= 70.0) {
+        return 1.0;
+    } else if (humidity > 50.0 && humidity < 70.0) {
+        return (humidity - 50.0) / (70.0 - 50.0);
+    } else {
+        return 0.0;
+    }
+}
+
+
+// Definizione delle funzioni di appartenenza fuzzy per il flusso dell'area condizionata
+float airflow_low() {
+    return 0.0;
+}
+
+float airflow_medium() {
+    return 50.0;
+}
+
+float airflow_high() {
+    return 100.0;
+}
+
+
+// Definizione delle regole fuzzy
+float rule1(float temperature, float humidity) {
+    return fmin(temperature_low(temperature), humidity_low(humidity));
+}
+
+float rule2(float temperature, float humidity) {
+    return fmin(temperature_high(temperature), humidity_high(humidity));
+}
+
+float rule3(float temperature, float humidity) {
+    return fmin(temperature_medium(temperature), humidity_medium(humidity));
+}
+
+float rule4(float temperature, float humidity) {
+    return fmin(temperature_low(temperature), humidity_medium(humidity));
+}
+
+float rule5(float temperature, float humidity) {
+    return fmin(temperature_low(temperature), humidity_high(humidity));
+}
+
+float rule6(float temperature, float humidity) {
+    return fmin(temperature_medium(temperature), humidity_low(humidity));
+}
+
+float rule7(float temperature, float humidity) {
+    return fmin(temperature_high(temperature), humidity_low(humidity));
+}
+
+float rule8(float temperature, float humidity) {
+    return fmin(temperature_high(temperature), humidity_medium(humidity));
+}
+
+
+
+
+float CalculateFlow(float t, float h){
+
+	float airflow = fmin(fmax(fmax(fmax(fmax(fmax(fmax(fmax(rule1(t, h), rule2(t, h)), rule3(t, h)), rule4(t, h)), rule5(t, h)), rule6(t, h)), rule7(t, h)), rule8(t, h)), 100);
+	return airflow ;
+
+}
+
+
+
+
+
+
+
+

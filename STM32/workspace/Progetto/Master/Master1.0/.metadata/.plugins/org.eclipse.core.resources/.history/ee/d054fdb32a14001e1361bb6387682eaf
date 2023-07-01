@@ -1,0 +1,9 @@
+﻿#include"pid.h"
+PidTypedef pid;
+void pid_init(void)
+{
+    pid->integral_temp = 0.0f;
+    pid->integral_hum = 0.0f;
+    pid->last_error_temp = 0.0f;
+    pid->last_error_hum = 0.0f;
+}
