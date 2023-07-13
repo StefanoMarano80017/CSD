@@ -1,0 +1,82 @@
+# include "invio.h"
+
+double TempSetpoint=25;
+PID_TypeDef TPID;
+double PIDOut=0;
+
+void invio_tx(float temp0, float hmdy0, double intes, UART_HandleTypeDef huart4){
+	char bufferT[50];
+
+	//Trasmissione Temp
+	gcvt(temp0, sizeof(temp0), bufferT);
+	HAL_UART_Transmit(&huart4, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+	sprintf(bufferT, "+");
+	HAL_UART_Transmit(&huart4, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+	//Trasmissione Umidità
+	gcvt(hmdy0, sizeof(hmdy0), bufferT);
+	HAL_UART_Transmit(&huart4, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+	sprintf(bufferT, "+");
+	HAL_UART_Transmit(&huart4, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+	gcvt(intes, sizeof(intes), bufferT);
+	HAL_UART_Transmit(&huart4, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+	sprintf(bufferT, "\n");
+	HAL_UART_Transmit(&huart4, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+	for(int i=0;i<50;i++)bufferT[i]=0;
+}
+
+double calcola_parametri(float Temp, float Hmdy, int StatoC, int modo){
+	if(StatoC>0 && modo==0){
+		double Tem= Temp;
+		PID(&TPID, &Tem, &PIDOut, &TempSetpoint, PID_KP, PID_KD, PID_KI, _PID_P_ON_E, _PID_CD_DIRECT);
+		PID_SetMode(&TPID, _PID_MODE_AUTOMATIC);
+		PID_SetSampleTime(&TPID, SAMPLE_TIME);
+		PID_SetOutputLimits(&TPID, PID_LIM_MIN, PID_LIM_MAX);
+	 	PID_Compute(&TPID);
+	 	return PIDOut;
+	}else if(StatoC>0 && modo==1){
+		//funzione fuzzy
+		return calcola_fuzzy(Temp, Hmdy);
+	}
+	return 0;
+}
+
+double calcola_fuzzy(float inputA, float inputB){
+	    // Valuta le funzioni di appartenenza per A e B
+	    float mA = membershipA(inputA);
+	    float mB = membershipB(inputB);
+
+	    if ((mA == 0 && mB == 0) || (mA == 2 && mB == 2)){
+	        return -70; //forte
+	    } else if ((mA == 0 && mB == 1) || (mA == 1 && mB == 0) || (mA == 1 && mB == 1) || (mA == 2 && mB == 1)) {
+	        return -35; //medio
+	    } else if ((mA == 0 && mB == 2) || (mA == 1 && mB == 2) || (mA == 2 && mB == 0)){
+	        return -5; //debole
+	    }
+
+
+	    // Restituisci l'operatore MIN per aggregare i risultati
+	    return (mA < mB) ? mA : mB;
+}
+
+float membershipA(float x) {
+    if (x <= 15) {
+        return 0; //freddo
+    } else if (x > 15 && x <= 25) {
+        return 1; //mite
+    } else if (x > 25) {
+        return 2; //caldo
+    }
+}
+
+float membershipB(float x) {
+    if (x <= 30) {
+        return 0; //asciutto
+    } else if (x > 20 && x <= 50) {
+        return 1; //normale
+    } else if (x > 50) {
+        return 2; //umido
+    }
+}

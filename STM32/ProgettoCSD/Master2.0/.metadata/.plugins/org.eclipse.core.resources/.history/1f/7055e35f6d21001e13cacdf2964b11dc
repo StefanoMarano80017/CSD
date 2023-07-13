@@ -1,0 +1,13 @@
+#ifndef INVIO_H
+#define INVIO_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void invio_tx(float,float);
+double calcola_parametri();
+double calcola_fuzzy();
+
+
+#endif /* INVIO_H */

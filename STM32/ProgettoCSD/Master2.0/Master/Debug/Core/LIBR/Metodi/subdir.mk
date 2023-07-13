@@ -5,13 +5,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Core/LIBR/Metodi/ManageStr.c 
+../Core/LIBR/Metodi/ManageStr.c \
+../Core/LIBR/Metodi/invio.c 
 
 OBJS += \
-./Core/LIBR/Metodi/ManageStr.o 
+./Core/LIBR/Metodi/ManageStr.o \
+./Core/LIBR/Metodi/invio.o 
 
 C_DEPS += \
-./Core/LIBR/Metodi/ManageStr.d 
+./Core/LIBR/Metodi/ManageStr.d \
+./Core/LIBR/Metodi/invio.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -21,7 +24,7 @@ Core/LIBR/Metodi/%.o Core/LIBR/Metodi/%.su Core/LIBR/Metodi/%.cyclo: ../Core/LIB
 clean: clean-Core-2f-LIBR-2f-Metodi
 
 clean-Core-2f-LIBR-2f-Metodi:
-	-$(RM) ./Core/LIBR/Metodi/ManageStr.cyclo ./Core/LIBR/Metodi/ManageStr.d ./Core/LIBR/Metodi/ManageStr.o ./Core/LIBR/Metodi/ManageStr.su
+	-$(RM) ./Core/LIBR/Metodi/ManageStr.cyclo ./Core/LIBR/Metodi/ManageStr.d ./Core/LIBR/Metodi/ManageStr.o ./Core/LIBR/Metodi/ManageStr.su ./Core/LIBR/Metodi/invio.cyclo ./Core/LIBR/Metodi/invio.d ./Core/LIBR/Metodi/invio.o ./Core/LIBR/Metodi/invio.su
 
 .PHONY: clean-Core-2f-LIBR-2f-Metodi
 

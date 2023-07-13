@@ -21,7 +21,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "../LIBR/Metodi/ManageStr.h"
-#include "../LIBR/pid/pid.h"
+#include "../LIBR/Metodi/invio.h"
 #include "../LIBR/fuzzy/fuzzy.h"
 //parametri Tx e Rx
 #define BUFFER_LEN  1
@@ -48,18 +48,7 @@ int rx_index2 = 0;
 bool rx_complete2 = false;
 
 
-bool PidOn=false;
-/* Controller parameters */
-#define PID_KP  2
-#define PID_KI  0.5
-#define PID_KD  0.25
 
-
-
-#define PID_LIM_MIN -100
-#define PID_LIM_MAX  100
-
-#define SAMPLE_TIME 0.01
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -114,84 +103,59 @@ bool StartSystem=false;
 int ModFunz=0;
 char StartRx='1';
 int modo=0;StatoC=0;
+
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-
                        if(StatoC==0){
                     	   HAL_UART_Transmit(&huart1, &StartRx, strlen(StartRx), HAL_MAX_DELAY);
                     	   HAL_UART_Transmit(&huart2, &StartRx, strlen(StartRx), HAL_MAX_DELAY);
                     	   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_10,GPIO_PIN_SET);
                     	   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11,GPIO_PIN_RESET);
-                    	     StatoC=1;
-                    	     modo=0;
+                    	   StatoC=1;
+                    	   modo=0;
                        }else{
-
                     	   	  	 		  while((GPIOA->IDR & GPIO_IDR_0) ==GPIO_IDR_0);
                     	   	  	 		  if(modo==1){
                     	   	  	 			  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_10,GPIO_PIN_SET);
                     	   	  	 			  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11,GPIO_PIN_RESET);
                     	   	  	 			  modo=0;
-
-
-
                     	   	  	 		  }else{
                     	   	  	 			  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11,GPIO_PIN_SET);
                     	   	  	 		      HAL_GPIO_WritePin(GPIOE, GPIO_PIN_10,GPIO_PIN_RESET);
                     	   	  	 			  modo=1;
-                    	   	  	 			  PidOn=false;
-
-
-
+                    	   	  	 			  //PidOn=false;
                     	   	  	 		  }
-
-
-
-                    	   	  	  }
-		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    	}
+}
 
 float temp0=0,temp1=0,hmdy0=0,hmdy1=0;
-double TempSetpoint=25;
+double uscita0 = 0;
 Stringa_TypeDef valS0,valS1;
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if(huart->Instance == huart1.Instance)
     {
-    HAL_UART_Receive_IT(&huart1, RX_BUFFER, BUFFER_LEN);
-
-    if (RX_BUFFER[0] == stop) {
-               rx_complete = true;
-    			valS1=CutString(&rx_buffer);
-    	    	 temp0=valS1.Temp;
-    	    	 hmdy0=valS1.Hmdy;
-    	    	rx_index = 0;
-    	    	for(int i=0;i<50;i++)rx_buffer[i]=0;
-           } else {
-               rx_buffer[rx_index] = RX_BUFFER[0];
-               rx_index++;
-           }
+		HAL_UART_Receive_IT(&huart1, RX_BUFFER, BUFFER_LEN);
+		if (RX_BUFFER[0] == stop) {
+				   rx_complete = true;
+					valS1=CutString(&rx_buffer);
+					 temp0=valS1.Temp;
+					 hmdy0=valS1.Hmdy;
+					rx_index = 0;
+					for(int i=0;i<50;i++)rx_buffer[i]=0;
+			   } else {
+				   rx_buffer[rx_index] = RX_BUFFER[0];
+				   rx_index++;
+			   }
 
     }
     if(huart->Instance == huart2.Instance)
-       {
+    {
        HAL_UART_Receive_IT(&huart2, RX_BUFFER1, BUFFER_LEN);
        if (RX_BUFFER1[0] == stop) {
                    rx_complete1 = true;
     	   	   	   valS1=CutString(&rx_buffer1);
-
     	       	    temp1=valS1.Temp;
     	       	    hmdy1=valS1.Hmdy;
     	       	   rx_index1 = 0;
@@ -200,282 +164,71 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
                     rx_buffer1[rx_index1] = RX_BUFFER1[0];
                     rx_index1++;
                 }
-       }
+    }
+    if(rx_complete == true &&  rx_complete1 == true){
+		//funzione calcola_psrsmetri
+		uscita0 = calcola_parametri(temp0, hmdy0, StatoC, modo);
+		double uscita1 = calcola_parametri(temp1, hmdy1, StatoC, modo);
+		//funzione invio
+    	invio_tx(temp0, hmdy0, uscita0, huart4);
+    	invio_tx(temp1, hmdy1, uscita1, huart4);
+    	rx_complete = false;
+    	rx_complete1 = false;
+    }
 }
-
-
-
-
 
 
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
+	HAL_Init();
+	SystemClock_Config();
+	MX_GPIO_Init();
+	MX_UART4_Init();
+	MX_USART1_UART_Init();
+	MX_USART2_UART_Init();
+	/* USER CODE BEGIN 2 */
+	HAL_UART_Receive_IT(&huart2, RX_BUFFER1, BUFFER_LEN);
+	HAL_UART_Receive_IT(&huart1, RX_BUFFER, BUFFER_LEN);
+	for(int i=0;i<50;i++)rx_buffer[i]=0;
 
-  /* USER CODE END 1 */
-
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_UART4_Init();
-  MX_USART1_UART_Init();
-  MX_USART2_UART_Init();
-  /* USER CODE BEGIN 2 */
-  HAL_UART_Receive_IT(&huart2, RX_BUFFER1, BUFFER_LEN);
-  HAL_UART_Receive_IT(&huart1, RX_BUFFER, BUFFER_LEN);
-  for(int i=0;i<50;i++)rx_buffer[i]=0;
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  char bufferT[50],bufferH[50];
-    float Temp;
-    float Hmdy;
-    PID_TypeDef TPID;
-    double PIDOut=0;
-
-
-
-  while (1)
-  {
-    /* USER CODE END WHILE */
-	  if(rx_complete == true &&  rx_complete1 == true){
-	 		  	  	 Temp=(temp0+temp1)/2;
-	 	      	     Hmdy=(hmdy0+hmdy1)/2;
-	 	      	  //Trasmissione Temp
-	 	      	  							// sprintf(bufferT, "TMP:");
-	 	      	  							//HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-
-	 	      	     	 	 	 	 	 	 	 gcvt(Temp, sizeof(Temp), bufferT);
-	 	      	  							   HAL_UART_Transmit(&huart4, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-	 	      	  							   sprintf(bufferT, "+");
-	 	      	  							   HAL_UART_Transmit(&huart4, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-
-	 	      	  							   //Trasmissione Umidità
-	 	      	  							   //sprintf(bufferH, "HDY:");
-	 	      	  							   //HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
-	 	      	  							     for(int i=0;i<50;i++)bufferT[i]=0;
-	 	      	  							   gcvt(Hmdy, sizeof(Hmdy), bufferT);
-	 	      	  							   HAL_UART_Transmit(&huart4, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-
-
-	 	      	  							 sprintf(bufferT, "\n");
-	 	      	  							 HAL_UART_Transmit(&huart4, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-	 	      	  						for(int i=0;i<50;i++)bufferT[i]=0;
-
-
-
-	 	      	     if(StatoC>0 && modo==0){
-	 	      	    	  	  double Tem=(double)Temp;
-	 	      	    	 	  PID(&TPID, &Tem, &PIDOut, &TempSetpoint, PID_KP, PID_KD, PID_KI, _PID_P_ON_E, _PID_CD_DIRECT);
-	 	      	    	  	  PID_SetMode(&TPID, _PID_MODE_AUTOMATIC);
-	 	      	    	  	  PID_SetSampleTime(&TPID, SAMPLE_TIME);
-	 	      	    	  	  PID_SetOutputLimits(&TPID, PID_LIM_MIN, PID_LIM_MAX);
-	 	      	    	  	  PidOn=true;
-
-	 	      	     }else  if(StatoC>0 && modo==1){
-
-
-	 	      	    	//sprintf(bufferT, "TEMP:");
-	 	      	    	// 		HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-	 	      	    	// 		gcvt(Temp, sizeof(Temp), bufferT);
-	 	      	    	// 		HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-	 	      	    	// 		sprintf(bufferT, "\n");
-	 	      	    	// 		HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-	 	      	    		 	// 		HAL_Delay(500);
-
-
-
-
-
-
-
-
-
-
-	 	      	    	 if (Temp <= 10.0) {
-	 	      	    		 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
-	 	      	    		 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
-	 	      	    	    } else if (Temp <= 18.0) {
+while (1)
+{
+				if (StatoC == 1){
+	 	      	    	   if (uscita0 <= -5) {
+	 	      	    		   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
+	 	      	    		   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+	 	      	    	    } if (uscita0 <= -15.0) {
 	 	      	    	        // Accendi il LED 2
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9, GPIO_PIN_SET);
-	 	      	    	    } else if (Temp <= 20.0) {
+	 	      	    	    } if (uscita0 <= -25.0) {
 	 	      	    	        // Accendi il LED 3
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6, GPIO_PIN_SET);
-	 	      	    	    } else if (Temp <= 22.0) {
+	 	      	    	    } if (uscita0 <= -35.0) {
 	 	      	    	        // Accendi il LED 4
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_SET);
-	 	      	    	    } else if (Temp <= 24.0) {
+	 	      	    	    } if (uscita0 <= -45.0) {
 	 	      	    	        // Accendi il LED 5
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5, GPIO_PIN_SET);
-	 	      	    	    } else if (Temp <= 26.0) {
+	 	      	    	    } if (uscita0 <= -52.0) {
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4, GPIO_PIN_SET);
-
-	 	      	    	    } else if (Temp <= 28.0) {
+	 	      	    	    } if (uscita0 <= -55.0) {
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3, GPIO_PIN_SET);
-
-	 	      	    	    } else if (Temp <= 30.0) {
+	 	      	    	    } if (uscita0 <= -60.0) {
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11, GPIO_PIN_SET);
-
-	 	      	    	    } else {
+	 	      	    	    } if (uscita0 <= -65.0){
 	 	      	    	        // Accendi il LED 9
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
 	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_SET);
 	 	      	    	    }
-
-
-	 	      	    	if (Hmdy <= 30.0) {
-	 	      	    	        // Accendi il LED 1
-	 	      	    		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_13|GPIO_PIN_12, GPIO_PIN_RESET);
-	 	      	    		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10, GPIO_PIN_SET);
-	 	      	    	    } else if (Hmdy <= 60.0) {
-	 	      	    	        // Accendi il LED 2
-	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_13|GPIO_PIN_12, GPIO_PIN_RESET);
-	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_13, GPIO_PIN_SET);
-	 	      	    	    } else {
-	 	      	    	        // Accendi il LED 3
-	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_13|GPIO_PIN_12, GPIO_PIN_RESET);
-	 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_13|GPIO_PIN_12, GPIO_PIN_SET);
-	 	      	    	    }
-
-
-
-
-
-
-
-
-	 	      	     }
-
-	 	      	     rx_complete =false;
-	 	 	      	 rx_complete1 =false;
-
-
-	 	  }
-
-	 if(PidOn==true){
-	 	PID_Compute(&TPID);
-
-
-	 	if (PIDOut==0) {
-	 		 	      	    		 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
-
-	 		 	      	    	    } else if (PIDOut<=-8) {
-	 		 	      	    	        // Accendi il LED 2
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
-
-	 		 	      	    	 } else if (PIDOut<=-6) {
-	 		 	      	    		 		 	     // Accendi il LED 2
-	 		 	      	    		 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
-	 		 	      	    		 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9, GPIO_PIN_SET);
-
-	 		 	      	    	    } else if (PIDOut<=-4) {
-	 		 	      	    	        // Accendi il LED 3
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6, GPIO_PIN_SET);
-	 		 	      	    	    } else if (PIDOut<=-2.0) {
-	 		 	      	    	        // Accendi il LED 4
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_SET);
-	 		 	      	    	    } else if (PIDOut<=2.0) {
-	 		 	      	    	        // Accendi il LED 5
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5, GPIO_PIN_SET);
-	 		 	      	    	    } else if (PIDOut<=4.0) {
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4, GPIO_PIN_SET);
-
-	 		 	      	    	    } else if (Temp <= 6.0) {
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3, GPIO_PIN_SET);
-
-	 		 	      	    	    } else if (Temp <= 8.0) {
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11, GPIO_PIN_SET);
-
-	 		 	      	    	    } else {
-	 		 	      	    	        // Accendi il LED 9
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_RESET);
-	 		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_4|GPIO_PIN_3|GPIO_PIN_11|GPIO_PIN_14, GPIO_PIN_SET);
-	 		 	      	    	    }
-
-
-
-		if (Hmdy <= 30.0) {
-		 	      	    	        // Accendi il LED 1
-		 	      	    		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_13|GPIO_PIN_12, GPIO_PIN_RESET);
-		 	      	    		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10, GPIO_PIN_SET);
-		 	      	    	    } else if (Hmdy <= 60.0) {
-		 	      	    	        // Accendi il LED 2
-		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_13|GPIO_PIN_12, GPIO_PIN_RESET);
-		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_13, GPIO_PIN_SET);
-		 	      	    	    } else {
-		 	      	    	        // Accendi il LED 3
-		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_13|GPIO_PIN_12, GPIO_PIN_RESET);
-		 	      	    	    	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_13|GPIO_PIN_12, GPIO_PIN_SET);
-		 	      	    	    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	 		//sprintf(bufferT, "TEMP:");
-		//HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-		//gcvt(Temp, sizeof(Temp), bufferT);
-		//HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-		//sprintf(bufferT, "\n");
-		//HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-		//HAL_Delay(500);
-
-
-
-
-		//	sprintf(bufferT, "PID_VALUE:");
-		//	HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-		//	gcvt(PIDOut, sizeof(PIDOut), bufferT);
-		//	HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-		// 	sprintf(bufferT, "\t");
-		// 	HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-		// 	HAL_Delay(500);
-	 	PidOn=false;
-	 }
-    /* USER CODE BEGIN 3 */
+				}
   }
-  /* USER CODE END 3 */
 }
 
 /**
@@ -724,3 +477,4 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
