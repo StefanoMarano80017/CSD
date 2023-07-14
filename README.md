@@ -10,3 +10,5 @@ I implement hardware-managed interrupt service routines (ISRs) using priority or
 Typically, we have a master node which will have two ISRs which must be suitably managed in order
 to communicate with the other slave nodes. 
 The latter will also act either under interruption or polling.
+In the stm32 folder, there are a series of small projects, to familiarize yourself with the ARM processor, and the final project, ProgettoCSD folder, which provide for a master, which receives the temperature and humidity parameters from two slaves, located in two different points . Based on the pid or fuzzy mode, the master adjusts the intensity of the air flow and plots everything on the pc, using an interface written in py.
+In the MIPS folder, there are some simple programs to understand the functioning of the MIPS processor.
