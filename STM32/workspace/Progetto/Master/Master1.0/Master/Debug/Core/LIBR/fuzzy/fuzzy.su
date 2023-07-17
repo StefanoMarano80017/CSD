@@ -1,3 +1,0 @@
-../Core/LIBR/fuzzy/fuzzy.c:11:7:triangular_membership	32	static
-../Core/LIBR/fuzzy/fuzzy.c:22:7:fuzzy_inference	48	static
-../Core/LIBR/fuzzy/fuzzy.c:40:5:regulate_servomotor	456	static
