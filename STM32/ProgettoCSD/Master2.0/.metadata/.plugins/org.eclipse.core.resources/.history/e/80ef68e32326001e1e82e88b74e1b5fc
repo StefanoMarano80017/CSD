@@ -102,7 +102,7 @@ static void MX_USART2_UART_Init(void);
 bool StartSystem=false;
 int ModFunz=0;
 char StartRx='1';
-int modo0=0,modo1=0,StatoC=0;
+int modo=0,StatoC=0;
 
 float temp0=0,temp1=0,hmdy0=0,hmdy1=0;
 double uscita0 = 0;
@@ -118,7 +118,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 					valS1=CutString(&rx_buffer);
 					 temp0=valS1.Temp;
 					 hmdy0=valS1.Hmdy;
-					 modo0=valS1.Mode;
+					 modo=valS1.Mode;
 					rx_index = 0;
 					for(int i=0;i<50;i++)rx_buffer[i]=0;
 			   } else {
@@ -135,7 +135,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     	   	   	   valS1=CutString(&rx_buffer1);
     	       	    temp1=valS1.Temp;
     	       	    hmdy1=valS1.Hmdy;
-    	       	    modo1=valS1.Mode;
+    	       	    modo=valS1.Mode;
     	       	   rx_index1 = 0;
     	       	for(int i=0;i<50;i++)rx_buffer1[i]=0;
                 } else {
@@ -145,8 +145,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     }
     if(rx_complete == true &&  rx_complete1 == true){
 		//funzione calcola_psrsmetri
-		uscita0 = calcola_parametri(temp0, hmdy0, StatoC, modo0);
-		double uscita1 = calcola_parametri(temp1, hmdy1, StatoC, modo1);
+		uscita0 = calcola_parametri(temp0, hmdy0, StatoC, modo);
+		double uscita1 = calcola_parametri(temp1, hmdy1, StatoC, modo);
 		//funzione invio
     	invio_tx(temp0, hmdy0, uscita0, huart4);
     	invio_tx(temp1, hmdy1, uscita1, huart4);

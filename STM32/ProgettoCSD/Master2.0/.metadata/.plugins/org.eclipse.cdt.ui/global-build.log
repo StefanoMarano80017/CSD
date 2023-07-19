@@ -1,38 +1,7 @@
-12:47:32 **** Incremental Build of configuration Debug for project Master ****
+13:03:52 **** Incremental Build of configuration Debug for project Master ****
 make -j8 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-In file included from ../Core/Src/../LIBR/Metodi/invio.h:8,
-                 from ../Core/Src/main.c:24:
-../Core/Inc/../LIBR/pid/pid.h:93: warning: ignoring '#pragma diag_suppress ' [-Wunknown-pragmas]
-   93 |  #pragma diag_suppress 177     /* Disable 'unused function' warning */
-      | 
-../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
-../Core/Src/main.c:118:22: warning: passing argument 1 of 'CutString' from incompatible pointer type [-Wincompatible-pointer-types]
-  118 |      valS1=CutString(&rx_buffer);
-      |                      ^~~~~~~~~~
-      |                      |
-      |                      uint8_t (*)[50] {aka unsigned char (*)[50]}
-In file included from ../Core/Src/main.c:23:
-../Core/Src/../LIBR/Metodi/ManageStr.h:26:27: note: expected 'char *' but argument is of type 'uint8_t (*)[50]' {aka 'unsigned char (*)[50]'}
-   26 | Stringa_TypeDef CutString(char*);
-      |                           ^~~~~
-../Core/Src/main.c:135:33: warning: passing argument 1 of 'CutString' from incompatible pointer type [-Wincompatible-pointer-types]
-  135 |                 valS1=CutString(&rx_buffer1);
-      |                                 ^~~~~~~~~~~
-      |                                 |
-      |                                 uint8_t (*)[50] {aka unsigned char (*)[50]}
-In file included from ../Core/Src/main.c:23:
-../Core/Src/../LIBR/Metodi/ManageStr.h:26:27: note: expected 'char *' but argument is of type 'uint8_t (*)[50]' {aka 'unsigned char (*)[50]'}
-   26 | Stringa_TypeDef CutString(char*);
-      |                           ^~~~~
-arm-none-eabi-gcc -o "Master.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Progetto\Master\Master2.0\Master\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Master.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: Master.elf
- 
 arm-none-eabi-size   Master.elf 
-arm-none-eabi-objdump -h -S  Master.elf  > "Master.list"
    text	   data	    bss	    dec	    hex	filename
-  41384	    496	   2304	  44184	   ac98	Master.elf
+  41392	    496	   2312	  44200	   aca8	Master.elf
 Finished building: default.size.stdout
- 
-Finished building: Master.list
  
