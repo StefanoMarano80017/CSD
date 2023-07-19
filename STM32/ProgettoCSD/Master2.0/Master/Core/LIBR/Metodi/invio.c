@@ -29,6 +29,8 @@ void invio_tx(float temp0, float hmdy0, double intes, UART_HandleTypeDef huart4)
 
 double calcola_parametri(float Temp, float Hmdy, int StatoC, int modo){
 	if(StatoC>0 && modo==0){
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11,GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_10,GPIO_PIN_RESET);
 		double Tem= Temp;
 		PID(&TPID, &Tem, &PIDOut, &TempSetpoint, PID_KP, PID_KD, PID_KI, _PID_P_ON_E, _PID_CD_DIRECT);
 		PID_SetMode(&TPID, _PID_MODE_AUTOMATIC);
@@ -37,6 +39,8 @@ double calcola_parametri(float Temp, float Hmdy, int StatoC, int modo){
 	 	PID_Compute(&TPID);
 	 	return PIDOut;
 	}else if(StatoC>0 && modo==1){
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_10,GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11,GPIO_PIN_RESET);
 		//funzione fuzzy
 		return calcola_fuzzy(Temp, Hmdy);
 	}

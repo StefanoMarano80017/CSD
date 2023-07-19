@@ -1,47 +1,10 @@
-12:45:54 **** Build of configuration Debug for project Slave ****
+13:23:32 **** Incremental Build of configuration Debug for project Slave ****
 make -j8 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
-../Core/Src/main.c:92:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
-   92 |  if (HAL_UART_Receive_IT(&huart1, &msgRx, 1) == HAL_OK && msgRx==one) {
-      |                                   ^~~~~~
-      |                                   |
-      |                                   char *
-In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
-                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
-                 from ../Core/Inc/main.h:30,
-                 from ../Core/Src/main.c:20:
-../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
- 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
-      |                                                                  ~~~~~~~~~^~~~~
-../Core/Src/main.c: In function 'HAL_TIM_PeriodElapsedCallback':
-../Core/Src/main.c:134:11: warning: implicit declaration of function 'gcvt' [-Wimplicit-function-declaration]
-  134 |           gcvt(Temperature, sizeof(Temperature), bufferT);
-      |           ^~~~
-../Core/Src/main.c: In function 'main':
-../Core/Src/main.c:278:33: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
-  278 |    HAL_UART_Receive_IT(&huart1, &msgRx, 1);
-      |                                 ^~~~~~
-      |                                 |
-      |                                 char *
-In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
-                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
-                 from ../Core/Inc/main.h:30,
-                 from ../Core/Src/main.c:20:
-../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
- 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
-      |                                                                  ~~~~~~~~~^~~~~
-arm-none-eabi-gcc -o "Slave.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Progetto\Slave3.0\Slave\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Slave.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: Slave.elf
- 
 arm-none-eabi-size   Slave.elf 
-arm-none-eabi-objdump -h -S  Slave.elf  > "Slave.list"
    text	   data	    bss	    dec	    hex	filename
-  34716	    120	   2200	  37036	   90ac	Slave.elf
+  35452	    120	   2200	  37772	   938c	Slave.elf
 Finished building: default.size.stdout
  
-Finished building: Slave.list
- 
 
-12:45:59 Build Finished. 0 errors, 3 warnings. (took 4s.556ms)
+13:23:33 Build Finished. 0 errors, 0 warnings. (took 408ms)
 

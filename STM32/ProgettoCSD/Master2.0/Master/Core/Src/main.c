@@ -108,6 +108,30 @@ float temp0=0,temp1=0,hmdy0=0,hmdy1=0;
 double uscita0 = 0;
 Stringa_TypeDef valS0,valS1;
 
+
+
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+                       if(StatoC==0){
+                    	   HAL_UART_Transmit(&huart1, &StartRx, strlen(StartRx), HAL_MAX_DELAY);
+                    	   HAL_UART_Transmit(&huart2, &StartRx, strlen(StartRx), HAL_MAX_DELAY);
+                    	   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_10,GPIO_PIN_SET);
+                    	   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11,GPIO_PIN_RESET);
+                    	   StatoC=1;
+
+                       }
+
+}
+
+
+
+
+
+
+
+
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if(huart->Instance == huart1.Instance)

@@ -118,13 +118,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			Temperature = DHT11_Data.TemperatureD +(0.1)*DHT11_Data.TemperatureU;
 			Humidity =    DHT11_Data.HumidityD +(0.1)*DHT11_Data.HumidityU;
 		if(htim->Instance==htim16.Instance){
-
-	//HAL_GPIO_WritePin(GPIOE, GPIO_PIN_15,GPIO_PIN_SET);
-	//DHT_GetData(&DHT11_Data);
-	//lettura dati
-	//Temperature = DHT11_Data.TemperatureD +(0.1)*DHT11_Data.TemperatureU;
-	//Humidity =    DHT11_Data.HumidityD +(0.1)*DHT11_Data.HumidityU;
-	if(modo==0){
+			if(modo==0){
             	if(i<=SAMPLES){
             			TruncatedMean_AddSample(&data,Temperature,Humidity);
 
@@ -134,23 +128,34 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 							   gcvt(Temperature, sizeof(Temperature), bufferT);
 							   HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
+							   for(int i=0;i<10;i++)bufferT[i]=0;
+
 							   sprintf(bufferT, "+");
 							   HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
-							   gcvt(Humidity, sizeof(Humidity), bufferH);
-							   HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+							   for(int i=0;i<10;i++)bufferT[i]=0;
 
+							   gcvt(Humidity, sizeof(Humidity), bufferT);
+							   HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
-							    sprintf(bufferT, "-");
-							  	HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+							   for(int i=0;i<10;i++)bufferT[i]=0;
 
-							  	gcvt(modo, sizeof(modo), bufferH);
-							  	HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+							   sprintf(bufferT, "-");
+							   HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
+							   for(int i=0;i<10;i++)bufferT[i]=0;
 
-							    sprintf(bufferH, "s");
-							     HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
-							     StartTx=true;
+							   gcvt(modo, sizeof(modo), bufferT);
+							   HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+							   for(int i=0;i<10;i++)bufferT[i]=0;
+
+							   sprintf(bufferH, "s");
+							   HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+							   for(int i=0;i<10;i++)bufferT[i]=0;
+
+							   StartTx=true;
 
 						}
 						i++;
@@ -163,21 +168,32 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
             			gcvt(TmpMean, sizeof(TmpMean), bufferT);
             			HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
+            			for(int i=0;i<10;i++)bufferT[i]=0;
+
             			sprintf(bufferT, "+");
             			HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
-            			gcvt(TmpHmdy, sizeof(TmpHmdy), bufferH);
-            			HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+            			for(int i=0;i<10;i++)bufferT[i]=0;
 
-            			 sprintf(bufferT, "-");
+            			gcvt(TmpHmdy, sizeof(TmpHmdy), bufferT);
             			HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
-            			gcvt(modo, sizeof(modo), bufferH);
-            			HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+            			for(int i=0;i<10;i++)bufferT[i]=0;
 
+            			sprintf(bufferT, "-");
+            			HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+            			for(int i=0;i<10;i++)bufferT[i]=0;
+
+            			gcvt(modo, sizeof(modo), bufferT);
+            			HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+            			for(int i=0;i<10;i++)bufferT[i]=0;
 
             			sprintf(bufferH, "s");
-            			HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+            			HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+            			for(int i=0;i<10;i++)bufferT[i]=0;
             	}
 
 	}else{
@@ -188,21 +204,33 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 							gcvt(Temperature, sizeof(Temperature), bufferT);
 							HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
+							for(int i=0;i<10;i++)bufferT[i]=0;
+
 							sprintf(bufferT, "+");
 							HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
-							gcvt(Humidity, sizeof(Humidity), bufferH);
-							HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+							for(int i=0;i<10;i++)bufferT[i]=0;
 
-							 sprintf(bufferT, "-");
-							 HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+							gcvt(Humidity, sizeof(Humidity), bufferT);
+							HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
-							 gcvt(modo, sizeof(modo), bufferH);
-							 HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+							for(int i=0;i<10;i++)bufferT[i]=0;
 
+							sprintf(bufferT, "-");
+							HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+							for(int i=0;i<10;i++)bufferT[i]=0;
+
+							gcvt(modo, sizeof(modo), bufferT);
+							HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+							for(int i=0;i<10;i++)bufferT[i]=0;
 
 							sprintf(bufferH, "s");
-							HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+							HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+							for(int i=0;i<10;i++)bufferT[i]=0;
+
 							LastTemperature=Temperature;
 							LastHumidity=Humidity;
 						}
@@ -219,20 +247,32 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 								gcvt(Temperature, sizeof(Temperature), bufferT);
 								HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
+								for(int i=0;i<10;i++)bufferT[i]=0;
+
 								sprintf(bufferT, "+");
 								HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
-								gcvt(Humidity, sizeof(Humidity), bufferH);
-								HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+								for(int i=0;i<10;i++)bufferT[i]=0;
+
+								gcvt(Humidity, sizeof(Humidity), bufferT);
+								HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+								for(int i=0;i<10;i++)bufferT[i]=0;
 
 								sprintf(bufferT, "-");
 								HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
-								gcvt(modo, sizeof(modo), bufferH);
-								HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+								for(int i=0;i<10;i++)bufferT[i]=0;
+
+								gcvt(modo, sizeof(modo), bufferT);
+								HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+								for(int i=0;i<10;i++)bufferT[i]=0;
 
 								sprintf(bufferH, "s");
-								HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+								HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+								for(int i=0;i<10;i++)bufferT[i]=0;
 	}
 }
 
