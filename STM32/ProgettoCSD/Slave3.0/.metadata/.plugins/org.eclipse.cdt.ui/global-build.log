@@ -1,4 +1,4 @@
-13:23:32 **** Incremental Build of configuration Debug for project Slave ****
+14:05:54 **** Incremental Build of configuration Debug for project Slave ****
 make -j8 all 
 arm-none-eabi-size   Slave.elf 
    text	   data	    bss	    dec	    hex	filename

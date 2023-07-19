@@ -1,4 +1,4 @@
-13:50:46 **** Incremental Build of configuration Debug for project Master ****
+14:05:33 **** Incremental Build of configuration Debug for project Master ****
 make -j8 all 
 arm-none-eabi-size   Master.elf 
    text	   data	    bss	    dec	    hex	filename
