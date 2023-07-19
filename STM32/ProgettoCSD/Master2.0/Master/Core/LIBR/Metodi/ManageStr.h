@@ -18,6 +18,7 @@ typedef struct
 
 	float Temp;
 	float Hmdy;
+	int Mode;
 
 }Stringa_TypeDef;
 

@@ -127,27 +127,27 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	if(modo==0){
             	if(i<=SAMPLES){
             			TruncatedMean_AddSample(&data,Temperature,Humidity);
-						//sprintf(bufferT, "Cattura%d:",i);
-            			//HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-            			//gcvt(Temperature, sizeof(Temperature), bufferT);
-            			//HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-            			//sprintf(bufferT, "\r\n");
-            			//HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
 
 						if(i==0 && StartTx==false){
-							//Trasmissione Temp
-							// sprintf(bufferT, "TMP:");
-							//HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-							  gcvt(Temperature, sizeof(Temperature), bufferT);
+
+							   gcvt(Temperature, sizeof(Temperature), bufferT);
 							   HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
 							   sprintf(bufferT, "+");
 							   HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
-							   //Trasmissione Umidità
-							   //sprintf(bufferH, "HDY:");
-							   //HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
 							   gcvt(Humidity, sizeof(Humidity), bufferH);
 							   HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+
+
+							    sprintf(bufferT, "-");
+							  	HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+							  	gcvt(modo, sizeof(modo), bufferH);
+							  	HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+
+
 							    sprintf(bufferH, "s");
 							     HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
 							     StartTx=true;
@@ -159,39 +159,48 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 						float TmpMean= TruncatedMean_CalculateTemperature(&data);
 						float TmpHmdy= TruncatedMean_CalculateHumidity(&data);
 
-						//Trasmissione Temp
-            			//sprintf(bufferT, "TMP:");
-						//HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
             			gcvt(TmpMean, sizeof(TmpMean), bufferT);
             			HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
             			sprintf(bufferT, "+");
             			HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
 
-            			//Trasmissione Umidità
-            			//sprintf(bufferH, "HDY:");
-            			//HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
             			gcvt(TmpHmdy, sizeof(TmpHmdy), bufferH);
             			HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+
+            			 sprintf(bufferT, "-");
+            			HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+            			gcvt(modo, sizeof(modo), bufferH);
+            			HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+
+
             			sprintf(bufferH, "s");
             			HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
             	}
 
 	}else{
-					//if((Temperature!=LastTemperature)||(LastHumidity!=Humidity))
+
 					if((Temperature!=LastTemperature)){
 						if (Temperature - LastTemperature >= DT || LastTemperature - Temperature >= DT ) {
-							//Trasmissione Temp
-							//sprintf(bufferT, "TMP:");
-							//HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
 							gcvt(Temperature, sizeof(Temperature), bufferT);
 							HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
 							sprintf(bufferT, "+");
 							HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-							//Trasmissione Umidità
-							//sprintf(bufferH, "HDY:");
-							//HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+
 							gcvt(Humidity, sizeof(Humidity), bufferH);
 							HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+
+							 sprintf(bufferT, "-");
+							 HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+							 gcvt(modo, sizeof(modo), bufferH);
+							 HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+
+
 							sprintf(bufferH, "s");
 							HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
 							LastTemperature=Temperature;
@@ -209,13 +218,19 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	if(htim->Instance==htim17.Instance && modo==1 && !(htim->Instance==htim16.Instance)){
 								gcvt(Temperature, sizeof(Temperature), bufferT);
 								HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
 								sprintf(bufferT, "+");
 								HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
-								//Trasmissione Umidità
-								//sprintf(bufferH, "HDY:");
-								//HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+
 								gcvt(Humidity, sizeof(Humidity), bufferH);
 								HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+
+								sprintf(bufferT, "-");
+								HAL_UART_Transmit(&huart1, (uint8_t*)bufferT, strlen(bufferT), HAL_MAX_DELAY);
+
+								gcvt(modo, sizeof(modo), bufferH);
+								HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
+
 								sprintf(bufferH, "s");
 								HAL_UART_Transmit(&huart1, (uint8_t*)bufferH, strlen(bufferH), HAL_MAX_DELAY);
 	}

@@ -102,31 +102,7 @@ static void MX_USART2_UART_Init(void);
 bool StartSystem=false;
 int ModFunz=0;
 char StartRx='1';
-int modo=0;StatoC=0;
-
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-                       if(StatoC==0){
-                    	   HAL_UART_Transmit(&huart1, &StartRx, strlen(StartRx), HAL_MAX_DELAY);
-                    	   HAL_UART_Transmit(&huart2, &StartRx, strlen(StartRx), HAL_MAX_DELAY);
-                    	   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_10,GPIO_PIN_SET);
-                    	   HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11,GPIO_PIN_RESET);
-                    	   StatoC=1;
-                    	   modo=0;
-                       }else{
-                    	   	  	 		  while((GPIOA->IDR & GPIO_IDR_0) ==GPIO_IDR_0);
-                    	   	  	 		  if(modo==1){
-                    	   	  	 			  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_10,GPIO_PIN_SET);
-                    	   	  	 			  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11,GPIO_PIN_RESET);
-                    	   	  	 			  modo=0;
-                    	   	  	 		  }else{
-                    	   	  	 			  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_11,GPIO_PIN_SET);
-                    	   	  	 		      HAL_GPIO_WritePin(GPIOE, GPIO_PIN_10,GPIO_PIN_RESET);
-                    	   	  	 			  modo=1;
-                    	   	  	 			  //PidOn=false;
-                    	   	  	 		  }
-                    	}
-}
+int modo=0,StatoC=0;
 
 float temp0=0,temp1=0,hmdy0=0,hmdy1=0;
 double uscita0 = 0;
@@ -142,6 +118,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 					valS1=CutString(&rx_buffer);
 					 temp0=valS1.Temp;
 					 hmdy0=valS1.Hmdy;
+					 modo=valS1.Mode;
 					rx_index = 0;
 					for(int i=0;i<50;i++)rx_buffer[i]=0;
 			   } else {
@@ -158,6 +135,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     	   	   	   valS1=CutString(&rx_buffer1);
     	       	    temp1=valS1.Temp;
     	       	    hmdy1=valS1.Hmdy;
+    	       	    modo=valS1.Mode;
     	       	   rx_index1 = 0;
     	       	for(int i=0;i<50;i++)rx_buffer1[i]=0;
                 } else {
