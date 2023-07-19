@@ -1,7 +1,769 @@
-14:05:54 **** Incremental Build of configuration Debug for project Slave ****
+16:30:46 **** Incremental Build of configuration Debug for project Slave ****
 make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:93:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+   93 |  if (HAL_UART_Receive_IT(&huart1, &msgRx, 1) == HAL_OK && msgRx==one) {
+      |                                   ^~~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'HAL_TIM_PeriodElapsedCallback':
+../Core/Src/main.c:129:11: warning: implicit declaration of function 'gcvt' [-Wimplicit-function-declaration]
+  129 |           gcvt(Temperature, sizeof(Temperature), bufferT);
+      |           ^~~~
+../Core/Src/main.c:150:54: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  150 |           HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                      ^~~~~~
+      |                                                      |
+      |                                                      char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:150:38: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  150 |           HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                      ^~~~~~~
+      |                                      |
+      |                                      char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:190:60: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  190 |                 HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                            ^~~~~~
+      |                                                            |
+      |                                                            char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:190:44: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  190 |                 HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                            ^~~~~~~
+      |                                            |
+      |                                            char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:223:51: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  223 |        HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                   ^~~~~~
+      |                                                   |
+      |                                                   char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:223:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  223 |        HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                   ^~~~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:263:52: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  263 |         HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                    ^~~~~~
+      |                                                    |
+      |                                                    char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:263:36: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  263 |         HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                    ^~~~~~~
+      |                                    |
+      |                                    char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:311:33: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+  311 |    HAL_UART_Receive_IT(&huart1, &msgRx, 1);
+      |                                 ^~~~~~
+      |                                 |
+      |                                 char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "Slave.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Progetto\Slave3.0\Slave\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Slave.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Slave.elf
+ 
 arm-none-eabi-size   Slave.elf 
+arm-none-eabi-objdump -h -S  Slave.elf  > "Slave.list"
    text	   data	    bss	    dec	    hex	filename
-  35452	    120	   2200	  37772	   938c	Slave.elf
+  35348	    124	   2228	  37700	   9344	Slave.elf
 Finished building: default.size.stdout
+ 
+Finished building: Slave.list
+ 
+16:31:16 **** Incremental Build of configuration Debug for project Slave ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:93:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+   93 |  if (HAL_UART_Receive_IT(&huart1, &msgRx, 1) == HAL_OK && msgRx==one) {
+      |                                   ^~~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'HAL_TIM_PeriodElapsedCallback':
+../Core/Src/main.c:129:11: warning: implicit declaration of function 'gcvt' [-Wimplicit-function-declaration]
+  129 |           gcvt(Temperature, sizeof(Temperature), bufferT);
+      |           ^~~~
+../Core/Src/main.c:150:54: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  150 |           HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                      ^~~~~~
+      |                                                      |
+      |                                                      char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:150:38: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  150 |           HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                      ^~~~~~~
+      |                                      |
+      |                                      char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:190:60: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  190 |                 HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                            ^~~~~~
+      |                                                            |
+      |                                                            char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:190:44: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  190 |                 HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                            ^~~~~~~
+      |                                            |
+      |                                            char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:223:51: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  223 |        HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                   ^~~~~~
+      |                                                   |
+      |                                                   char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:223:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  223 |        HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                   ^~~~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:263:52: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  263 |         HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                    ^~~~~~
+      |                                                    |
+      |                                                    char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:263:36: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  263 |         HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                    ^~~~~~~
+      |                                    |
+      |                                    char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:311:33: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+  311 |    HAL_UART_Receive_IT(&huart1, &msgRx, 1);
+      |                                 ^~~~~~
+      |                                 |
+      |                                 char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c:325:10: warning: this 'while' clause does not guard... [-Wmisleading-indentation]
+  325 |          while((GPIOA->IDR & GPIO_IDR_0) ==GPIO_IDR_0);
+      |          ^~~~~
+../Core/Src/main.c:326:19: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'while'
+  326 |                   contPA0++;
+      |                   ^~~~~~~
+arm-none-eabi-gcc -o "Slave.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Progetto\Slave3.0\Slave\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Slave.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Slave.elf
+ 
+arm-none-eabi-size   Slave.elf 
+arm-none-eabi-objdump -h -S  Slave.elf  > "Slave.list"
+   text	   data	    bss	    dec	    hex	filename
+  35380	    124	   2228	  37732	   9364	Slave.elf
+Finished building: default.size.stdout
+ 
+Finished building: Slave.list
+ 
+16:32:56 **** Incremental Build of configuration Debug for project Slave ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:93:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+   93 |  if (HAL_UART_Receive_IT(&huart1, &msgRx, 1) == HAL_OK && msgRx==one) {
+      |                                   ^~~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'HAL_TIM_PeriodElapsedCallback':
+../Core/Src/main.c:129:11: warning: implicit declaration of function 'gcvt' [-Wimplicit-function-declaration]
+  129 |           gcvt(Temperature, sizeof(Temperature), bufferT);
+      |           ^~~~
+../Core/Src/main.c:150:54: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  150 |           HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                      ^~~~~~
+      |                                                      |
+      |                                                      char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:150:38: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  150 |           HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                      ^~~~~~~
+      |                                      |
+      |                                      char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:190:60: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  190 |                 HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                            ^~~~~~
+      |                                                            |
+      |                                                            char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:190:44: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  190 |                 HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                            ^~~~~~~
+      |                                            |
+      |                                            char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:223:51: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  223 |        HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                   ^~~~~~
+      |                                                   |
+      |                                                   char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:223:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  223 |        HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                   ^~~~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:263:52: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  263 |         HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                    ^~~~~~
+      |                                                    |
+      |                                                    char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:263:36: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  263 |         HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                    ^~~~~~~
+      |                                    |
+      |                                    char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:311:33: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+  311 |    HAL_UART_Receive_IT(&huart1, &msgRx, 1);
+      |                                 ^~~~~~
+      |                                 |
+      |                                 char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "Slave.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Progetto\Slave3.0\Slave\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Slave.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Slave.elf
+ 
+arm-none-eabi-size   Slave.elf 
+arm-none-eabi-objdump -h -S  Slave.elf  > "Slave.list"
+   text	   data	    bss	    dec	    hex	filename
+  35380	    124	   2228	  37732	   9364	Slave.elf
+Finished building: default.size.stdout
+ 
+Finished building: Slave.list
+ 
+16:34:13 **** Incremental Build of configuration Debug for project Slave ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:93:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+   93 |  if (HAL_UART_Receive_IT(&huart1, &msgRx, 1) == HAL_OK && msgRx==one) {
+      |                                   ^~~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'HAL_TIM_PeriodElapsedCallback':
+../Core/Src/main.c:129:11: warning: implicit declaration of function 'gcvt' [-Wimplicit-function-declaration]
+  129 |           gcvt(Temperature, sizeof(Temperature), bufferT);
+      |           ^~~~
+../Core/Src/main.c:150:54: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  150 |           HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                      ^~~~~~
+      |                                                      |
+      |                                                      char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:150:38: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  150 |           HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                      ^~~~~~~
+      |                                      |
+      |                                      char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:190:60: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  190 |                 HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                            ^~~~~~
+      |                                                            |
+      |                                                            char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:190:44: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  190 |                 HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                            ^~~~~~~
+      |                                            |
+      |                                            char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:223:51: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  223 |        HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                   ^~~~~~
+      |                                                   |
+      |                                                   char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:223:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  223 |        HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                   ^~~~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:263:52: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  263 |         HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                    ^~~~~~
+      |                                                    |
+      |                                                    char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:263:36: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  263 |         HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                    ^~~~~~~
+      |                                    |
+      |                                    char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:311:33: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+  311 |    HAL_UART_Receive_IT(&huart1, &msgRx, 1);
+      |                                 ^~~~~~
+      |                                 |
+      |                                 char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "Slave.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Progetto\Slave3.0\Slave\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Slave.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Slave.elf
+ 
+arm-none-eabi-size   Slave.elf 
+arm-none-eabi-objdump -h -S  Slave.elf  > "Slave.list"
+   text	   data	    bss	    dec	    hex	filename
+  35348	    124	   2228	  37700	   9344	Slave.elf
+Finished building: default.size.stdout
+ 
+Finished building: Slave.list
+ 
+16:35:41 **** Incremental Build of configuration Debug for project Slave ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:93:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+   93 |  if (HAL_UART_Receive_IT(&huart1, &msgRx, 1) == HAL_OK && msgRx==one) {
+      |                                   ^~~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c:96:11: error: 'contPA0' undeclared (first use in this function)
+   96 |           contPA0++;
+      |           ^~~~~~~
+../Core/Src/main.c:96:11: note: each undeclared identifier is reported only once for each function it appears in
+../Core/Src/main.c: In function 'HAL_TIM_PeriodElapsedCallback':
+../Core/Src/main.c:130:11: warning: implicit declaration of function 'gcvt' [-Wimplicit-function-declaration]
+  130 |           gcvt(Temperature, sizeof(Temperature), bufferT);
+      |           ^~~~
+../Core/Src/main.c:151:54: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  151 |           HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                      ^~~~~~
+      |                                                      |
+      |                                                      char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:151:38: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  151 |           HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                      ^~~~~~~
+      |                                      |
+      |                                      char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:191:60: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  191 |                 HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                            ^~~~~~
+      |                                                            |
+      |                                                            char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:191:44: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  191 |                 HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                            ^~~~~~~
+      |                                            |
+      |                                            char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:224:51: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  224 |        HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                   ^~~~~~
+      |                                                   |
+      |                                                   char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:224:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  224 |        HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                   ^~~~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:264:52: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  264 |         HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                    ^~~~~~
+      |                                                    |
+      |                                                    char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:264:36: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  264 |         HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                    ^~~~~~~
+      |                                    |
+      |                                    char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:312:33: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+  312 |    HAL_UART_Receive_IT(&huart1, &msgRx, 1);
+      |                                 ^~~~~~
+      |                                 |
+      |                                 char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+make: *** [Core/Src/subdir.mk:34: Core/Src/main.o] Error 1
+"make -j8 all" terminated with exit code 2. Build might be incomplete.
+16:36:04 **** Incremental Build of configuration Debug for project Slave ****
+make -j8 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F303xC -c -I../Core/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc -I../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F3xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:94:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+   94 |  if (HAL_UART_Receive_IT(&huart1, &msgRx, 1) == HAL_OK && msgRx==one) {
+      |                                   ^~~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'HAL_TIM_PeriodElapsedCallback':
+../Core/Src/main.c:131:11: warning: implicit declaration of function 'gcvt' [-Wimplicit-function-declaration]
+  131 |           gcvt(Temperature, sizeof(Temperature), bufferT);
+      |           ^~~~
+../Core/Src/main.c:152:54: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  152 |           HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                      ^~~~~~
+      |                                                      |
+      |                                                      char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:152:38: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  152 |           HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                      ^~~~~~~
+      |                                      |
+      |                                      char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:192:60: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  192 |                 HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                            ^~~~~~
+      |                                                            |
+      |                                                            char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:192:44: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  192 |                 HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                            ^~~~~~~
+      |                                            |
+      |                                            char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:225:51: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  225 |        HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                   ^~~~~~
+      |                                                   |
+      |                                                   char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:225:35: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  225 |        HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                   ^~~~~~~
+      |                                   |
+      |                                   char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c:265:52: warning: passing argument 1 of 'strlen' makes pointer from integer without a cast [-Wint-conversion]
+  265 |         HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                                    ^~~~~~
+      |                                                    |
+      |                                                    char
+In file included from ../Core/Src/main.c:22:
+c:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.200.202301161003\tools\arm-none-eabi\include\string.h:41:17: note: expected 'const char *' but argument is of type 'char'
+   41 | size_t  strlen (const char *);
+      |                 ^~~~~~~~~~~~
+../Core/Src/main.c:265:36: warning: pointer targets in passing argument 2 of 'HAL_UART_Transmit' differ in signedness [-Wpointer-sign]
+  265 |         HAL_UART_Transmit(&huart1, &modoTx, strlen(modoTx), HAL_MAX_DELAY);
+      |                                    ^~~~~~~
+      |                                    |
+      |                                    char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1486:79: note: expected 'const uint8_t *' {aka 'const unsigned char *'} but argument is of type 'char *'
+ 1486 | HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout);
+      |                                                                ~~~~~~~~~~~~~~~^~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:313:33: warning: pointer targets in passing argument 2 of 'HAL_UART_Receive_IT' differ in signedness [-Wpointer-sign]
+  313 |    HAL_UART_Receive_IT(&huart1, &msgRx, 1);
+      |                                 ^~~~~~
+      |                                 |
+      |                                 char *
+In file included from ../Core/Inc/stm32f3xx_hal_conf.h:327,
+                 from ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal.h:29,
+                 from ../Core/Inc/main.h:30,
+                 from ../Core/Src/main.c:20:
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_uart.h:1489:75: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'char *'
+ 1489 | HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size);
+      |                                                                  ~~~~~~~~~^~~~~
+arm-none-eabi-gcc -o "Slave.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Utente\Desktop\CSD\Schedino\WorkSpace\Progetto\Slave3.0\Slave\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Slave.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: Slave.elf
+ 
+arm-none-eabi-size   Slave.elf 
+arm-none-eabi-objdump -h -S  Slave.elf  > "Slave.list"
+   text	   data	    bss	    dec	    hex	filename
+  35372	    124	   2228	  37724	   935c	Slave.elf
+Finished building: default.size.stdout
+ 
+Finished building: Slave.list
  
