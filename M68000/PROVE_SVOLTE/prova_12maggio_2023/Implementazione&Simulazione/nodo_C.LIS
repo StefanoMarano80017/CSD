@@ -1,0 +1,64 @@
+00000000                                     1  * Codice del Nodo C
+00000000                                     2  * IPOTESI:
+00000000                                     3  *   - PIA1 connessa con il nodo A
+00000000                                     4  
+00000000                                     5  * COSTANTI GLOBALI
+00000000  =00000004                          6  K_val           		EQU     	4
+00000000  =00000005                          7  N_val           		EQU     	5
+00000000  =00000014                          8  Tot_val		EQU		20
+00000000  =00002006                          9  PIA1_DATA       	EQU     	$2006
+00000000  =00002007                         10  PIA1_CNT        	EQU     	$2007
+00000000                                    11  
+00000000                                    12  * AREA DATI 
+00008000                                    13                 		 ORG     	$8000
+00008000  04                                14  k               		DC.B	  	 K_val
+00008001  05                                15  n               		DC.B    	 N_val
+00008002  14                                16  tot			DC.B		Tot_val
+00008003                                    17  
+00008003  C1 C1 C1 C1 C1 C2 C2 C2 C2 ...    18  messaggio       	DC.B    	$C1,$C1,$C1,$C1,$C1,$C2,$C2,$C2,$C2,$C2,$C3,$C3,$C3,$C3,$C3,$C4,$C4,$C4,$C4,$C4
+00008017                                    19  
+00008017                                    20  * STRUTTURE NECESSARIE PER IL DEBUGGING
+00009900                                    21                  		ORG     	$9900
+00009900  =00000000                         22  CONTINUE        	EQU     	0
+00009900  =00000001                         23  STOP            		EQU     	1
+00009900  01                                24  debug_var      		DC.B    	STOP
+00009901                                    25                  
+00009902                                    26                  		ORG     	$9902
+00009902                                    27  BREAKPOINT
+00009902  0C39 0000 00009900                28  			CMPI.B  	#CONTINUE,debug_var
+0000990A  66F6                              29                  		BNE     	BREAKPOINT
+0000990C  4E75                              30                  		RTS
+0000990E                                    31  *****************************************
+0000990E                                    32  *FUNZIONE INIT_PIA
+0000990E  11FC 0000 2007                    33  INIT_PIA 	MOVE.B  	#0,PIA1_CNT
+00009914  11FC 00FF 2006                    34                  	MOVE.B  	#$FF,PIA1_DATA
+0000991A  11FC 00E4 2007                    35                  	MOVE.B  	#%11100100,PIA1_CNT
+00009920  4E75                              36  		RTS
+00009922                                    37  
+00009922                                    38  *****************************************
+00009922                                    39  
+00009922                                    40  
+00009922                                    41  * AREA MAIN
+00009922                                    42  
+00008100                                    43                  	ORG     		$8100
+00008100  4EB9 0000990E                     44  MAIN	    	JSR	     		INIT_PIA 
+00008106  207C 00008003                     45                  	MOVEA.L 		#messaggio,A0
+0000810C  1039 00008002                     46  		MOVE.B  		tot,D0
+00008112  4201                              47  		CLR.B			D1	
+00008114                                    48                  	*MULU    		n,D0
+00008114  1438 2007                         49  WAIT_SEND    MOVE.B  		PIA1_CNT,D2		;In attesa di DATA ACKNOWLEDGE
+00008118  0202 0080                         50                  	ANDI.B  		#$80,D2		;aspetta che CRB7 divenga 1
+0000811C  67F6                              51                  	BEQ     		WAIT_SEND
+0000811E  B001                              52                  	CMP.B   		D1,D0
+00008120  6300 0016                         53                  	BLS     			FINE
+00008124                                    54  
+00008124  1438 2006                         55                  	MOVE.B  		PIA1_DATA,D2		
+00008128  4EB9 00009902                     56                  	JSR     			BREAKPOINT 		;<- BREAKPOINT SULLA VARIABILE debug_var
+0000812E  11F0 1000 2006                    57                  	MOVE.B  		(A0,D1),PIA1_DATA	;dato su bus di PIA porto B
+00008134  5201                              58                  	ADDQ.B 		 #1,D1			
+00008136  60DC                              59                  	BRA     		WAIT_SEND
+00008138                                    60  
+00008138                                    61  FINE            	END     		MAIN
+
+No errors detected
+No warnings generated

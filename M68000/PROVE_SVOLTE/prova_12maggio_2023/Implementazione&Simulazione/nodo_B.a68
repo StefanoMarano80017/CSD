@@ -1,0 +1,77 @@
+* Codice del Nodo B
+* IPOTESI:
+*   - PIA1 connessa con il nodo A
+
+* AREA COSTANTI GLOBALI
+
+K_val           		EQU     	4
+N_val           		EQU     	5
+Tot_val		EQU		40
+PIA1_DATA       	EQU     	$2006
+PIA1_CNT        	EQU     	$2007
+
+* AREA DATI 
+               		 ORG     	$8000
+k               		DC.B	   	 K_val
+n               		DC.B    	 N_val
+tot			DC.B		Tot_val
+
+messaggio       	DC.B    	$B1,$B1,$B1,$B1,$B1,$B2,$B2,$B2,$B2,$B2,$B3,$B3,$B3,$B3,$B3,$B4,$B4,$B4,$B4,$B4,$B5,$B5,$B5,$B5,$B5,$B6,$B6,$B6,$B6,$B6,$B7,$B7,$B7,$B7,$B7,$B8,$B8,$B8,$B8,$B8
+
+* STRUTTURE NECESSARIE PER IL DEBUGGING
+                		ORG     	$9900
+CONTINUE        	EQU     	0
+STOP            		EQU     	1
+debug_var      		DC.B    	STOP
+                
+                		ORG     	$9902
+BREAKPOINT
+			CMPI.B  	#CONTINUE,debug_var
+                		BNE     	BREAKPOINT
+                		RTS
+*****************************************
+*FUNZIONE INIT_PIA
+INIT_PIA 	MOVE.B  	#0,PIA1_CNT
+                	MOVE.B  	#$FF,PIA1_DATA
+                	MOVE.B  	#%11100100,PIA1_CNT
+		RTS
+
+*****************************************
+
+* AREA MAIN
+
+                	ORG     		$8100
+MAIN	    	JSR	     		INIT_PIA 
+                	MOVEA.L 		#messaggio,A0
+		MOVE.B  		tot,D0	
+		CLR.B			D1
+                	*MULU    		n,D0			
+                	*MULU    		#2,D0			;prodotto 2*n*k elementi
+WAIT_SEND    MOVE.B  		PIA1_CNT,D2		;In attesa di DATA ACKNOWLEDGE
+               	ANDI.B  		#$80,D2		;aspetta che CRB7 divenga 1
+                	BEQ     		WAIT_SEND
+                	CMP.B   		D1,D0
+                	BLS     			FINE
+
+                	MOVE.B  		PIA1_DATA,D2		
+                	JSR     			BREAKPOINT 		;<- BREAKPOINT SULLA VARIABILE debug_var
+                	MOVE.B  		(A0,D1),PIA1_DATA	;dato su bus di PIA porto B
+                	ADDQ.B 		 #1,D1			
+                	BRA     		WAIT_SEND
+
+FINE            	END     		MAIN
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

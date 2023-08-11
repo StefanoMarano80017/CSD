@@ -1,0 +1,363 @@
+
+************************************************************
+**********AREA DATI**************************************
+PIABD_C		EQU    		$2004		;indirizzo di PIA-B dato per il nodo b
+PIABC_C		EQU    		$2005		;indirizzo di PIA-B stato/controllo per il nodo b
+PIABD_B		EQU    		$2008		;indirizzo di PIA-B dato per il nodo c
+PIABC_B		EQU    		$2009		;indirizzo di PIA-B stato/controllo per il nodo c
+N_CAR			EQU		5
+
+			ORG		$8000
+N			DC.B		5	; numero di caratteri dei messaggi
+M_B			DC.B		2	; numero di messaggi di b
+K			DC.B		4	; numero di iterazioni
+
+CONT_K		DC.B		0	; contatore delle iterazioni
+
+MSG_B		DS.B		N_CAR	; messaggio di b (di volta in volta verrà sovrascritto)
+MSG_C		DS.B		N_CAR	; messaggio di c (di volta in volta verrà sovrascritto)
+
+CONT_C_B		DC.B		0	; contatore caratteri ricevuti da b
+CONT_C_C		DC.B		0	; contatore caratteri ricevuti da c
+
+CONT_M_B		DC.B		0	; contatore messaggi ricevuti da b
+
+FLG_B			DC.B		0	; flag che indica se ho ricevuto 2 messaggi interi da b
+FLG_C			DC.B		0	; flag che indica se ho ricevuto un intero messaggio da c
+
+LOCK			DC.B		0	; variabile per l'uso del TAS
+POS			DC.B		0	; POS = 0 indica nessun possesso, POS = 1 indica possesso di b, POS = 2 indica possesso di c
+
+SOS_B			DC.B		0	; SOS_B = 1 indica che b è sospeso
+SOS_C			DC.B		0	; SOS_C = 1 indica che c è sospeso
+***********************************************************
+***********AREA MAIN*********************************	
+			ORG    		$8300
+MAIN			
+			JSR		INITB_PIAB	;inizializza PIA porto B di b
+			JSR		INITC_PIAB	;inizializza PIA porto B di c
+
+
+			*MOVE.W	SR,D0			;legge il registro di stato
+			ANDI	#$00FF,SR 		;maschera per reg stato (stato utente, int abilitati)
+			*MOVE.W	D0,SR			;pone liv int a 000
+
+LOOP  			JMP 		LOOP				
+	
+
+*********************************************************************************************************
+*********************************************************************************************************
+INITB_PIAB
+			MOVE.B	#$00,PIABC_B				
+			MOVE.B	#$00,PIABD_B		    
+			MOVE.B	#%11100101,PIABC_B 
+			MOVE.B  	PIABD_B,D0
+			
+			
+			RTS
+
+*********************************************************************************************************
+*********************************************************************************************************
+INITC_PIAB
+			MOVE.B	#$00,PIABC_C				
+			MOVE.B	#$00,PIABD_C		    
+			MOVE.B	#%11100101,PIABC_C 
+			MOVE.B  	PIABD_C,D0
+			
+			
+			RTS
+
+
+*******************************************************************************************************
+*La pia-B ha ricevuto un carattere dalla pia-A partner, interrompe il processore che
+*con la ISR riceve il carattere e lo salva in memoria
+*ISR a $8700 associata all' interrupt di liv. 3  #vect 27  mappato a $6C della ROM
+********************************************************************************************************	
+	
+			ORG 		$8700		
+
+IRQ_B    
+			MOVEM.L	D0-D1/A0-A1,-(A7)
+
+IF_B_1			TAS 		LOCK
+			BNE		ELSE_B_1
+
+			MOVE.B	POS,D0
+IF_B_2			CMP.B		#1,D0
+			BEQ		SKIPB
+			
+			CMP.B		#0,D0
+			BNE		ELSE_B_2
+
+SKIPB			MOVE.B	#1,POS
+			MOVE.B	#0,LOCK
+
+RX_B			MOVEA.L	#PIABD_B,A0
+			MOVEA.L	#MSG_B,A1
+			MOVE.B	CONT_C_B,D0
+
+			MOVE.B	(A0),(A1,D0)
+			ADD.B		#1,D0
+			MOVE.B	D0,CONT_C_B
+			
+			MOVE.B	N,D1
+IF_B_3			CMP		D0,D1
+			BNE		FINE_B
+
+			MOVE.B	#0,CONT_C_B
+			MOVE.B	CONT_M_B,D0
+			ADD.B		#1,D0
+			MOVE.B	D0,CONT_M_B
+
+			MOVE.B	M_B,D1
+IF_B_4			CMP		D0,D1
+			BNE		ELSE_B_4
+
+			MOVE.B	#0,CONT_M_B
+			MOVE.B	#1,FLG_B
+			MOVE.B	#0,POS
+
+			MOVE.B	FLG_C,D0
+IF_B_5			CMP.B		#1,D0
+			BNE		RISVEGLIO_C
+
+			MOVE.B	CONT_K,D0
+			ADD.B		#1,D0
+			MOVE.B	D0,CONT_K
+
+			MOVE.B	K,D1
+IF_B_6			CMP.B		D0,D1
+			BNE		ELSE_B_6
+
+			MOVE.B	#0,PIABC_B
+			MOVE.B	#0,PIABC_C
+
+			BRA		FINE_B
+
+ELSE_B_2		MOVE.B	#0,LOCK
+ELSE_B_1		MOVE.B	#1,SOS_B
+			BRA		FINE_B
+
+ELSE_B_4		MOVE.B	#0,POS
+			BRA		RISVEGLIO_C
+
+ELSE_B_6		MOVE.B	#0,FLG_B
+			MOVE.B	#0,FLG_C
+			
+RISVEGLIO_C		MOVE.B	SOS_C,D0
+IF_B_7			CMP.B		#1,D0
+			BNE		FINE_B
+
+			MOVE.B	#2,POS
+			MOVE.B	#0,SOS_C
+			
+			MOVE.B	CONT_C_C,D0
+			MOVEA.L 	#PIABD_C,A0
+			MOVEA.L	#MSG_C,A1
+
+			MOVE.B	(A0),(A1,D0)
+			ADD.B		#1,D0
+			MOVE.B	D0,CONT_C_C
+	
+FINE_B		MOVEM.L	(A7)+,A1-A0/D1-D0
+			RTE
+
+*******************************************************************************************************
+*La pia-B ha ricevuto un carattere dalla pia-A partner, interrompe il processore che
+*con la ISR riceve il carattere e lo salva in memoria
+*ISR a $8800 associata all' interrupt di liv. 4 mappato a $70 della ROM
+********************************************************************************************************
+			ORG 		$8900		
+
+IRQ_C			
+			MOVEM.L	D0-D2/A0-A1,-(A7)
+
+IF_C_1			TAS		LOCK
+			BNE		ELSE_C_2
+
+			MOVE.B	FLG_C,D0
+			CMP.B		#0,D0
+			BNE		ELSE_C_2
+
+			MOVE.B	POS,D0
+			CMP.B		#2,D0
+			BEQ		SKIPC
+
+IF_C_2			CMP.B		#0,D0
+			BNE		ELSE_C_2
+
+			MOVE.B	#2,POS
+SKIPC			MOVE.B	#0,LOCK
+
+RX_C			MOVEA.L	#PIABD_C,A0
+			MOVEA.L	#MSG_C,A1
+			MOVE.B	CONT_C_C,D0
+			
+			MOVE.B	(A0),(A1,D0)
+			ADD.B		#1,D0
+			MOVE.B	D0,CONT_C_C
+
+			MOVE.B	N,D1
+IF_C_3			CMP.B		D0,D1
+			BNE		FINE_C
+
+			MOVE.B	#0,CONT_C_C
+			MOVE.B	#1,FLG_C
+
+			MOVE.B	FLG_B,D0
+IF_C_4			CMP.B		#1,D0
+			BNE		ELSE_C_4
+
+			MOVE.B	CONT_K,D0
+			ADD.B		#1,D0
+			MOVE.B	D0,CONT_K
+			
+			MOVE.B	K,D1
+IF_C_5			CMP.B		D0,D1
+			BNE		ELSE_C_5
+
+			MOVE.B	#0,PIABC_C
+			MOVE.B	#0,PIABC_B
+
+			BRA		FINE_C
+
+ELSE_C_2		MOVE.B	#0,LOCK
+			MOVE.B	#1,SOS_C
+RIS_B_TOTALE	MOVE.B	SOS_B,D0
+			CMP.B		#1,D0
+			BNE		FINE_C
+
+			MOVE.B	#1,POS
+			MOVE.B	#0,SOS_B
+			MOVE.B	CONT_C_B,D0
+			
+			MOVE.B	CONT_C_B,D1
+			ADD.B		#1,D1
+			MOVE.B	D1,CONT_C_B
+
+			MOVE.B	N,D2
+IF_C_6			CMP.B		D1,D2
+			BNE		ELSE_C_6
+
+			MOVE.B	#0,CONT_C_B
+			MOVE.B	CONT_M_B,D2
+			ADD.B		#1,D2
+			MOVE.B	D2,CONT_M_B
+
+			MOVE.B	M_B,D1
+IF_C_7			CMP.B		D1,D2
+			BNE		ELSE_C_8
+
+			MOVE.B	#1,FLG_B
+			MOVE.B	#0,CONT_M_B
+			MOVE.B	#0,POS
+
+			MOVE.B	FLG_C,D1
+IF_C_8			CMP.B		#1,D1
+			BNE		ELSE_C_8
+			
+			MOVE.B	CONT_K,D1
+			ADD.B		#1,D1
+			MOVE.B	D1,CONT_K
+
+			MOVE.B	K,D2
+IF_C_9			CMP.B		D1,D2
+			BNE		ELSE_C_9
+			
+			MOVEA.L	#PIABD_B,A0
+			MOVEA.L	#MSG_B,A1
+			MOVE.B	(A0),(A1,D0)
+
+			MOVE.B	#0,PIABC_C
+			MOVE.B	#0,PIABC_B
+			
+			BRA		FINE_C
+
+ELSE_C_9		MOVE.B	#0,FLG_B
+			MOVE.B	#0,FLG_C
+ELSE_C_8		MOVE.B	#2,POS
+			
+			MOVEA.L	#PIABD_B,A0
+			MOVEA.L	#MSG_B,A1
+			MOVE.B	(A0),(A1,D0)
+			
+			JMP		RX_C
+
+ELSE_C_6
+
+			MOVEA.L	#PIABD_B,A0
+			MOVEA.L	#MSG_B,A1
+			MOVE.B	(A0),(A1,D0)
+
+			BRA		FINE_C
+
+ELSE_C_4		MOVE.B	#0,POS
+			BRA		RIS_B
+
+
+ELSE_C_5		MOVE.B	#0,FLG_C
+			MOVE.B	#0,FLG_B
+			MOVE.B	#0,POS
+
+RIS_B			MOVE.B	SOS_B,D0
+			CMP.B		#1,D0
+			BNE		FINE_C
+
+			MOVE.B	#1,POS
+			MOVE.B	#0,SOS_B
+			MOVE.B	CONT_C_B,D0
+			
+			MOVE.B	CONT_C_B,D1
+			ADD.B		#1,D1
+			MOVE.B	D1,CONT_C_B
+
+			MOVEA.L	#PIABD_B,A0
+			MOVEA.L	#MSG_B,A1
+			MOVE.B	(A0),(A1,D0)
+
+FINE_C		MOVEM.L	(A7)+,A1-A0/D2-D0
+			RTE	
+	
+			    
+
+			END		MAIN
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

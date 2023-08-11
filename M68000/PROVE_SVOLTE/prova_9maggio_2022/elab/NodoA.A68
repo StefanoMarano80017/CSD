@@ -1,0 +1,212 @@
+**********************AREA    DATI ***************
+			ORG		$8000
+N			DS.B		0
+T			DC.B		0
+STATOF		DC.B		1
+******VAR GESTIONE MSG PROVENIENTI DA NODO B
+TOT_C			DC.B		1
+CONT_Cb		DC.B		0
+CONT_Mb		DC.B		0
+*******VAR GESTIONE MSG PROVENIENTI DA NODO C
+CONT_Cc		DC.B		0
+CONT_Mc		DC.B		0
+MSG			DC.B		0
+
+
+******VAR GESTIONE ISR **********************
+			ORG		$8100
+TURNOB		DC.B		0
+SOSP_A		DC.B		0
+SOSP_B		DC.B		0
+FINE_A			DC.B		0
+FINE_B		DC.B		0
+			
+**IDENTIFICATIVO ISR
+			ORG		$8150
+ALFHA			EQU		$8700
+BETA			EQU		$8800
+
+
+
+**********AREA MAIN ***********************
+		
+			ORG		$8200
+PIAAD			EQU		$2004			;registro dato PIA-A
+PIAAC			EQU		$2005			;registro stato\controllo PIA-A
+
+PIAAD1			EQU		$2008			;registro dato PIA-A1
+PIAAC1			EQU		$2009			;registro stato\controllo PIA-A1
+
+MAIN			JSR		PIA_A_INIT
+			
+			MOVEA.L	#MSG,A0
+			*Coppia Indirizzi PIA_A
+
+			MOVEA.L	#PIAAC,A1
+			MOVEA.L	#PIAAD,A2
+
+			*Coppia Indirizzi PIA_A1
+
+			MOVEA.L	#PIAAC1,A3
+			MOVEA.L	#PIAAD1,A4
+			
+			MOVE.W	SR,D0			;legge il registro di stato
+			ANDI.W	#$D8FF,D0 		;maschera per reg stato (stato utente, int abilitati)
+			MOVE.W	D0,SR			;pone liv int a 000
+	
+LOOP			BRA		LOOP
+
+
+********SUBROUTINE INIT PIA*******
+PIA_A_INIT		MOVE.B	#0,PIAAC		;inizializzo a zero il registro stato\controllo
+			MOVE.B	#0,PIAAD		;inizializzo a zero il registro dato
+			MOVE.B	#%00100101,PIAAC	;definisco il modo di funzionamento
+
+			MOVE.B	#0,PIAAC1		;inizializzo a zero il registro stato\controllo
+			MOVE.B	#$00,PIAAD1		;inizializzo a zero il registro dato
+			MOVE.B	#%00100101,PIAAC1	;definisco il modo di funzionamento
+
+			RTS
+		
+***ISR1, ricezione messaggio MSG
+			ORG		ALFHA
+			
+ISR_A			CMP.B		#1,(STATOF)
+			BNE		AFASE2
+
+AFASE1		MOVEM.L	D0-D1/A0-A1,-(SP)		;salvo il contesto
+			*inizializzo i registri che mi servono	
+			MOVEA.L	#PIAAD,A1
+			MOVEA.L	#MSG,A0			;indirizzo area di salvataggio
+			MOVE.B	CONT_Cb,D0			;contatore corrente dei caratteri ricevuti da B
+			MOVE.B	N,D1				;dimensione del primo  msg ricevuto da B
+			
+			*OPERAZIONI
+
+			MOVE.B	(A1),(A0,D0)			;leggo carattere
+			ADD.B		#1,D0				;aggiorno il contatore dei caratteri ricevuti
+			MOVE.B	D0,CONT_Cb			;salvo in memoria contatore corrente dei caratteri ricevuti da B
+			ADD.B		#1,TOT_C
+			CMP.B		#1,D0				;è il primo carattere??
+			BNE		SKIP
+			MOVE.B	(A1),D1				;essendo il primo carattere , salvo la dim degli N caratteri che comporranno i T+1 messaggi 
+			MOVE.B	D1,N				, salvo la dim degli N caratteri  in Memoria
+SKIP			CMP.B		D0,D1				;vedo se gli Ncaratteri ricevuti =N ,formano il messaggio
+			BNE		WAIT_NEXT_C			;condizione non verificata
+			ADD.B		#1,CONT_Mb			;condizione  verificata,salvo in memoria il contatore del msg ricevuto da B
+			ANDI.B		#0,CONT_Cb			;azzero contore dei caratteri
+			MOVE.B	#1,TURNOB
+			ADD.B		#1,STATOF
+			MOVEM.L	(SP)+,A0-A1/D0-D1		;ripristino il contesto 
+			RTE
+	
+WAIT_NEXT_C		MOVEM.L	(SP)+,A0-A1/D0-D1		;ripristino il contesto 	 e attendo il prossimo carattere					
+			RTE						
+
+
+AFASE2		CMP.B		#1,(TURNOB)
+			BNE		A_SOSP
+		
+A_NONSOSP		MOVEM.L	D0-D4/A0-A1,-(SP)		;salvo il contesto
+			*inizializzo i registri che mi servono	
+			MOVEA.L	#PIAAD,A1
+			MOVEA.L	#MSG,A0			;indirizzo area di salvataggio
+			MOVE.B	CONT_Cb,D0			;contatore corrente dei caratteri ricevuti da B
+			MOVE.B	TOT_C,D1			;tot caratteri ricevuti da  B
+			MOVE.B	CONT_Mb,D2			;contatore corrente dei msg ricevuti da B
+			MOVE.B	N,D3				;dim N caratteri
+			MOVE.B	T,D4				;dim T MSG
+
+			ADD.B		D0,D1
+			
+			MOVE.B	(A1),(A0,D1)			;leggo carattere
+			ADD.B		#1,D0				;aggiorno il contatore dei caratteri ricevuti
+			MOVE.B	D0,CONT_Cb			;salvo in memoria contatore corrente dei caratteri ricevuti da B
+			CMP.B		D0,D3				;vedo se gli Ncaratteri ricevuti =N ,formano il messaggio
+			BNE		SET_TURNO
+			ADD.B		#1,D2				;aggiorno il contatore dei msg ricevuti
+			MOVE.B	D2,CONT_Mb			;salvo in memoria contatore corrente dei msg ricevuti da B
+			CLR.B		D0				;azzero contatore corrente dei caratteri ricevuti da B
+			ANDI.B		#0,CONT_Cb			;azzero contore dei caratteri
+
+			CMP.B		D2,D4				;vedo se gli Tmsg ricevuti =T
+			BEQ		FINE_OP 
+
+
+SET_TURNO		MOVEM.L	(SP)+,A0-A1/D0-D4		;ripristino il contesto 
+			MOVE.B	#0,TURNOB
+			CMP.B		#1,SOSP_B
+			BNE		EXIT
+			MOVE.B	#0,SOSP_B
+			BRA		ISR_B
+			RTE
+						
+
+FINE_OP		MOVE.B	#1,FINE_A
+			CMP.B		#0,FINE_B
+			BNE		EXIT
+			BRA		SET_TURNO
+
+A_SOSP		MOVE.B	#1,SOSP_A	 					
+			RTE	
+
+EXIT			MOVEM.L	(SP)+,A0-A1/D0-D4		;ripristino il contesto 
+			RTE
+
+
+
+
+***ISR2, ricezione messaggio MSG
+			ORG		BETA
+			
+ISR_B			CMP.B		#1,(STATOF)
+			BNE		BFASE2
+			MOVE.B	#1,SOSP_B
+			RTE
+			
+
+BFASE2		CMP.B		#0,(TURNOB)
+			BNE		B_SOSP
+
+B_NONSOSP		MOVEM.L	D0-D4/A0-A1,-(SP)		;salvo il contesto
+
+			*inizializzo i registri che mi servono
+	
+			MOVEA.L	#PIAAD1,A1
+			MOVEA.L	#MSG,A0			;indirizzo area di salvataggio
+			MOVE.B	CONT_Cc,D0			;contatore corrente dei caratteri ricevuti da C
+			MOVE.B	TOT_C,D1			;tot caratteri 
+			MOVE.B	CONT_Mc,D2			;contatore corrente dei msg ricevuti da C
+			MOVE.B	N,D3				;dim N caratteri
+			MOVE.B	T,D4				;dim T MSG
+
+
+
+
+
+
+
+
+
+
+
+		
+B_SOSP		MOVE.B	#1,SOSP_B	 					
+			RTE
+
+
+
+
+
+
+
+
+
+
+
+
+			END		MAIN
+
+
+
+

@@ -1,0 +1,117 @@
+IRQ_B{
+    tas(LOCK):
+        if(possesso è di B or possesso di nessuno):
+            assegno il possesso a B
+            LOCK= 0
+            
+            Rx_B
+            incremento contatore caratteri ricevuti di B
+
+            if(ho ricevuto N caratteri):
+                azzero il contatore dei caratteri ricevuti di B
+                incremento contatore messaggi ricevuti di B
+            
+                if(ho ricevuto 2 messaggi):
+                    azzero il contatore dei caratteri ricevuti di B
+                    alzo FLG_B per segnalare l'avvenuta letttura del secondo messaggio
+
+                    imposto possesso a 0
+                    if(FLG_C è alto):
+                        incremento il contatore delle iterazioni K
+
+                        if(ho effettuato k iterazioni):
+                            disabilito le periferiche
+                        else:
+                            azzero FLG_B
+                            azzero FLG_C
+
+                            if(C è sospeso):
+                                risveglio C
+                    else:
+                        if(C è sospeso):
+                            risveglio C
+                else:
+                    imposto possesso a 0
+                    if(C è sospeso):
+                        risveglio C
+            else:
+                fine_b
+        else:
+            LOCK=0
+            sospendi B
+    else:
+        sospendo B
+
+    fine_B
+}
+
+
+IRQ_C{
+    tas(LOCK):
+        if(posesso è di C o possesso non è assegnato):
+            imposto il possesso a C
+            LOCK=0
+
+            Rx_C
+            incremento il contatore die caratteri ricevuti di c
+
+            if(ho ricevuto N caratteri):
+                azzero il contatore dei caratteri ricevuti di C
+                alzo il FLG_C per segnalare la lettura dell'intero messaggio
+
+                if(FLG_B è alto):
+                    incremento il contatore delle interazioni k
+
+                    if(ho effettuato k iterazioni):
+                        disabilitop le periferiche
+                    else:
+                        azzero FLG_C
+                        azzero FLB_B
+                        imposto possesso a 0
+
+                        if(B è sospeso):
+                            risveglio B
+                else:
+                    imposto il possesso a 0
+                    if(B è sospeso):
+                        risveglio B
+            else:
+                fine_c
+        else:
+            LOCK=0
+            sospendo C
+            if(B è sospeso):
+                risveglio B
+    else:
+        sospendo C
+        if(B è sospeso):
+            risveglio B
+
+    fine_C
+}
+
+presento tre casi di interesse per i quali abbiamo risolto eventuali problemi di deadlock
+
+1)  la PIA_B ha gia ricevuto un messaggio intero e due caratteri del secondo messaggio
+    arriva l'interruzione di C che entra nell'area critica
+    arriva l'interruzione di B che provando ad entrare nell'area critica si sospende
+    C capisce che non è il suo turno e si sospende e poi risveglia B
+    B finisce di leggere l'intero messaggio fa le sue operazioni e poi riveglia C
+    
+    B: B2 B2 B2 B2
+    C:    #........C C C C C
+
+2)  la PIA_C ha gia ricevuto due caratteri del messaggio
+    arriva l'interruzione di C che entra nell'area critica, esce e sta per fare Rx_C
+    arriva l'interruzione di B che entra nell'area critica ma capisce che non è il suo turno e si sospende
+    C completa il messaggio, fa le sue operazioni e risveglia B
+
+    B:      #.........B
+    C: C C C C C
+
+3) C ha gia letto il suo messaggio
+    arriva un'interruzione di C
+    C capisce che non è ancora il suo turno e si sospende
+
+    B:
+    C: C1 C1 C1 C1 C1 SOS_C 

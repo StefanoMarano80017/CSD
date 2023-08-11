@@ -1,0 +1,326 @@
+00000000                                     1  
+00000000                                     2  ************************************************************
+00000000                                     3  **********AREA DATI**************************************
+00000000  =00002004                          4  PIABD_C		EQU    		$2004		;indirizzo di PIA-B dato per il nodo b
+00000000  =00002005                          5  PIABC_C		EQU    		$2005		;indirizzo di PIA-B stato/controllo per il nodo b
+00000000  =00002008                          6  PIABD_B		EQU    		$2008		;indirizzo di PIA-B dato per il nodo c
+00000000  =00002009                          7  PIABC_B		EQU    		$2009		;indirizzo di PIA-B stato/controllo per il nodo c
+00000000  =00000005                          8  N_CAR			EQU		5
+00000000                                     9  
+00008000                                    10  			ORG		$8000
+00008000  05                                11  N			DC.B		5	; numero di caratteri dei messaggi
+00008001  02                                12  M_B			DC.B		2	; numero di messaggi di b
+00008002  04                                13  K			DC.B		4	; numero di iterazioni
+00008003                                    14  
+00008003  00                                15  CONT_K		DC.B		0	; contatore delle iterazioni
+00008004                                    16  
+00008004                                    17  MSG_B		DS.B		N_CAR	; messaggio di b (di volta in volta verrà sovrascritto)
+00008009                                    18  MSG_C		DS.B		N_CAR	; messaggio di c (di volta in volta verrà sovrascritto)
+0000800E                                    19  
+0000800E  00                                20  CONT_C_B		DC.B		0	; contatore caratteri ricevuti da b
+0000800F  00                                21  CONT_C_C		DC.B		0	; contatore caratteri ricevuti da c
+00008010                                    22  
+00008010  00                                23  CONT_M_B		DC.B		0	; contatore messaggi ricevuti da b
+00008011                                    24  
+00008011  00                                25  FLG_B			DC.B		0	; flag che indica se ho ricevuto 2 messaggi interi da b
+00008012  00                                26  FLG_C			DC.B		0	; flag che indica se ho ricevuto un intero messaggio da c
+00008013                                    27  
+00008013  00                                28  LOCK			DC.B		0	; variabile per l'uso del TAS
+00008014  00                                29  POS			DC.B		0	; POS = 0 indica nessun possesso, POS = 1 indica possesso di b, POS = 2 indica possesso di c
+00008015                                    30  
+00008015  00                                31  SOS_B			DC.B		0	; SOS_B = 1 indica che b è sospeso
+00008016  00                                32  SOS_C			DC.B		0	; SOS_C = 1 indica che c è sospeso
+00008017                                    33  ***********************************************************
+00008017                                    34  ***********AREA MAIN*********************************	
+00008300                                    35  			ORG    		$8300
+00008300                                    36  MAIN			
+00008300  4EB9 00008316                     37  			JSR		INITB_PIAB	;inizializza PIA porto B di b
+00008306  4EB9 0000832E                     38  			JSR		INITC_PIAB	;inizializza PIA porto B di c
+0000830C                                    39  
+0000830C                                    40  
+0000830C                                    41  			*MOVE.W	SR,D0			;legge il registro di stato
+0000830C  027C 00FF                         42  			ANDI	#$00FF,SR 		;maschera per reg stato (stato utente, int abilitati)
+00008310                                    43  			*MOVE.W	D0,SR			;pone liv int a 000
+00008310                                    44  
+00008310  4EF9 00008310                     45  LOOP  			JMP 		LOOP				
+00008316                                    46  	
+00008316                                    47  
+00008316                                    48  *********************************************************************************************************
+00008316                                    49  *********************************************************************************************************
+00008316                                    50  INITB_PIAB
+00008316  11FC 0000 2009                    51  			MOVE.B	#$00,PIABC_B				
+0000831C  11FC 0000 2008                    52  			MOVE.B	#$00,PIABD_B		    
+00008322  11FC 00E5 2009                    53  			MOVE.B	#%11100101,PIABC_B 
+00008328  1038 2008                         54  			MOVE.B  	PIABD_B,D0
+0000832C                                    55  			
+0000832C                                    56  			
+0000832C  4E75                              57  			RTS
+0000832E                                    58  
+0000832E                                    59  *********************************************************************************************************
+0000832E                                    60  *********************************************************************************************************
+0000832E                                    61  INITC_PIAB
+0000832E  11FC 0000 2005                    62  			MOVE.B	#$00,PIABC_C				
+00008334  11FC 0000 2004                    63  			MOVE.B	#$00,PIABD_C		    
+0000833A  11FC 00E5 2005                    64  			MOVE.B	#%11100101,PIABC_C 
+00008340  1038 2004                         65  			MOVE.B  	PIABD_C,D0
+00008344                                    66  			
+00008344                                    67  			
+00008344  4E75                              68  			RTS
+00008346                                    69  
+00008346                                    70  
+00008346                                    71  *******************************************************************************************************
+00008346                                    72  *La pia-B ha ricevuto un carattere dalla pia-A partner, interrompe il processore che
+00008346                                    73  *con la ISR riceve il carattere e lo salva in memoria
+00008346                                    74  *ISR a $8700 associata all' interrupt di liv. 3  #vect 27  mappato a $6C della ROM
+00008346                                    75  ********************************************************************************************************	
+00008346                                    76  	
+00008700                                    77  			ORG 		$8700		
+00008700                                    78  
+00008700                                    79  IRQ_B    
+00008700  48E7 C0C0                         80  			MOVEM.L	D0-D1/A0-A1,-(A7)
+00008704                                    81  
+00008704  4AF9 00008013                     82  IF_B_1			TAS 		LOCK
+0000870A  6600 00CC                         83  			BNE		ELSE_B_1
+0000870E                                    84  
+0000870E  1039 00008014                     85  			MOVE.B	POS,D0
+00008714  B03C 0001                         86  IF_B_2			CMP.B		#1,D0
+00008718  6700 000A                         87  			BEQ		SKIPB
+0000871C                                    88  			
+0000871C  B03C 0000                         89  			CMP.B		#0,D0
+00008720  6600 00AE                         90  			BNE		ELSE_B_2
+00008724                                    91  
+00008724  13FC 0001 00008014                92  SKIPB			MOVE.B	#1,POS
+0000872C  13FC 0000 00008013                93  			MOVE.B	#0,LOCK
+00008734                                    94  
+00008734  207C 00002008                     95  RX_B			MOVEA.L	#PIABD_B,A0
+0000873A  227C 00008004                     96  			MOVEA.L	#MSG_B,A1
+00008740  1039 0000800E                     97  			MOVE.B	CONT_C_B,D0
+00008746                                    98  
+00008746  1390 0000                         99  			MOVE.B	(A0),(A1,D0)
+0000874A  5200                             100  			ADD.B		#1,D0
+0000874C  13C0 0000800E                    101  			MOVE.B	D0,CONT_C_B
+00008752                                   102  			
+00008752  1239 00008000                    103  			MOVE.B	N,D1
+00008758  B240                             104  IF_B_3			CMP		D0,D1
+0000875A  6600 00E0                        105  			BNE		FINE_B
+0000875E                                   106  
+0000875E  13FC 0000 0000800E               107  			MOVE.B	#0,CONT_C_B
+00008766  1039 00008010                    108  			MOVE.B	CONT_M_B,D0
+0000876C  5200                             109  			ADD.B		#1,D0
+0000876E  13C0 00008010                    110  			MOVE.B	D0,CONT_M_B
+00008774                                   111  
+00008774  1239 00008001                    112  			MOVE.B	M_B,D1
+0000877A  B240                             113  IF_B_4			CMP		D0,D1
+0000877C  6600 0066                        114  			BNE		ELSE_B_4
+00008780                                   115  
+00008780  13FC 0000 00008010               116  			MOVE.B	#0,CONT_M_B
+00008788  13FC 0001 00008011               117  			MOVE.B	#1,FLG_B
+00008790  13FC 0000 00008014               118  			MOVE.B	#0,POS
+00008798                                   119  
+00008798  1039 00008012                    120  			MOVE.B	FLG_C,D0
+0000879E  B03C 0001                        121  IF_B_5			CMP.B		#1,D0
+000087A2  6600 005C                        122  			BNE		RISVEGLIO_C
+000087A6                                   123  
+000087A6  1039 00008003                    124  			MOVE.B	CONT_K,D0
+000087AC  5200                             125  			ADD.B		#1,D0
+000087AE  13C0 00008003                    126  			MOVE.B	D0,CONT_K
+000087B4                                   127  
+000087B4  1239 00008002                    128  			MOVE.B	K,D1
+000087BA  B200                             129  IF_B_6			CMP.B		D0,D1
+000087BC  6600 0032                        130  			BNE		ELSE_B_6
+000087C0                                   131  
+000087C0  11FC 0000 2009                   132  			MOVE.B	#0,PIABC_B
+000087C6  11FC 0000 2005                   133  			MOVE.B	#0,PIABC_C
+000087CC                                   134  
+000087CC  6000 006E                        135  			BRA		FINE_B
+000087D0                                   136  
+000087D0  13FC 0000 00008013               137  ELSE_B_2		MOVE.B	#0,LOCK
+000087D8  13FC 0001 00008015               138  ELSE_B_1		MOVE.B	#1,SOS_B
+000087E0  6000 005A                        139  			BRA		FINE_B
+000087E4                                   140  
+000087E4  13FC 0000 00008014               141  ELSE_B_4		MOVE.B	#0,POS
+000087EC  6000 0012                        142  			BRA		RISVEGLIO_C
+000087F0                                   143  
+000087F0  13FC 0000 00008011               144  ELSE_B_6		MOVE.B	#0,FLG_B
+000087F8  13FC 0000 00008012               145  			MOVE.B	#0,FLG_C
+00008800                                   146  			
+00008800  1039 00008016                    147  RISVEGLIO_C		MOVE.B	SOS_C,D0
+00008806  B03C 0001                        148  IF_B_7			CMP.B		#1,D0
+0000880A  6600 0030                        149  			BNE		FINE_B
+0000880E                                   150  
+0000880E  13FC 0002 00008014               151  			MOVE.B	#2,POS
+00008816  13FC 0000 00008016               152  			MOVE.B	#0,SOS_C
+0000881E                                   153  			
+0000881E  1039 0000800F                    154  			MOVE.B	CONT_C_C,D0
+00008824  207C 00002004                    155  			MOVEA.L 	#PIABD_C,A0
+0000882A  227C 00008009                    156  			MOVEA.L	#MSG_C,A1
+00008830                                   157  
+00008830  1390 0000                        158  			MOVE.B	(A0),(A1,D0)
+00008834  5200                             159  			ADD.B		#1,D0
+00008836  13C0 0000800F                    160  			MOVE.B	D0,CONT_C_C
+0000883C                                   161  	
+0000883C  4CDF 0303                        162  FINE_B		MOVEM.L	(A7)+,A1-A0/D1-D0
+00008840  4E73                             163  			RTE
+00008842                                   164  
+00008842                                   165  *******************************************************************************************************
+00008842                                   166  *La pia-B ha ricevuto un carattere dalla pia-A partner, interrompe il processore che
+00008842                                   167  *con la ISR riceve il carattere e lo salva in memoria
+00008842                                   168  *ISR a $8800 associata all' interrupt di liv. 4 mappato a $70 della ROM
+00008842                                   169  ********************************************************************************************************
+00008900                                   170  			ORG 		$8900		
+00008900                                   171  
+00008900                                   172  IRQ_C			
+00008900  48E7 E0C0                        173  			MOVEM.L	D0-D2/A0-A1,-(A7)
+00008904                                   174  
+00008904  4AF9 00008013                    175  IF_C_1			TAS		LOCK
+0000890A  6600 00A8                        176  			BNE		ELSE_C_2
+0000890E                                   177  
+0000890E  1039 00008012                    178  			MOVE.B	FLG_C,D0
+00008914  B03C 0000                        179  			CMP.B		#0,D0
+00008918  6600 009A                        180  			BNE		ELSE_C_2
+0000891C                                   181  
+0000891C  1039 00008014                    182  			MOVE.B	POS,D0
+00008922  B03C 0002                        183  			CMP.B		#2,D0
+00008926  6700 0012                        184  			BEQ		SKIPC
+0000892A                                   185  
+0000892A  B03C 0000                        186  IF_C_2			CMP.B		#0,D0
+0000892E  6600 0084                        187  			BNE		ELSE_C_2
+00008932                                   188  
+00008932  13FC 0002 00008014               189  			MOVE.B	#2,POS
+0000893A  13FC 0000 00008013               190  SKIPC			MOVE.B	#0,LOCK
+00008942                                   191  
+00008942  207C 00002004                    192  RX_C			MOVEA.L	#PIABD_C,A0
+00008948  227C 00008009                    193  			MOVEA.L	#MSG_C,A1
+0000894E  1039 0000800F                    194  			MOVE.B	CONT_C_C,D0
+00008954                                   195  			
+00008954  1390 0000                        196  			MOVE.B	(A0),(A1,D0)
+00008958  5200                             197  			ADD.B		#1,D0
+0000895A  13C0 0000800F                    198  			MOVE.B	D0,CONT_C_C
+00008960                                   199  
+00008960  1239 00008000                    200  			MOVE.B	N,D1
+00008966  B200                             201  IF_C_3			CMP.B		D0,D1
+00008968  6600 01C2                        202  			BNE		FINE_C
+0000896C                                   203  
+0000896C  13FC 0000 0000800F               204  			MOVE.B	#0,CONT_C_C
+00008974  13FC 0001 00008012               205  			MOVE.B	#1,FLG_C
+0000897C                                   206  
+0000897C  1039 00008011                    207  			MOVE.B	FLG_B,D0
+00008982  B03C 0001                        208  IF_C_4			CMP.B		#1,D0
+00008986  6600 013E                        209  			BNE		ELSE_C_4
+0000898A                                   210  
+0000898A  1039 00008003                    211  			MOVE.B	CONT_K,D0
+00008990  5200                             212  			ADD.B		#1,D0
+00008992  13C0 00008003                    213  			MOVE.B	D0,CONT_K
+00008998                                   214  			
+00008998  1239 00008002                    215  			MOVE.B	K,D1
+0000899E  B200                             216  IF_C_5			CMP.B		D0,D1
+000089A0  6600 0130                        217  			BNE		ELSE_C_5
+000089A4                                   218  
+000089A4  11FC 0000 2005                   219  			MOVE.B	#0,PIABC_C
+000089AA  11FC 0000 2009                   220  			MOVE.B	#0,PIABC_B
+000089B0                                   221  
+000089B0  6000 017A                        222  			BRA		FINE_C
+000089B4                                   223  
+000089B4  13FC 0000 00008013               224  ELSE_C_2		MOVE.B	#0,LOCK
+000089BC  13FC 0001 00008016               225  			MOVE.B	#1,SOS_C
+000089C4  1039 00008015                    226  RIS_B_TOTALE	MOVE.B	SOS_B,D0
+000089CA  B03C 0001                        227  			CMP.B		#1,D0
+000089CE  6600 015C                        228  			BNE		FINE_C
+000089D2                                   229  
+000089D2  13FC 0001 00008014               230  			MOVE.B	#1,POS
+000089DA  13FC 0000 00008015               231  			MOVE.B	#0,SOS_B
+000089E2  1039 0000800E                    232  			MOVE.B	CONT_C_B,D0
+000089E8                                   233  			
+000089E8  1239 0000800E                    234  			MOVE.B	CONT_C_B,D1
+000089EE  5201                             235  			ADD.B		#1,D1
+000089F0  13C1 0000800E                    236  			MOVE.B	D1,CONT_C_B
+000089F6                                   237  
+000089F6  1439 00008000                    238  			MOVE.B	N,D2
+000089FC  B401                             239  IF_C_6			CMP.B		D1,D2
+000089FE  6600 00B2                        240  			BNE		ELSE_C_6
+00008A02                                   241  
+00008A02  13FC 0000 0000800E               242  			MOVE.B	#0,CONT_C_B
+00008A0A  1439 00008010                    243  			MOVE.B	CONT_M_B,D2
+00008A10  5202                             244  			ADD.B		#1,D2
+00008A12  13C2 00008010                    245  			MOVE.B	D2,CONT_M_B
+00008A18                                   246  
+00008A18  1239 00008001                    247  			MOVE.B	M_B,D1
+00008A1E  B401                             248  IF_C_7			CMP.B		D1,D2
+00008A20  6600 0072                        249  			BNE		ELSE_C_8
+00008A24                                   250  
+00008A24  13FC 0001 00008011               251  			MOVE.B	#1,FLG_B
+00008A2C  13FC 0000 00008010               252  			MOVE.B	#0,CONT_M_B
+00008A34  13FC 0000 00008014               253  			MOVE.B	#0,POS
+00008A3C                                   254  
+00008A3C  1239 00008012                    255  			MOVE.B	FLG_C,D1
+00008A42  B23C 0001                        256  IF_C_8			CMP.B		#1,D1
+00008A46  6600 004C                        257  			BNE		ELSE_C_8
+00008A4A                                   258  			
+00008A4A  1239 00008003                    259  			MOVE.B	CONT_K,D1
+00008A50  5201                             260  			ADD.B		#1,D1
+00008A52  13C1 00008003                    261  			MOVE.B	D1,CONT_K
+00008A58                                   262  
+00008A58  1439 00008002                    263  			MOVE.B	K,D2
+00008A5E  B401                             264  IF_C_9			CMP.B		D1,D2
+00008A60  6600 0022                        265  			BNE		ELSE_C_9
+00008A64                                   266  			
+00008A64  207C 00002008                    267  			MOVEA.L	#PIABD_B,A0
+00008A6A  227C 00008004                    268  			MOVEA.L	#MSG_B,A1
+00008A70  1390 0000                        269  			MOVE.B	(A0),(A1,D0)
+00008A74                                   270  
+00008A74  11FC 0000 2005                   271  			MOVE.B	#0,PIABC_C
+00008A7A  11FC 0000 2009                   272  			MOVE.B	#0,PIABC_B
+00008A80                                   273  			
+00008A80  6000 00AA                        274  			BRA		FINE_C
+00008A84                                   275  
+00008A84  13FC 0000 00008011               276  ELSE_C_9		MOVE.B	#0,FLG_B
+00008A8C  13FC 0000 00008012               277  			MOVE.B	#0,FLG_C
+00008A94  13FC 0002 00008014               278  ELSE_C_8		MOVE.B	#2,POS
+00008A9C                                   279  			
+00008A9C  207C 00002008                    280  			MOVEA.L	#PIABD_B,A0
+00008AA2  227C 00008004                    281  			MOVEA.L	#MSG_B,A1
+00008AA8  1390 0000                        282  			MOVE.B	(A0),(A1,D0)
+00008AAC                                   283  			
+00008AAC  4EF9 00008942                    284  			JMP		RX_C
+00008AB2                                   285  
+00008AB2                                   286  ELSE_C_6
+00008AB2                                   287  
+00008AB2  207C 00002008                    288  			MOVEA.L	#PIABD_B,A0
+00008AB8  227C 00008004                    289  			MOVEA.L	#MSG_B,A1
+00008ABE  1390 0000                        290  			MOVE.B	(A0),(A1,D0)
+00008AC2                                   291  
+00008AC2  6000 0068                        292  			BRA		FINE_C
+00008AC6                                   293  
+00008AC6  13FC 0000 00008014               294  ELSE_C_4		MOVE.B	#0,POS
+00008ACE  6000 001A                        295  			BRA		RIS_B
+00008AD2                                   296  
+00008AD2                                   297  
+00008AD2  13FC 0000 00008012               298  ELSE_C_5		MOVE.B	#0,FLG_C
+00008ADA  13FC 0000 00008011               299  			MOVE.B	#0,FLG_B
+00008AE2  13FC 0000 00008014               300  			MOVE.B	#0,POS
+00008AEA                                   301  
+00008AEA  1039 00008015                    302  RIS_B			MOVE.B	SOS_B,D0
+00008AF0  B03C 0001                        303  			CMP.B		#1,D0
+00008AF4  6600 0036                        304  			BNE		FINE_C
+00008AF8                                   305  
+00008AF8  13FC 0001 00008014               306  			MOVE.B	#1,POS
+00008B00  13FC 0000 00008015               307  			MOVE.B	#0,SOS_B
+00008B08  1039 0000800E                    308  			MOVE.B	CONT_C_B,D0
+00008B0E                                   309  			
+00008B0E  1239 0000800E                    310  			MOVE.B	CONT_C_B,D1
+00008B14  5201                             311  			ADD.B		#1,D1
+00008B16  13C1 0000800E                    312  			MOVE.B	D1,CONT_C_B
+00008B1C                                   313  
+00008B1C  207C 00002008                    314  			MOVEA.L	#PIABD_B,A0
+00008B22  227C 00008004                    315  			MOVEA.L	#MSG_B,A1
+00008B28  1390 0000                        316  			MOVE.B	(A0),(A1,D0)
+00008B2C                                   317  
+00008B2C  4CDF 0307                        318  FINE_C		MOVEM.L	(A7)+,A1-A0/D2-D0
+00008B30  4E73                             319  			RTE	
+00008B32                                   320  	
+00008B32                                   321  			    
+00008B32                                   322  
+00008B32                                   323  			END		MAIN
+
+No errors detected
+No warnings generated
