@@ -85,9 +85,16 @@ IF_B_1			TAS 		LOCK
 			MOVE.B	POS,D0
 IF_B_2			CMP.B		#1,D0
 			BEQ		SKIPB
+
+		
 			
 			CMP.B		#0,D0
 			BNE		ELSE_B_2
+
+			MOVE.B	FLG_B,D0
+			CMP.B		#0,D0
+			BNE		ELSE_B_2
+		
 
 SKIPB			MOVE.B	#1,POS
 			MOVE.B	#0,LOCK
@@ -321,6 +328,7 @@ FINE_C		MOVEM.L	(A7)+,A1-A0/D2-D0
 			    
 
 			END		MAIN
+
 
 
 
