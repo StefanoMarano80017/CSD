@@ -1,6 +1,4 @@
 # CSD
-COMPUTER SYSTEM DESIGN
-
 This folder contains material for the Computer System Design (CSD) course at Federico II University. 
 Each folder contains material produced for a specific course topic:
 - The ASIM folder deals with the development of assembly programs, in this case the processor is the 68k, generaly programming multi-computer systems with a single core with configuration and use of Serial and Parallel peripherals. 
